@@ -15,7 +15,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="assets/images/dive-logo.png">
   
-  <!-- Premium Fonts -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -30,15 +30,15 @@
           colors: {
             dive: {
               black: '#04060A',
-              dark: '#080C14',
-              surface: 'rgba(10, 16, 26, 0.78)',
+              dark: '#080B12',
+              surface: '#0C111C',
               orange: '#FF6600',
               orangeDark: '#D45500',
               cyan: '#00F0FF',
               green: '#00E676',
               purple: '#B026FF',
-              red: '#FF3366',
-              border: 'rgba(255, 255, 255, 0.08)'
+              red: '#FF2A4B',
+              border: 'rgba(255, 255, 255, 0.1)'
             }
           },
           fontFamily: {
@@ -52,173 +52,146 @@
     }
   </script>
   
-  <!-- HTML5 QR Code Scanner Library for Web -->
+  <!-- HTML5 QR Code Scanner -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-  <!-- Custom Cyberpunk Styling -->
+  <!-- Custom Hardware HUD Styling -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
-  <!-- Background Layer: Moody Cyberpunk City with Clean Dark Mask -->
+  <!-- Background Layer -->
   <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-    <div id="city-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100 opacity-25" style="background-image: url('assets/images/city-bg.jpg');"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-[#04060A]/92 to-[#04060A]"></div>
+    <div id="city-bg" class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('assets/images/city-bg.jpg');"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-[#04060A]/95 to-[#04060A]"></div>
     <div class="absolute inset-0 scanlines opacity-20"></div>
   </div>
 
-  <!-- TOP HEADER HUD (Clean, Minimalist, Full-Width Desktop & Mobile) -->
-  <header class="sticky top-0 z-40 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/90 backdrop-blur-xl border-b border-white/5 transition-all">
+  <!-- TOP HARDWARE HUD BAR -->
+  <header class="sticky top-0 z-40 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/95 border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
       
       <!-- Brand Logo -->
-      <a href="#tab-home" class="nav-tab-trigger flex items-center gap-3 group" data-tab="home">
+      <a href="#tab-home" class="nav-tab-trigger flex items-center gap-3" data-tab="home">
         <img src="assets/images/dive-logo.png" alt="DIVE" class="h-6 sm:h-7 w-auto object-contain">
         <span class="hidden sm:inline font-mono text-[10px] tracking-[0.25em] text-slate-400 uppercase font-semibold">CYBERPUNK EXPERIENCE</span>
       </a>
 
-      <!-- Desktop Navigation Menu Tabs -->
-      <nav class="hidden md:flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-slate-400 px-3 py-1.5 rounded-full border border-white/5 bg-white/[0.02]">
-        <button class="nav-tab-trigger px-3.5 py-1 text-dive-orange font-bold transition-colors" data-tab="home">HOME</button>
-        <button class="nav-tab-trigger px-3.5 py-1 hover:text-white transition-colors" data-tab="net">THE NET</button>
-        <button class="nav-tab-trigger px-3.5 py-1 hover:text-white transition-colors" data-tab="comm">CHAT</button>
-        <button class="nav-tab-trigger px-3.5 py-1 hover:text-white transition-colors" data-tab="cyberdeck">CYBERDECK</button>
-        <button class="nav-tab-trigger px-3.5 py-1 hover:text-white transition-colors" data-tab="wallet">WALLET</button>
-        <button class="nav-tab-trigger px-3.5 py-1 hover:text-white transition-colors" data-tab="profile">SCHEDA</button>
+      <!-- Desktop Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-slate-400">
+        <button class="nav-tab-trigger px-3 py-1.5 text-dive-orange font-bold border-b-2 border-dive-orange transition-colors" data-tab="home">HOME</button>
+        <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="net">THE NET</button>
+        <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="comm">CHAT</button>
+        <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="cyberdeck">CYBERDECK</button>
+        <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="wallet">WALLET</button>
+        <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="profile">SCHEDA</button>
       </nav>
 
-      <!-- Player Identity & Quick Controls -->
+      <!-- Player Identity & Hardware Controls -->
       <div class="flex items-center gap-2 font-mono text-xs">
-        
-        <!-- Player Profile Badge -->
-        <button id="open-profile-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:border-dive-orange/50 transition-all">
-          <span class="w-1.5 h-1.5 rounded-full bg-dive-green"></span>
+        <button id="open-profile-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/15 bg-[#080B12] hover:border-dive-orange transition-colors">
           <span id="header-player-callsign" class="text-slate-200 font-bold">@V_Solo</span>
           <span class="text-[10px] text-slate-500 hidden sm:inline">| HP <span id="header-hp" class="text-dive-green">100%</span></span>
         </button>
 
-        <div class="hidden lg:flex items-center gap-2 text-slate-400 pl-1">
+        <div class="hidden lg:flex items-center gap-2 text-slate-300 px-2.5 py-1.5 border border-white/10 bg-[#080B12] rounded-sm">
           <span class="text-dive-cyan font-semibold">€$ <span id="header-wallet-balance">1.500</span></span>
         </div>
 
-        <!-- Master / Regia Secret Access Trigger -->
-        <button id="open-admin-pin-btn" title="Accesso Regia Master" class="w-8 h-8 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-dive-purple hover:border-dive-purple/40 flex items-center justify-center transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <button id="open-admin-pin-btn" title="Accesso Regia Master" class="w-8 h-8 rounded-sm border border-white/15 bg-[#080B12] text-slate-400 hover:text-dive-red hover:border-dive-red flex items-center justify-center transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
         </button>
 
-        <!-- Audio SFX Toggle -->
-        <button id="sfx-toggle" title="Attiva/Disattiva Audio" class="w-8 h-8 rounded-full border border-white/10 bg-white/5 text-slate-300 hover:text-dive-orange flex items-center justify-center transition-colors">
-          <svg id="sfx-icon-svg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+        <button id="sfx-toggle" title="Attiva/Disattiva Audio" class="w-8 h-8 rounded-sm border border-white/15 bg-[#080B12] text-slate-300 hover:text-dive-orange flex items-center justify-center transition-colors">
+          <svg id="sfx-icon-svg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
         </button>
       </div>
 
     </div>
   </header>
 
-  <!-- LIVE GLOBAL BROADCAST NOTIFICATION BANNER (Master Triggered) -->
-  <div id="global-broadcast-banner" class="hidden sticky top-14 sm:top-16 z-30 w-full bg-dive-red/90 text-white font-mono text-xs px-4 py-2 border-b border-dive-red shadow-[0_0_20px_rgba(255,51,102,0.6)] flex items-center justify-between">
+  <!-- LIVE GLOBAL BROADCAST NOTIFICATION BANNER -->
+  <div id="global-broadcast-banner" class="hidden sticky top-14 sm:top-16 z-30 w-full bg-dive-red text-white font-mono text-xs px-4 py-2 border-b border-white/20 flex items-center justify-between">
     <div class="flex items-center gap-2 max-w-5xl mx-auto flex-1">
-      <span class="animate-ping w-2 h-2 rounded-full bg-white"></span>
       <span class="font-bold tracking-wider uppercase">[AVVISO RETE DIVE]:</span>
       <span id="global-broadcast-text" class="font-sans font-medium truncate">Allarme corporativo: coprifuoco nel Settore Ciminiere.</span>
     </div>
-    <button id="close-broadcast-btn" class="text-white hover:text-black font-bold text-xs ml-2">✕</button>
+    <button id="close-broadcast-btn" class="text-white hover:text-black font-bold text-xs ml-2 px-2">CHIUDI</button>
   </div>
 
   <!-- MAIN APP CONTAINER -->
   <main class="flex-grow z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
 
     <!-- ========================================================================= -->
-    <!-- TAB 0: HOME // MINIMALIST CYBERPUNK MANIFESTO                             -->
+    <!-- TAB 0: HOME // LANDING MANIFESTO                                          -->
     <!-- ========================================================================= -->
     <section id="tab-home" class="app-tab active flex flex-col justify-center min-h-[calc(100dvh-12rem)]">
       
-      <div class="max-w-4xl mx-auto w-full space-y-10 sm:space-y-14">
+      <div class="max-w-4xl mx-auto w-full space-y-10 sm:space-y-12">
         
-        <!-- Hero Header -->
-        <div class="text-center space-y-4 pt-4 sm:pt-8">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-dive-orange/30 bg-dive-orange/10 text-dive-orange font-mono text-[11px] uppercase tracking-[0.25em]">
-            <span class="w-1.5 h-1.5 rounded-full bg-dive-orange"></span>
-            <span>GIOCO DI RUOLO DAL VIVO</span>
-          </div>
-
+        <!-- Hero Header (No fake eyebrow pill, sharp typography) -->
+        <div class="text-center space-y-4 pt-2 sm:pt-6">
           <h1 class="font-orbitron font-black text-4xl sm:text-7xl lg:text-8xl tracking-tight leading-[0.95] uppercase">
             <span class="block text-white">CAMBIA</span>
             <span class="block text-dive-orange">REALTÀ.</span>
           </h1>
 
           <p class="max-w-xl mx-auto text-slate-400 font-sans text-sm sm:text-base leading-relaxed">
-            Un altro mondo. Un'altra identità.<br class="hidden sm:inline">
-            La prossima storia comincia con te nel Settore Ciminiere.
+            Un altro mondo. Un'altra identità. La prossima storia comincia nel Settore Ciminiere.
           </p>
         </div>
 
-        <!-- Featured Event Card (Double-Bezel High-End UI) -->
-        <div class="cyber-panel p-2">
-          <div class="cyber-panel-inner p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div class="space-y-2">
-              <div class="flex items-center gap-2 font-mono text-xs text-dive-orange font-semibold tracking-wider">
-                <span class="w-2 h-2 rounded-full bg-dive-green animate-pulse"></span>
-                <span>PROSSIMO EVENTO // LIVE ACTION</span>
-              </div>
-              <h2 class="font-orbitron font-bold text-xl sm:text-2xl text-white">
-                SETTORE 04 — LE CIMINIERE (CATANIA)
-              </h2>
-              <p class="text-xs sm:text-sm text-slate-400">
-                45 Runner collegati sulla intranet locale. Attiva il tuo Cyberdeck per ricevere il briefing e i contratti.
-              </p>
+        <!-- Primary Event Card -->
+        <div class="cyber-panel p-6 sm:p-8 hud-bracket flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="font-mono text-xs text-dive-orange font-semibold tracking-wider">
+              LIVE ACTION // SETTORE 04
             </div>
+            <h2 class="font-orbitron font-bold text-xl sm:text-2xl text-white">
+              LE CIMINIERE — CATANIA
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400">
+              Intranet locale attiva per 45 runner. Accedi alla scheda per visualizzare il tuo QR personale e gli impianti.
+            </p>
+          </div>
 
-            <div class="flex sm:flex-col items-center sm:items-end gap-3 flex-shrink-0">
-              <button class="nav-tab-trigger w-full sm:w-auto px-6 py-3 rounded-xl bg-dive-orange text-black font-mono font-bold text-xs uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_25px_rgba(255,102,0,0.4)]" data-tab="profile">
-                ENTRA NEL SISTEMA ↗
-              </button>
-            </div>
+          <div class="flex-shrink-0">
+            <button class="nav-tab-trigger cyber-btn w-full sm:w-auto px-6 py-3.5 bg-dive-orange text-black font-mono font-bold text-xs uppercase tracking-widest hover:bg-white" data-tab="profile">
+              APRI SCHEDA E IMPIANTI
+            </button>
           </div>
         </div>
 
-        <!-- 2 Clean Portals -->
+        <!-- 2 Direct Operational Modules -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           
-          <button class="nav-tab-trigger text-left cyber-panel p-2 group hover:border-dive-orange/40 transition-all" data-tab="net">
-            <div class="cyber-panel-inner p-5 sm:p-6 h-full flex flex-col justify-between space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="font-mono text-[10px] text-dive-orange tracking-widest font-semibold uppercase">01 // THE NET</span>
-                <span class="text-xs text-slate-500 font-mono">SOCIAL FEED</span>
-              </div>
-              <div>
-                <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-dive-orange transition-colors">
-                  BACHECA NOTIZIE & FOTO
-                </h3>
-                <p class="text-xs text-slate-400 mt-1">
-                  Comunicati dei Media, leak anonimi e foto scattate con commenti dei giocatori.
-                </p>
-              </div>
-              <div class="font-mono text-xs text-dive-orange flex items-center gap-1.5 pt-2">
-                <span>Apri il Feed</span>
-                <span class="group-hover:translate-x-1 transition-transform">→</span>
-              </div>
+          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-orange transition-colors flex flex-col justify-between space-y-4" data-tab="net">
+            <div class="flex items-center justify-between font-mono text-[11px]">
+              <span class="text-dive-orange font-semibold uppercase tracking-widest">01 // THE NET</span>
+              <span class="text-slate-500">FEED SOCIAL</span>
+            </div>
+            <div>
+              <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-dive-orange transition-colors">
+                BACHECA NOTIZIE E SCATTI
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Comunicati corporativi, leak anonimi e foto scattate dai runner con commenti.
+              </p>
             </div>
           </button>
 
-          <button class="nav-tab-trigger text-left cyber-panel p-2 group hover:border-dive-cyan/40 transition-all" data-tab="cyberdeck">
-            <div class="cyber-panel-inner p-5 sm:p-6 h-full flex flex-col justify-between space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="font-mono text-[10px] text-dive-cyan tracking-widest font-semibold uppercase">02 // CYBERDECK</span>
-                <span class="text-xs text-slate-500 font-mono">HACKING OS</span>
-              </div>
-              <div>
-                <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-dive-cyan transition-colors">
-                  SCANNER QR & QUICKHACK 5S
-                </h3>
-                <p class="text-xs text-slate-400 mt-1">
-                  Scansiona QR personali per pagamenti/hack e lancia comandi rapidi di combattimento.
-                </p>
-              </div>
-              <div class="font-mono text-xs text-dive-cyan flex items-center gap-1.5 pt-2">
-                <span>Avvia Cyberdeck</span>
-                <span class="group-hover:translate-x-1 transition-transform">→</span>
-              </div>
+          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-cyan transition-colors flex flex-col justify-between space-y-4" data-tab="cyberdeck">
+            <div class="flex items-center justify-between font-mono text-[11px]">
+              <span class="text-dive-cyan font-semibold uppercase tracking-widest">02 // CYBERDECK</span>
+              <span class="text-slate-500">HACKING OS</span>
+            </div>
+            <div>
+              <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-dive-cyan transition-colors">
+                SCANNER QR E OVERRIDE 5S
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Scansiona QR personali o ambientali ed esegui intrusioni contro difese ICE.
+              </p>
             </div>
           </button>
 
@@ -229,16 +202,14 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- TAB 1: THE NET (SOCIAL FEED, POTERI MEDIA, LIKE/DISLIKE & COMMENTI)       -->
+    <!-- TAB 1: THE NET (SOCIAL FEED)                                              -->
     <!-- ========================================================================= -->
     <section id="tab-net" class="app-tab hidden space-y-6">
       
-      <!-- Top Action Bar -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
-          <div class="flex items-center gap-2 text-dive-orange font-mono text-xs uppercase tracking-widest font-semibold mb-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-dive-orange"></span>
-            <span>THE NET // INTRANET SOCIAL FEED</span>
+          <div class="text-dive-orange font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+            THE NET // INTRANET SOCIAL FEED
           </div>
           <h2 class="font-orbitron font-bold text-2xl text-white">
             BACHECA NOTIZIE & SCATTI
@@ -246,122 +217,108 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <button id="open-publish-news-btn" class="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:border-dive-cyan text-slate-300 hover:text-dive-cyan font-mono text-xs tracking-wider transition-colors">
+          <button id="open-publish-news-btn" class="px-3.5 py-2 rounded-sm border border-white/15 bg-[#080B12] hover:border-dive-cyan text-slate-300 hover:text-dive-cyan font-mono text-xs tracking-wider transition-colors">
             + NOTIZIA / LEAK
           </button>
           
-          <button id="open-upload-modal-btn" class="px-4 py-2 rounded-xl bg-dive-orange text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-[0_0_20px_rgba(255,102,0,0.3)]">
+          <button id="open-upload-modal-btn" class="cyber-btn px-4 py-2 bg-dive-orange text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-white">
             + CARICA FOTO
           </button>
         </div>
       </div>
 
-      <!-- Clean Category Filters -->
+      <!-- Category Filters -->
       <div class="flex items-center gap-2 overflow-x-auto pb-1 font-mono text-xs no-scrollbar">
-        <button class="feed-filter-btn active px-3.5 py-1.5 rounded-full border border-dive-orange bg-dive-orange/15 text-dive-orange font-semibold whitespace-nowrap transition-colors" data-filter="all">
+        <button class="feed-filter-btn active px-3.5 py-1.5 rounded-sm border border-dive-orange bg-dive-orange/15 text-dive-orange font-semibold whitespace-nowrap transition-colors" data-filter="all">
           TUTTI (<span id="feed-count">2</span>)
         </button>
-        <button class="feed-filter-btn px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap transition-colors" data-filter="news">
+        <button class="feed-filter-btn px-3.5 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap transition-colors" data-filter="news">
           NOTIZIE
         </button>
-        <button class="feed-filter-btn px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap transition-colors" data-filter="photos">
+        <button class="feed-filter-btn px-3.5 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap transition-colors" data-filter="photos">
           FOTO RUNNER
         </button>
-        <button class="feed-filter-btn px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap transition-colors" data-filter="anonymous">
+        <button class="feed-filter-btn px-3.5 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap transition-colors" data-filter="anonymous">
           LEAK ANONIMI
         </button>
       </div>
 
       <!-- Feed Grid -->
       <div id="social-feed-grid" class="max-w-2xl mx-auto space-y-6">
-        <!-- Rendered dynamically via JavaScript -->
+        <!-- Rendered via JS -->
       </div>
 
     </section>
 
     <!-- ========================================================================= -->
-    <!-- TAB 2: COMM (CHAT RADIO: INDIVIDUALI DMs & CANALE CONTRATTI FIXER)        -->
+    <!-- TAB 2: COMM (RADIO DMs & CONTRATTI FIXER)                                 -->
     <!-- ========================================================================= -->
     <section id="tab-comm" class="app-tab hidden space-y-6">
       
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
-          <div class="flex items-center gap-2 text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-dive-cyan"></span>
-            <span>COMM // FREQUENZE CRIPTATE INDIVIDUALI</span>
+          <div class="text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+            COMM // FREQUENZE CRIPTATE
           </div>
           <h2 class="font-orbitron font-bold text-2xl text-white">
             RADIO DMs & CONTRATTI FIXER
           </h2>
-          <p class="text-xs text-slate-400">
-            Frequenze private 1-a-1 e bacheca contratti (le discussioni di gruppo avvengono a voce di presenza nel settore).
-          </p>
         </div>
 
-        <!-- Channel / DM Selector -->
+        <!-- Channel Selector -->
         <div class="flex items-center gap-1.5 font-mono text-xs overflow-x-auto pb-1 no-scrollbar">
-          <button class="chat-channel-btn active px-3 py-1.5 rounded-lg border border-dive-cyan/40 bg-dive-cyan/15 text-dive-cyan font-semibold whitespace-nowrap" data-channel="fixer">
+          <button class="chat-channel-btn active px-3 py-1.5 rounded-sm border border-dive-cyan/50 bg-dive-cyan/15 text-dive-cyan font-semibold whitespace-nowrap" data-channel="fixer">
             # CONTRATTI FIXER
           </button>
-          <button class="chat-channel-btn px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap" data-channel="corp">
-            # DISPACCI MASTER/CORP
+          <button class="chat-channel-btn px-3 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap" data-channel="corp">
+            # DISPACCI CORP
           </button>
-          <button class="chat-channel-btn px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap" data-channel="direct">
+          <button class="chat-channel-btn px-3 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap" data-channel="direct">
             # DM PRIVATO 1-a-1
           </button>
         </div>
       </div>
 
       <!-- Chat Frame -->
-      <div class="max-w-3xl mx-auto cyber-panel p-2">
-        <div class="cyber-panel-inner p-4 sm:p-6 flex flex-col h-[65dvh]">
+      <div class="max-w-3xl mx-auto cyber-panel p-4 sm:p-6 flex flex-col h-[65dvh]">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-white/10 font-mono text-xs text-slate-400">
+          <span id="current-channel-label" class="text-dive-cyan font-semibold"># CONTRATTI & TAGLIE FIXER</span>
           
-          <!-- Chat Header Bar -->
-          <div class="flex items-center justify-between pb-3 border-b border-white/5 font-mono text-xs text-slate-400">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-dive-green"></span>
-              <span id="current-channel-label" class="text-dive-cyan font-semibold"># CONTRATTI & TAGLIE FIXER</span>
-            </div>
-            
-            <!-- Direct Recipient Picker (Visible only for DM Privato) -->
-            <div id="dm-recipient-wrap" class="hidden flex items-center gap-1 text-[11px]">
-              <span class="text-slate-400">A:</span>
-              <select id="dm-recipient-select" class="px-2 py-0.5 rounded bg-black border border-white/15 text-dive-orange font-mono text-xs outline-none">
-                <option value="@The_Fixer">@The_Fixer (Broker)</option>
-                <option value="@Kuro_04">@Kuro_04 (Mercenario)</option>
-                <option value="@Runner_Insolito">@Runner_Insolito (Solo)</option>
-                <option value="@Ghost_Net">@Ghost_Net (Anonimo)</option>
-              </select>
-            </div>
+          <div id="dm-recipient-wrap" class="hidden flex items-center gap-1.5 text-[11px]">
+            <span class="text-slate-400">A:</span>
+            <select id="dm-recipient-select" class="px-2 py-1 rounded-sm bg-black border border-white/15 text-dive-orange font-mono text-xs outline-none">
+              <option value="@The_Fixer">@The_Fixer (Broker)</option>
+              <option value="@Kuro_04">@Kuro_04 (Mercenario)</option>
+              <option value="@Runner_Insolito">@Runner_Insolito (Solo)</option>
+              <option value="@Ghost_Net">@Ghost_Net (Anonimo)</option>
+            </select>
           </div>
-
-          <!-- Messages Stream -->
-          <div id="chat-messages-container" class="flex-grow overflow-y-auto py-4 space-y-3 font-sans text-xs pr-1">
-            <!-- Messages inserted via JS -->
-          </div>
-
-          <!-- Chat Input -->
-          <form id="chat-send-form" class="pt-3 border-t border-white/5 flex items-center gap-2">
-            <input type="text" id="chat-text-input" placeholder="Comunica sulla frequenza..." class="flex-1 px-4 py-2.5 rounded-xl bg-black/60 border border-white/10 focus:border-dive-cyan text-white text-xs outline-none transition-colors" required>
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-dive-cyan text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-white transition-colors">
-              INVIA
-            </button>
-          </form>
-
         </div>
+
+        <div id="chat-messages-container" class="flex-grow overflow-y-auto py-4 space-y-3 font-sans text-xs pr-1">
+          <!-- Messages inserted via JS -->
+        </div>
+
+        <form id="chat-send-form" class="pt-3 border-t border-white/10 flex items-center gap-2">
+          <input type="text" id="chat-text-input" placeholder="Comunica sulla frequenza..." class="flex-1 px-4 py-2.5 rounded-sm bg-black border border-white/15 focus:border-dive-cyan text-white text-xs outline-none" required>
+          <button type="submit" class="cyber-btn px-5 py-2.5 bg-dive-cyan text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-white">
+            INVIA
+          </button>
+        </form>
+
       </div>
 
     </section>
 
     <!-- ========================================================================= -->
-    <!-- TAB 3: CYBERDECK (SCANNER QR UNIVERSALE, QUICKHACK 5S & SIFONE CON ICE)   -->
+    <!-- TAB 3: CYBERDECK (SCANNER QR & QUICKHACK 5S)                              -->
     <!-- ========================================================================= -->
     <section id="tab-cyberdeck" class="app-tab hidden space-y-6">
       
-      <div class="pb-4 border-b border-white/5">
-        <div class="flex items-center gap-2 text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-dive-cyan"></span>
-          <span>CYBERDECK // HACKING & INTERAZIONE AMBIENTALE</span>
+      <div class="pb-4 border-b border-white/10">
+        <div class="text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+          CYBERDECK // HACKING & INTERAZIONE AMBIENTALE
         </div>
         <h2 class="font-orbitron font-bold text-2xl text-white">
           SCANNER QR & QUICKHACK 5S
@@ -370,133 +327,117 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <!-- SECTION 1: SCANNER OTTICO KIROSHI -->
-        <div class="cyber-panel p-2">
-          <div class="cyber-panel-inner p-5 sm:p-6 space-y-4">
+        <!-- SCANNER OTTICO KIROSHI -->
+        <div class="cyber-panel p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10 font-mono text-xs">
+            <span class="text-white font-bold">SCANNER OTTICO KIROSHI</span>
+            <span class="text-[10px] text-slate-500">QR DI SCENA O PLAYER</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 p-2 rounded-sm bg-black/60 border border-white/10 font-mono text-[9px] text-slate-400">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-dive-green"></span> Verde: Cromo</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-dive-cyan"></span> Blu: Terminali</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-dive-red"></span> Rosso: ICE</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-dive-orange"></span> Arancio: Player</span>
+          </div>
+
+          <div class="relative w-full aspect-video rounded-sm overflow-hidden bg-black border border-white/15 flex items-center justify-center">
+            <div id="qr-reader" class="w-full h-full"></div>
             
-            <div class="flex items-center justify-between pb-3 border-b border-white/5 font-mono text-xs">
-              <span class="text-white font-bold">SCANNER OTTICO KIROSHI</span>
-              <span class="text-[10px] text-slate-500">QR DI SCENA O PLAYER</span>
+            <div id="camera-placeholder" class="flex flex-col items-center gap-3 p-4 text-center">
+              <button id="start-camera-scan-btn" class="cyber-btn px-5 py-2.5 bg-dive-cyan text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-white">
+                ATTIVA FOTOCAMERA
+              </button>
+              <span class="text-[11px] text-slate-400 font-mono">Inquadra il QR code di un oggetto o il profilo di un runner</span>
             </div>
+          </div>
 
-            <!-- Color Guide as Subtle Bar -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 p-2 rounded-xl bg-black/40 border border-white/5 font-mono text-[9px] text-slate-400">
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-dive-green"></span> Verde: Cromo</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-dive-cyan"></span> Blu: Terminali</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-dive-red"></span> Rosso: ICE</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-dive-orange"></span> Arancio: Player</span>
+          <form id="manual-qr-form" class="space-y-1.5 pt-2">
+            <label class="block font-mono text-[10px] text-slate-400 uppercase">
+              Inserisci codice a 5 caratteri (es. #V-7842 o TERM-BLUE-44):
+            </label>
+            <div class="flex gap-2">
+              <input type="text" id="manual-code-input" placeholder="#V-7842" class="flex-1 px-3.5 py-2 rounded-sm bg-black border border-white/15 focus:border-dive-cyan text-white font-mono text-xs uppercase outline-none" required>
+              <button type="submit" class="px-4 py-2 rounded-sm bg-white/10 hover:bg-white hover:text-black text-slate-200 font-mono font-bold text-xs uppercase transition-colors">
+                VERIFICA
+              </button>
             </div>
+          </form>
 
-            <!-- Scanner Camera Box -->
-            <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black/80 border border-white/10 flex items-center justify-center">
-              <div id="qr-reader" class="w-full h-full"></div>
-              
-              <div id="camera-placeholder" class="flex flex-col items-center gap-3 p-4 text-center">
-                <button id="start-camera-scan-btn" class="px-5 py-2.5 rounded-xl bg-dive-cyan text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-white transition-colors">
-                  ATTIVA FOTOCAMERA
-                </button>
-                <span class="text-[11px] text-slate-400 font-mono">Inquadra il QR code di un oggetto o il profilo di un runner</span>
-              </div>
+          <div id="scan-result-card" class="hidden p-3.5 rounded-sm bg-black border border-dive-green/60 text-xs font-mono space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-dive-green font-bold">[ESITO SCANSIONE]</span>
+              <span id="scan-badge" class="px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold">INFO</span>
             </div>
+            <p id="scan-output-text" class="text-slate-300 font-sans text-xs"></p>
+            
+            <div id="scan-player-actions" class="hidden pt-2 flex gap-2">
+              <button id="scan-action-pay-btn" class="flex-1 py-2 rounded-sm bg-dive-green text-black font-bold uppercase text-[10px]">
+                INVIA EURODOLLARI
+              </button>
+              <button id="scan-action-hack-btn" class="flex-1 py-2 rounded-sm bg-dive-red text-white font-bold uppercase text-[10px]">
+                INTRUDI (HACK)
+              </button>
+            </div>
+          </div>
+        </div>
 
-            <!-- Manual Input Fallback -->
-            <form id="manual-qr-form" class="space-y-1.5 pt-2">
-              <label class="block font-mono text-[10px] text-slate-400 uppercase">
-                Oppure digita codice a 5 caratteri (es. #V-7842 o TERM-BLUE-44):
-              </label>
+        <!-- QUICKHACKS COMBAT & OFF-FIGHT SIFONE -->
+        <div class="cyber-panel p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10 font-mono text-xs">
+            <span class="text-white font-bold">QUICKHACK COMBAT (OVERRIDE 5s)</span>
+            <span class="text-[10px] text-dive-orange font-semibold">CHIAMATA DAL VIVO</span>
+          </div>
+
+          <p class="text-xs text-slate-400 font-sans">
+            Nel combattimento dal vivo pronuncia a voce la chiamata <strong class="text-white font-mono">OVERRIDE [COMANDO]!</strong>. L'effetto dura tassativamente 5 secondi.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono">
+            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-red p-3.5 text-center group" data-hack="FERMO!" data-desc="Blocco cibernetico delle articolazioni! Il bersaglio non può muoversi per 5 secondi!">
+              <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-red">OVERRIDE FERMO!</span>
+              <span class="text-[9px] text-slate-400 mt-1 block">Blocco 5s</span>
+            </button>
+
+            <button class="quickhack-trigger-btn cyberware-slot p-3.5 text-center group" data-hack="AL BUIO!" data-desc="Sovraccarico ottico Kiroshi! Il bersaglio deve chiudere gli occhi o voltarsi per 5 secondi!">
+              <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-cyan">OVERRIDE AL BUIO!</span>
+              <span class="text-[9px] text-slate-400 mt-1 block">Ottiche off 5s</span>
+            </button>
+
+            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-orange p-3.5 text-center group" data-hack="BUTTALA!" data-desc="Spasmo neurale all'arto armato! Il bersaglio deve rilasciare o deporre l'arma di scena immediatamente!">
+              <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-orange">OVERRIDE BUTTALA!</span>
+              <span class="text-[9px] text-slate-400 mt-1 block">Rilascio arma</span>
+            </button>
+          </div>
+
+          <!-- Off-Fight Sifone Crediti -->
+          <div class="pt-4 border-t border-white/10 space-y-3 font-mono">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">SIFONE CREDITI (OFF-FIGHT)</span>
+              <span class="text-[10px] text-dive-red">ICE BREAKER PROTOCOL</span>
+            </div>
+            <p class="text-[11px] text-slate-400 font-sans">
+              Inserisci il codice segreto del bersaglio (ottenuto da spionaggio o comprato dal PNG Fixer) per avviare il drenaggio.
+            </p>
+
+            <form id="hack-target-form" class="space-y-2">
               <div class="flex gap-2">
-                <input type="text" id="manual-code-input" placeholder="#V-7842" class="flex-1 px-3.5 py-2 rounded-xl bg-black/60 border border-white/10 focus:border-dive-cyan text-white font-mono text-xs uppercase outline-none" required>
-                <button type="submit" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-black text-slate-200 font-mono font-bold text-xs uppercase transition-colors">
-                  VERIFICA
+                <input type="text" id="hack-target-callsign" placeholder="Codice Bersaglio (es. #NX-7842 o @Nome)..." class="flex-1 px-3.5 py-2 rounded-sm bg-black border border-white/15 focus:border-dive-cyan text-white text-xs outline-none uppercase" required>
+                <button type="submit" class="cyber-btn px-4 py-2 bg-dive-red text-white font-mono font-bold text-xs uppercase hover:bg-white hover:text-black">
+                  INTRUDI
                 </button>
               </div>
             </form>
 
-            <!-- Result Box -->
-            <div id="scan-result-card" class="hidden p-3.5 rounded-xl bg-black/80 border border-dive-green/50 text-xs font-mono space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-dive-green font-bold">[ESITO SCANSIONE]</span>
-                <span id="scan-badge" class="px-2 py-0.5 rounded text-[9px] uppercase font-bold">INFO</span>
+            <div id="hack-progress-bar-wrap" class="hidden space-y-1">
+              <div class="flex justify-between text-[10px] text-dive-cyan">
+                <span id="hack-status-label">VIOLAZIONE ICE IN CORSO...</span>
+                <span id="hack-percentage">0%</span>
               </div>
-              <p id="scan-output-text" class="text-slate-300 font-sans text-xs"></p>
-              
-              <!-- Quick Action Button if player detected -->
-              <div id="scan-player-actions" class="hidden pt-2 flex gap-2">
-                <button id="scan-action-pay-btn" class="flex-1 py-1.5 rounded-lg bg-dive-green text-black font-bold uppercase text-[10px]">
-                  💶 INVIA EURODOLLARI
-                </button>
-                <button id="scan-action-hack-btn" class="flex-1 py-1.5 rounded-lg bg-dive-purple text-white font-bold uppercase text-[10px]">
-                  ⚡ INTRUDI (HACK)
-                </button>
+              <div class="w-full h-1.5 bg-white/10 overflow-hidden">
+                <div id="hack-fill-bar" class="h-full bg-dive-cyan transition-all duration-300 w-0"></div>
               </div>
             </div>
-
-          </div>
-        </div>
-
-        <!-- SECTION 2: QUICKHACKS COMBAT 5s & OFF-FIGHT SIFONE CON ICE -->
-        <div class="cyber-panel p-2">
-          <div class="cyber-panel-inner p-5 sm:p-6 space-y-5">
-            
-            <div class="flex items-center justify-between pb-3 border-b border-white/5 font-mono text-xs">
-              <span class="text-white font-bold">QUICKHACK COMBAT (OVERRIDE 5s)</span>
-              <span class="text-[10px] text-dive-orange font-semibold">CHIAMATA DAL VIVO</span>
-            </div>
-
-            <p class="text-xs text-slate-400 font-sans">
-              Nel combattimento dal vivo, pronuncia a voce la chiamata <strong class="text-white font-mono">OVERRIDE [COMANDO]!</strong>. L'avversario subisce l'effetto per tassativamente 5 secondi.
-            </p>
-
-            <!-- 3 Tactical Buttons -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono">
-              
-              <button class="quickhack-trigger-btn p-3.5 rounded-xl border border-white/10 bg-white/[0.02] hover:border-dive-red hover:bg-dive-red/10 text-center transition-all group" data-hack="FERMO!" data-desc="Blocco cibernetico delle articolazioni! Il bersaglio non può muoversi per 5 secondi!">
-                <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-red">OVERRIDE FERMO!</span>
-                <span class="text-[9px] text-slate-400 mt-1 block">Blocco 5s</span>
-              </button>
-
-              <button class="quickhack-trigger-btn p-3.5 rounded-xl border border-white/10 bg-white/[0.02] hover:border-dive-cyan hover:bg-dive-cyan/10 text-center transition-all group" data-hack="AL BUIO!" data-desc="Sovraccarico ottico Kiroshi! Il bersaglio deve chiudere gli occhi o voltarsi per 5 secondi!">
-                <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-cyan">OVERRIDE AL BUIO!</span>
-                <span class="text-[9px] text-slate-400 mt-1 block">Ottiche off 5s</span>
-              </button>
-
-              <button class="quickhack-trigger-btn p-3.5 rounded-xl border border-white/10 bg-white/[0.02] hover:border-dive-orange hover:bg-dive-orange/10 text-center transition-all group" data-hack="BUTTALA!" data-desc="Spasmo neurale all'arto armato! Il bersaglio deve rilasciare o deporre l'arma di scena immediatamente!">
-                <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-orange">OVERRIDE BUTTALA!</span>
-                <span class="text-[9px] text-slate-400 mt-1 block">Rilascio arma</span>
-              </button>
-
-            </div>
-
-            <!-- Off-Fight Hacking / Sifone Crediti con Meccanica ICE -->
-            <div class="pt-4 border-t border-white/5 space-y-3 font-mono">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-slate-300 font-semibold">SIFONE CREDITI (OFF-FIGHT)</span>
-                <span class="text-[10px] text-dive-purple">ICE BREAKER PROTOCOL</span>
-              </div>
-              <p class="text-[11px] text-slate-400 font-sans">
-                Inserisci il codice segreto del bersaglio (ottenuto da spionaggio o comprato dal PNG Fixer) per avviare il drenaggio.
-              </p>
-
-              <form id="hack-target-form" class="space-y-2">
-                <div class="flex gap-2">
-                  <input type="text" id="hack-target-callsign" placeholder="Codice Bersaglio (es. #NX-7842 o @Nome)..." class="flex-1 px-3.5 py-2 rounded-xl bg-black/60 border border-white/10 focus:border-dive-cyan text-white text-xs outline-none uppercase" required>
-                  <button type="submit" class="px-4 py-2 rounded-xl bg-dive-purple text-white font-mono font-bold text-xs uppercase hover:bg-white hover:text-black transition-colors">
-                    INTRUDI
-                  </button>
-                </div>
-              </form>
-
-              <div id="hack-progress-bar-wrap" class="hidden space-y-1">
-                <div class="flex justify-between text-[10px] text-dive-cyan">
-                  <span id="hack-status-label">VIOLAZIONE ICE IN CORSO...</span>
-                  <span id="hack-percentage">0%</span>
-                </div>
-                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div id="hack-fill-bar" class="h-full bg-dive-cyan transition-all duration-300 w-0"></div>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
 
@@ -505,14 +446,13 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- TAB 4: WALLET (SOLDI EURODOLLARI SCAMBIABILI €$)                          -->
+    <!-- TAB 4: WALLET (EURODOLLARI €$)                                            -->
     <!-- ========================================================================= -->
     <section id="tab-wallet" class="app-tab hidden space-y-6">
       
-      <div class="pb-4 border-b border-white/5">
-        <div class="flex items-center gap-2 text-dive-green font-mono text-xs uppercase tracking-widest font-semibold mb-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-dive-green"></span>
-          <span>WALLET // CREDITI EDDIES (€$)</span>
+      <div class="pb-4 border-b border-white/10">
+        <div class="text-dive-green font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+          WALLET // CREDITI EDDIES (€$)
         </div>
         <h2 class="font-orbitron font-bold text-2xl text-white">
           PORTAFOGLIO VIRTUALE
@@ -521,326 +461,349 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Balance & Transfer Card -->
-        <div class="cyber-panel p-2">
-          <div class="cyber-panel-inner p-6 space-y-6">
-            
-            <div>
-              <span class="font-mono text-xs text-slate-400 block mb-1">SALDO DISPONIBILE:</span>
-              <div class="font-orbitron font-black text-4xl sm:text-5xl text-white">
-                €$ <span id="wallet-balance-display">1.500</span>
-              </div>
+        <div class="cyber-panel p-6 space-y-6">
+          <div>
+            <span class="font-mono text-xs text-slate-400 block mb-1">SALDO DISPONIBILE:</span>
+            <div class="font-orbitron font-black text-4xl sm:text-5xl text-white">
+              €$ <span id="wallet-balance-display">1.500</span>
             </div>
-
-            <!-- Transfer Form -->
-            <div class="pt-4 border-t border-white/5 space-y-3 font-mono text-xs">
-              <span class="text-slate-300 font-semibold block">TRASFERISCI EURODOLLARI:</span>
-              
-              <form id="transfer-money-form" class="space-y-3">
-                <input type="text" id="transfer-recipient-input" placeholder="Callsign Destinatario (@Nome o #Codice)..." class="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-white/10 focus:border-dive-green text-white text-xs outline-none" required>
-                <div class="flex gap-2">
-                  <input type="number" id="transfer-amount-input" min="10" max="10000" step="10" placeholder="Importo €$..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-black/60 border border-white/10 focus:border-dive-green text-white text-xs outline-none" required>
-                  <button type="submit" class="px-5 py-2.5 rounded-xl bg-dive-green text-black font-bold uppercase hover:bg-white transition-colors">
-                    INVIA
-                  </button>
-                </div>
-              </form>
-            </div>
-
           </div>
-        </div>
 
-        <!-- Transaction Paylog -->
-        <div class="lg:col-span-2 cyber-panel p-2">
-          <div class="cyber-panel-inner p-6 space-y-4">
+          <div class="pt-4 border-t border-white/10 space-y-3 font-mono text-xs">
+            <span class="text-slate-300 font-semibold block">TRASFERISCI EURODOLLARI:</span>
             
-            <div class="flex items-center justify-between pb-3 border-b border-white/5 font-mono text-xs text-slate-400">
-              <span class="text-white font-bold">ESTRATTO CONTO // MOVIMENTI</span>
-              <span>DATASHARD PAYLOG</span>
-            </div>
-
-            <div id="transaction-history-list" class="space-y-2 max-h-72 overflow-y-auto pr-1 font-mono text-xs">
-              <!-- Dynamically populated via JS -->
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- TAB 5: SCHEDA PERSONAGGIO, CYBERPSICOSI, QR PERSONALE & RIPPERDOC         -->
-    <!-- ========================================================================= -->
-    <section id="tab-profile" class="app-tab hidden space-y-6">
-      
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
-        <div>
-          <div class="flex items-center gap-2 text-dive-orange font-mono text-xs uppercase tracking-widest font-semibold mb-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-dive-orange"></span>
-            <span>ID CARRIER // SCHEDA RUNNER & STATO NEURALE</span>
-          </div>
-          <h2 class="font-orbitron font-bold text-2xl text-white">
-            IDENTITÀ & BIOMONITOR
-          </h2>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button id="open-my-qr-btn" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-black text-slate-200 font-mono text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all">
-            <span>🪪</span>
-            <span>IL MIO QR PERSONALE</span>
-          </button>
-          
-          <button id="open-ripperdoc-btn" class="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:border-dive-orange text-slate-200 hover:text-dive-orange font-mono text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all">
-            <span>🩺</span>
-            <span>RIPPERDOC</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Profile Identity & HP/Cyberpsicosi -->
-        <div class="cyber-panel p-2">
-          <div class="cyber-panel-inner p-6 space-y-5">
-            
-            <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 bg-black flex-shrink-0">
-                <img src="assets/images/runner-post.jpg" alt="Avatar" class="w-full h-full object-cover">
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 id="card-callsign" class="font-orbitron font-bold text-lg text-white truncate">@V_Solo</h3>
-                <span id="card-role" class="font-mono text-xs text-dive-orange block truncate">MERCENARIO // SOLO</span>
-                <span class="font-mono text-[10px] text-slate-500 flex items-center gap-1">
-                  <span>ID:</span>
-                  <span id="card-secret-id" class="text-dive-cyan font-bold">#V-7842</span>
-                </span>
-              </div>
-            </div>
-
-            <!-- Fama Rating & ICE Status -->
-            <div class="grid grid-cols-2 gap-2 font-mono text-xs">
-              <div class="p-2.5 rounded-xl bg-black/40 border border-white/5 flex flex-col justify-between">
-                <span class="text-slate-400 text-[10px]">FAMA:</span>
-                <span class="text-dive-orange font-bold text-xs mt-0.5">3 / 5 (STREET)</span>
-              </div>
-              <div class="p-2.5 rounded-xl bg-black/40 border border-white/5 flex flex-col justify-between">
-                <span class="text-slate-400 text-[10px]">DIFESA ICE:</span>
-                <span id="player-ice-status" class="text-dive-green font-bold text-xs mt-0.5">ATTIVO (1 HIT)</span>
-              </div>
-            </div>
-
-            <!-- Health Biomonitor -->
-            <div class="space-y-1.5 font-mono text-xs">
-              <div class="flex items-center justify-between">
-                <span class="text-slate-400">INTEGRITÀ FISICA:</span>
-                <span id="player-hp-text" class="text-dive-green font-bold">100% NOMINALE</span>
-              </div>
-              <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
-                <div id="player-hp-bar" class="h-full bg-dive-green transition-all duration-500 w-full"></div>
-              </div>
-            </div>
-
-            <!-- Cyberpsychosis Meter (From Call Transcription) -->
-            <div class="space-y-1.5 font-mono text-xs pt-2 border-t border-white/5">
-              <div class="flex items-center justify-between">
-                <span class="text-slate-400">CARICO CYBERPSICOSI:</span>
-                <span id="player-psych-text" class="text-dive-cyan font-bold">10% STABILE</span>
-              </div>
-              <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
-                <div id="player-psych-bar" class="h-full bg-dive-cyan transition-all duration-500 w-[10%]"></div>
-              </div>
-              <p id="player-psych-desc" class="text-[10px] text-slate-500 font-sans italic">
-                Attività sinaptica regolare. Nessun segnale di alienazione corporea.
-              </p>
-            </div>
-
-            <!-- Traumas list -->
-            <div class="pt-2 border-t border-white/5 font-mono space-y-1">
-              <span class="text-[10px] text-slate-500 block uppercase">TRAUMI ACCUMULABILI:</span>
-              <div id="traumas-list" class="text-xs">
-                <span class="text-slate-500 italic block">Nessun danno critico rilevato.</span>
-              </div>
-            </div>
-
-            <!-- In-game Stim / Drug Action (From Call: Droga del club per trama) -->
-            <div class="pt-2 flex flex-col gap-2 font-mono text-xs">
-              <button id="take-drug-btn" class="w-full py-2 rounded-xl border border-dive-purple/40 bg-dive-purple/10 text-dive-purple hover:bg-dive-purple hover:text-white transition-colors text-[10px] uppercase font-bold flex items-center justify-center gap-1.5">
-                <span>🧪</span>
-                <span>ASSUMI SINTETICO SETTORE 04 (+15% PSICHIATRIA / HP STIM)</span>
-              </button>
-
+            <form id="transfer-money-form" class="space-y-3">
+              <input type="text" id="transfer-recipient-input" placeholder="Callsign Destinatario (@Nome o #Codice)..." class="w-full px-3.5 py-2.5 rounded-sm bg-black border border-white/15 focus:border-dive-green text-white text-xs outline-none" required>
               <div class="flex gap-2">
-                <button id="take-damage-btn" class="flex-1 py-1.5 rounded-lg border border-dive-red/40 bg-dive-red/10 text-dive-red text-[10px] font-bold uppercase hover:bg-dive-red hover:text-black transition-colors">
-                  -25% DANNO
-                </button>
-                <button id="reset-hp-btn" class="px-3 py-1.5 rounded-lg border border-dive-green/40 bg-dive-green/10 text-dive-green text-[10px] font-bold uppercase hover:bg-dive-green hover:text-black transition-colors">
-                  STIM CURA
+                <input type="number" id="transfer-amount-input" min="10" max="10000" step="10" placeholder="Importo €$..." class="flex-1 px-3.5 py-2.5 rounded-sm bg-black border border-white/15 focus:border-dive-green text-white text-xs outline-none" required>
+                <button type="submit" class="cyber-btn px-5 py-2.5 bg-dive-green text-black font-bold uppercase hover:bg-white">
+                  INVIA
                 </button>
               </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Active Cyberware (Cromo) -->
-        <div class="lg:col-span-2 cyber-panel p-2">
-          <div class="cyber-panel-inner p-6 space-y-4">
-            
-            <div class="flex items-center justify-between pb-3 border-b border-white/5 font-mono text-xs">
-              <span class="text-white font-bold uppercase">IMPIANTI CIBERNETICI ATTIVI (CROMO)</span>
-              <span class="text-slate-500">4 INSTALLATI</span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
-              
-              <div class="p-3.5 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
-                <div class="flex items-center justify-between">
-                  <span class="text-white font-semibold">OTTICHE KIROSHI</span>
-                  <span class="text-[9px] text-dive-cyan">OTTICA</span>
-                </div>
-                <p class="font-sans text-[11px] text-slate-400">
-                  Scansione QR code di scena e coordinate runner.
-                </p>
-              </div>
-
-              <div class="p-3.5 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
-                <div class="flex items-center justify-between">
-                  <span class="text-white font-semibold">CYBERDECK PARALINE</span>
-                  <span class="text-[9px] text-dive-cyan">HACKING</span>
-                </div>
-                <p class="font-sans text-[11px] text-slate-400">
-                  Esecuzione comandi di combattimento e violazione ICE.
-                </p>
-              </div>
-
-              <div class="p-3.5 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
-                <div class="flex items-center justify-between">
-                  <span class="text-white font-semibold">ARMATURA SUBDERMICA</span>
-                  <span class="text-[9px] text-dive-orange">DIFESA</span>
-                </div>
-                <p class="font-sans text-[11px] text-slate-400">
-                  Nanotubi protettivi passivi contro danni fisici.
-                </p>
-              </div>
-
-              <div class="p-3.5 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
-                <div class="flex items-center justify-between">
-                  <span class="text-white font-semibold">MEDIA GHOST PROTOCOL</span>
-                  <span class="text-[9px] text-slate-400">MEDIA</span>
-                </div>
-                <p class="font-sans text-[11px] text-slate-400">
-                  Permette di trasmettere notizie anonime e moderare bacheca.
-                </p>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- TAB 6: PANNELLO MASTER / REGIA ARBITRI (GOD MODE // PIN: 2077)            -->
-    <!-- ========================================================================= -->
-    <section id="tab-admin" class="app-tab hidden space-y-6">
-      
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-dive-purple/40">
-        <div>
-          <div class="flex items-center gap-2 text-dive-purple font-mono text-xs uppercase tracking-widest font-semibold mb-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-dive-purple animate-ping"></span>
-            <span>REGIA MASTER // PROTOCOLLO GOD DI CONTROLLO</span>
-          </div>
-          <h2 class="font-orbitron font-bold text-2xl text-white">
-            SUPERVISIONE EVENTO DAL VIVO
-          </h2>
-          <p class="text-xs text-slate-400">
-            Console riservata agli arbitri per monitorare i 45 runner, lanciare avvisi in-game e calibrare cyberpsicosi o crediti.
-          </p>
-        </div>
-
-        <button id="exit-admin-btn" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-black text-slate-200 font-mono text-xs uppercase tracking-wider transition-all">
-          ESCI DALLA REGIA
-        </button>
-      </div>
-
-      <!-- Admin Actions Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Action 1: Global Broadcast Notification -->
-        <div class="cyber-panel p-2">
-          <div class="cyber-panel-inner p-5 space-y-3 font-mono text-xs">
-            <span class="text-dive-red font-bold uppercase block">LANCIA BROADCAST DI EMERGENZA:</span>
-            <p class="text-[11px] text-slate-400 font-sans">
-              Fa apparire un banner sonoro rosso a tutti i runner sul loro cyberdeck.
-            </p>
-
-            <form id="admin-broadcast-form" class="space-y-2">
-              <input type="text" id="admin-broadcast-input" placeholder="es. MAX-TAC IN ARRIVO! SGOMBERARE..." class="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-red" required>
-              <button type="submit" class="w-full py-2.5 rounded-xl bg-dive-red text-white font-bold uppercase hover:bg-white hover:text-black transition-colors">
-                TRASMETTI A TUTTI I GIOCATORI
-              </button>
             </form>
           </div>
         </div>
 
-        <!-- Action 2: Arbitro Quick Mod (Cyberpsicosi & Eddies) -->
-        <div class="cyber-panel p-2 lg:col-span-2">
-          <div class="cyber-panel-inner p-5 space-y-3 font-mono text-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-dive-purple font-bold uppercase">INTERVENTO DIRETTO SU GIOCATORE ATTIVO:</span>
-              <span class="text-slate-400 text-[10px]" id="admin-selected-player">@V_Solo</span>
-            </div>
+        <div class="lg:col-span-2 cyber-panel p-6 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10 font-mono text-xs text-slate-400">
+            <span class="text-white font-bold">ESTRATTO CONTO // MOVIMENTI</span>
+            <span>DATASHARD PAYLOG</span>
+          </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <button id="admin-add-psych" class="p-2 rounded-xl bg-dive-purple/20 text-dive-purple border border-dive-purple/40 hover:bg-dive-purple hover:text-white transition-colors font-bold text-center">
-                +15% PSICOSI
-              </button>
-              <button id="admin-rem-psych" class="p-2 rounded-xl bg-white/5 text-slate-300 border border-white/10 hover:bg-white hover:text-black transition-colors font-bold text-center">
-                -15% PSICOSI
-              </button>
-              <button id="admin-add-money" class="p-2 rounded-xl bg-dive-green/20 text-dive-green border border-dive-green/40 hover:bg-dive-green hover:text-black transition-colors font-bold text-center">
-                +€$ 200 (PREMIO)
-              </button>
-              <button id="admin-toggle-ice" class="p-2 rounded-xl bg-dive-cyan/20 text-dive-cyan border border-dive-cyan/40 hover:bg-dive-cyan hover:text-black transition-colors font-bold text-center">
-                RESET ICE (DIFESA)
-              </button>
-            </div>
+          <div id="transaction-history-list" class="space-y-2 max-h-72 overflow-y-auto pr-1 font-mono text-xs">
+            <!-- Populated via JS -->
           </div>
         </div>
 
       </div>
 
-      <!-- Roster of Players (Simulated Database for LAN Event) -->
-      <div class="cyber-panel p-2">
-        <div class="cyber-panel-inner p-5 space-y-4 font-mono text-xs">
-          <div class="flex items-center justify-between pb-3 border-b border-white/5">
-            <span class="text-white font-bold uppercase">DATABASE RUNNER CONNESSI (LAN SETTORE 04)</span>
-            <span class="text-slate-500">LISTA BROKER FIXER</span>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: SCHEDA PERSONAGGIO & CYBERWARE ANATOMY UI (CP2077 STYLE)           -->
+    <!-- ========================================================================= -->
+    <section id="tab-profile" class="app-tab hidden space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+        <div>
+          <div class="text-dive-orange font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+            ID CARRIER // SCHEDA RUNNER & CYBERWARE
+          </div>
+          <h2 class="font-orbitron font-bold text-2xl text-white">
+            IDENTITÀ, BIOMONITOR & CROMO
+          </h2>
+        </div>
+
+        <div class="flex items-center gap-2 font-mono text-xs">
+          <button id="open-my-qr-btn" class="px-3.5 py-2 rounded-sm bg-white/10 hover:bg-white hover:text-black text-slate-200 uppercase tracking-wider transition-colors">
+            [ID] MIO QR PERSONALE
+          </button>
+          
+          <button id="open-ripperdoc-btn" class="px-3.5 py-2 rounded-sm border border-dive-red/50 bg-dive-red/10 hover:bg-dive-red hover:text-white text-dive-red uppercase tracking-wider transition-colors">
+            [MED] CLINICA RIPPERDOC
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- LEFT COLUMN (4 cols): BIOMONITOR & STATUS -->
+        <div class="lg:col-span-4 cyber-panel p-5 sm:p-6 space-y-5">
+          
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-sm overflow-hidden border border-dive-orange/40 bg-black flex-shrink-0">
+              <img src="assets/images/runner-post.jpg" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 id="card-callsign" class="font-orbitron font-bold text-lg text-white truncate">@V_Solo</h3>
+              <span id="card-role" class="font-mono text-xs text-dive-orange block truncate">MERCENARIO // SOLO</span>
+              <span class="font-mono text-[10px] text-slate-400">
+                CODICE: <span id="card-secret-id" class="text-dive-cyan font-bold">#V-7842</span>
+              </span>
+            </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="text-slate-500 border-b border-white/5 text-[10px] uppercase">
-                  <th class="pb-2">Callsign</th>
-                  <th class="pb-2">Ruolo</th>
-                  <th class="pb-2">Codice Univoco</th>
-                  <th class="pb-2">HP</th>
-                  <th class="pb-2">Psicosi</th>
-                  <th class="pb-2">Eddies</th>
-                  <th class="pb-2 text-right">ICE</th>
-                </tr>
-              </thead>
-              <tbody id="admin-roster-tbody" class="divide-y divide-white/5 font-mono">
-                <!-- Injected via JS -->
-              </tbody>
-            </table>
+          <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+            <div class="p-2.5 bg-black/60 border border-white/10">
+              <span class="text-slate-500 text-[10px] block">FAMA:</span>
+              <span class="text-dive-orange font-bold text-xs">3 / 5 (STREET)</span>
+            </div>
+            <div class="p-2.5 bg-black/60 border border-white/10">
+              <span class="text-slate-500 text-[10px] block">DIFESA ICE:</span>
+              <span id="player-ice-status" class="text-dive-green font-bold text-xs">ATTIVO (1 HIT)</span>
+            </div>
           </div>
+
+          <!-- Health Biomonitor -->
+          <div class="space-y-1.5 font-mono text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">INTEGRITÀ FISICA:</span>
+              <span id="player-hp-text" class="text-dive-green font-bold">100% NOMINALE</span>
+            </div>
+            <div class="w-full h-2 bg-white/10 overflow-hidden">
+              <div id="player-hp-bar" class="h-full bg-dive-green transition-all duration-500 w-full"></div>
+            </div>
+          </div>
+
+          <!-- Cyberpsychosis Meter -->
+          <div class="space-y-1.5 font-mono text-xs pt-2 border-t border-white/10">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">CARICO CYBERPSICOSI:</span>
+              <span id="player-psych-text" class="text-dive-cyan font-bold">10% STABILE</span>
+            </div>
+            <div class="w-full h-2 bg-white/10 overflow-hidden">
+              <div id="player-psych-bar" class="h-full bg-dive-cyan transition-all duration-500 w-[10%]"></div>
+            </div>
+            <p id="player-psych-desc" class="text-[10px] text-slate-400 font-sans">
+              Attività sinaptica regolare. Nessun segnale di alienazione corporea.
+            </p>
+          </div>
+
+          <!-- Traumas list -->
+          <div class="pt-2 border-t border-white/10 font-mono space-y-1">
+            <span class="text-[10px] text-slate-500 block uppercase">TRAUMI ACCUMULABILI:</span>
+            <div id="traumas-list" class="text-xs">
+              <span class="text-slate-500 italic block">Nessun danno critico rilevato.</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="pt-2 flex flex-col gap-2 font-mono text-xs">
+            <button id="take-drug-btn" class="w-full py-2 rounded-sm border border-dive-orange/40 bg-dive-orange/10 text-dive-orange hover:bg-dive-orange hover:text-black transition-colors text-[10px] uppercase font-bold">
+              [CHEM] ASSUMI SINTETICO (+15% PSICOSI / +25% HP)
+            </button>
+
+            <div class="flex gap-2">
+              <button id="take-damage-btn" class="flex-1 py-1.5 rounded-sm border border-dive-red/40 bg-dive-red/10 text-dive-red text-[10px] font-bold uppercase hover:bg-dive-red hover:text-black transition-colors">
+                -25% DANNO
+              </button>
+              <button id="reset-hp-btn" class="px-3 py-1.5 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green text-[10px] font-bold uppercase hover:bg-dive-green hover:text-black transition-colors">
+                STIM CURA
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN (8 cols): CYBERWARE ANATOMY UI (CYBERPUNK 2077 RIPPERDOC STYLE) -->
+        <div class="lg:col-span-8 cyber-panel p-5 sm:p-6 space-y-5">
+          
+          <div class="flex items-center justify-between pb-3 border-b border-white/10 font-mono text-xs">
+            <span class="text-dive-red font-bold uppercase tracking-widest">CYBERWARE // ARCHITETTURA CROMO INSTALLATA</span>
+            <span class="text-slate-400">4 / 4 SLOT ATTIVI</span>
+          </div>
+
+          <!-- 3-Column Anatomy Grid on Desktop, Clean Stack on Mobile -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            
+            <!-- Left Implants Stack (Oculare + Tegumentario) -->
+            <div class="md:col-span-4 space-y-4">
+              
+              <!-- Slot 1: Ottiche Kiroshi -->
+              <div class="cyberware-slot p-3.5 space-y-2.5">
+                <div class="flex items-center justify-between font-mono text-[10px]">
+                  <span class="text-dive-cyan font-bold uppercase">SISTEMA OCULARE</span>
+                  <span class="text-slate-500">TIER 2</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-cyan/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-kiroshi.jpg" alt="Ottiche Kiroshi" class="w-full h-full object-cover">
+                  </div>
+                  <div>
+                    <h4 class="font-orbitron font-bold text-xs text-white">OTTICHE KIROSHI</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Scansione ottica QR di scena e coordinate runner.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slot 2: Armatura Subdermica -->
+              <div class="cyberware-slot cyberware-slot-orange p-3.5 space-y-2.5">
+                <div class="flex items-center justify-between font-mono text-[10px]">
+                  <span class="text-dive-orange font-bold uppercase">SISTEMA TEGUMENTARIO</span>
+                  <span class="text-slate-500">PASSIVO</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-orange/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-subdermal.jpg" alt="Armatura Subdermica" class="w-full h-full object-cover">
+                  </div>
+                  <div>
+                    <h4 class="font-orbitron font-bold text-xs text-white">ARMATURA SUBDERMICA</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Nanotubi di carbonio protettivi contro danni fisici.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Center Holographic Anatomical Body Scan -->
+            <div class="md:col-span-4 flex flex-col items-center justify-center relative py-2">
+              <div class="relative w-full max-w-[220px] aspect-[3/4] bg-[#04060A] border border-dive-red/25 overflow-hidden flex items-center justify-center">
+                <img src="assets/images/implants/cyberware-body.jpg" alt="Cyberware Anatomy Scan" class="w-full h-full object-cover">
+                <div class="absolute bottom-2 left-2 right-2 flex justify-between font-mono text-[9px] text-dive-red/80">
+                  <span>SCAN // 100%</span>
+                  <span>BIO-LINK OK</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Implants Stack (Sistema Operativo + Sistema Nervoso) -->
+            <div class="md:col-span-4 space-y-4">
+              
+              <!-- Slot 3: Cyberdeck Paraline -->
+              <div class="cyberware-slot p-3.5 space-y-2.5">
+                <div class="flex items-center justify-between font-mono text-[10px]">
+                  <span class="text-dive-cyan font-bold uppercase">SISTEMA OPERATIVO</span>
+                  <span class="text-slate-500">DECK OS</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-cyan/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-cyberdeck.jpg" alt="Cyberdeck Paraline" class="w-full h-full object-cover">
+                  </div>
+                  <div>
+                    <h4 class="font-orbitron font-bold text-xs text-white">CYBERDECK PARALINE</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Comandi di combattimento 5s e violazione ICE.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slot 4: Media Ghost Protocol -->
+              <div class="cyberware-slot cyberware-slot-red p-3.5 space-y-2.5">
+                <div class="flex items-center justify-between font-mono text-[10px]">
+                  <span class="text-dive-red font-bold uppercase">SISTEMA NERVOSO</span>
+                  <span class="text-slate-500">MEDIA</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-red/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-ghost.jpg" alt="Media Ghost Protocol" class="w-full h-full object-cover">
+                  </div>
+                  <div>
+                    <h4 class="font-orbitron font-bold text-xs text-white">GHOST PROTOCOL</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Trasmissione leak anonimi e moderazione feed The Net.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 6: PANNELLO MASTER / REGIA ARBITRI (PIN: 2077)                        -->
+    <!-- ========================================================================= -->
+    <section id="tab-admin" class="app-tab hidden space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-dive-red/40">
+        <div>
+          <div class="text-dive-red font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+            REGIA MASTER // PROTOCOLLO GOD DI CONTROLLO
+          </div>
+          <h2 class="font-orbitron font-bold text-2xl text-white">
+            SUPERVISIONE EVENTO DAL VIVO
+          </h2>
+        </div>
+
+        <button id="exit-admin-btn" class="px-4 py-2 rounded-sm bg-white/10 hover:bg-white hover:text-black text-slate-200 font-mono text-xs uppercase tracking-wider transition-colors">
+          ESCI DALLA REGIA
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="cyber-panel p-5 space-y-3 font-mono text-xs">
+          <span class="text-dive-red font-bold uppercase block">LANCIA BROADCAST DI EMERGENZA:</span>
+          <p class="text-[11px] text-slate-400 font-sans">
+            Fa apparire un banner d'allarme a tutti i runner collegati sul loro cyberdeck.
+          </p>
+
+          <form id="admin-broadcast-form" class="space-y-2">
+            <input type="text" id="admin-broadcast-input" placeholder="es. MAX-TAC IN ARRIVO! SGOMBERARE..." class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-red" required>
+            <button type="submit" class="cyber-btn w-full py-2.5 bg-dive-red text-white font-bold uppercase hover:bg-white hover:text-black">
+              TRASMETTI A TUTTI
+            </button>
+          </form>
+        </div>
+
+        <div class="cyber-panel p-5 lg:col-span-2 space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-dive-orange font-bold uppercase">INTERVENTO DIRETTO SU GIOCATORE ATTIVO:</span>
+            <span class="text-slate-400 text-[10px]" id="admin-selected-player">@V_Solo</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button id="admin-add-psych" class="p-2.5 rounded-sm bg-dive-red/20 text-dive-red border border-dive-red/40 hover:bg-dive-red hover:text-white transition-colors font-bold text-center">
+              +15% PSICOSI
+            </button>
+            <button id="admin-rem-psych" class="p-2.5 rounded-sm bg-white/5 text-slate-300 border border-white/15 hover:bg-white hover:text-black transition-colors font-bold text-center">
+              -15% PSICOSI
+            </button>
+            <button id="admin-add-money" class="p-2.5 rounded-sm bg-dive-green/20 text-dive-green border border-dive-green/40 hover:bg-dive-green hover:text-black transition-colors font-bold text-center">
+              +€$ 200 (PREMIO)
+            </button>
+            <button id="admin-toggle-ice" class="p-2.5 rounded-sm bg-dive-cyan/20 text-dive-cyan border border-dive-cyan/40 hover:bg-dive-cyan hover:text-black transition-colors font-bold text-center">
+              RESET ICE
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="cyber-panel p-5 space-y-4 font-mono text-xs">
+        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+          <span class="text-white font-bold uppercase">DATABASE RUNNER CONNESSI (LAN SETTORE 04)</span>
+          <span class="text-slate-500">LISTA BROKER FIXER</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="text-slate-500 border-b border-white/10 text-[10px] uppercase">
+                <th class="pb-2">Callsign</th>
+                <th class="pb-2">Ruolo</th>
+                <th class="pb-2">Codice Univoco</th>
+                <th class="pb-2">HP</th>
+                <th class="pb-2">Psicosi</th>
+                <th class="pb-2">Eddies</th>
+                <th class="pb-2 text-right">ICE</th>
+              </tr>
+            </thead>
+            <tbody id="admin-roster-tbody" class="divide-y divide-white/5 font-mono">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -849,20 +812,19 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- MODAL: IL MIO QR CODE PERSONALE (FULLSCREEN PER PAGAMENTI E FIXER)       -->
+  <!-- MODALS (Backdrop blur kept strictly for overlays)                         -->
   <!-- ========================================================================= -->
-  <div id="my-qr-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl hidden flex-col items-center justify-center p-6 text-center transition-all duration-300 opacity-0 pointer-events-none">
-    <div class="relative max-w-sm w-full bg-[#080D18] border border-dive-orange/50 rounded-3xl p-6 sm:p-8 space-y-5 shadow-[0_0_50px_rgba(255,102,0,0.3)]">
-      
-      <div class="flex items-center justify-between pb-3 border-b border-white/5">
+
+  <!-- MODAL: QR PERSONALE -->
+  <div id="my-qr-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center p-6 text-center transition-all duration-300 opacity-0 pointer-events-none">
+    <div class="relative max-w-sm w-full bg-[#080B12] border border-dive-orange/60 p-6 sm:p-8 space-y-5 cyber-panel">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
         <span class="font-mono text-xs text-dive-orange font-bold uppercase">IDENTIFICATIVO CIBERNETICO</span>
-        <button id="close-my-qr-btn" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center text-xs">✕</button>
+        <button id="close-my-qr-btn" class="w-8 h-8 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs">X</button>
       </div>
 
-      <div class="flex flex-col items-center justify-center p-4 rounded-2xl bg-white text-black mx-auto aspect-square w-56 h-56">
-        <div id="my-qr-svg-container" class="w-full h-full flex items-center justify-center">
-          <!-- Dynamic high-res offline QR Code injected via JS -->
-        </div>
+      <div class="flex flex-col items-center justify-center p-4 bg-white text-black mx-auto aspect-square w-56 h-56">
+        <div id="my-qr-svg-container" class="w-full h-full flex items-center justify-center"></div>
       </div>
 
       <div class="space-y-1">
@@ -872,39 +834,33 @@
           Mostra questo QR a barista, mercanti o fixer per ricevere pagamenti in €$ o condividere il tuo contatto in-game.
         </p>
       </div>
-
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: PIN REGIA MASTER                                                   -->
-  <!-- ========================================================================= -->
+  <!-- MODAL: PIN REGIA MASTER -->
   <div id="admin-pin-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="relative max-w-xs w-full bg-[#080D18] border border-dive-purple rounded-2xl p-6 space-y-4">
-      <div class="flex items-center justify-between pb-2 border-b border-white/5">
-        <span class="font-mono text-xs text-dive-purple font-bold uppercase">PIN DI CONTROLLO REGIA</span>
-        <button id="close-admin-pin-btn" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center text-xs">✕</button>
+    <div class="relative max-w-xs w-full bg-[#080B12] border border-dive-red p-6 space-y-4 cyber-panel">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <span class="font-mono text-xs text-dive-red font-bold uppercase">PIN DI CONTROLLO REGIA</span>
+        <button id="close-admin-pin-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs">X</button>
       </div>
 
       <form id="admin-pin-form" class="space-y-3 font-mono text-xs">
         <div>
           <label class="block text-slate-400 mb-1">Digita PIN Master (Default: 2077):</label>
-          <input type="password" id="admin-pin-input" placeholder="••••" maxlength="6" class="w-full px-3 py-2 text-center rounded-xl bg-black border border-white/15 text-white font-mono text-lg tracking-widest outline-none focus:border-dive-purple" required>
+          <input type="password" id="admin-pin-input" placeholder="••••" maxlength="6" class="w-full px-3 py-2 text-center rounded-sm bg-black border border-white/15 text-white font-mono text-lg tracking-widest outline-none focus:border-dive-red" required>
         </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-dive-purple text-white font-bold uppercase hover:bg-white hover:text-black transition-colors">
+        <button type="submit" class="cyber-btn w-full py-2.5 bg-dive-red text-white font-bold uppercase hover:bg-white hover:text-black">
           SBLOCCA REGIA
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: QUICKHACK 5S COMBAT                                                -->
-  <!-- ========================================================================= -->
+  <!-- MODAL: QUICKHACK 5S COMBAT -->
   <div id="quickhack-combat-overlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center p-6 text-center transition-all">
-    <div class="max-w-md w-full p-8 rounded-3xl border border-dive-red bg-[#0c0406] space-y-6">
-      
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-dive-red/20 text-dive-red font-mono text-xs uppercase font-bold tracking-widest animate-pulse">
+    <div class="max-w-md w-full p-8 border border-dive-red bg-[#0c0406] space-y-6 cyber-panel">
+      <div class="inline-block px-3 py-1 bg-dive-red/20 text-dive-red font-mono text-xs uppercase font-bold tracking-widest">
         QUICKHACK COMBAT ATTIVO
       </div>
 
@@ -917,65 +873,56 @@
 
       <p id="qh-combat-description" class="text-sm font-sans text-slate-300"></p>
 
-      <!-- 5s Timer Bar -->
       <div class="space-y-2">
         <div class="font-orbitron font-bold text-3xl text-dive-red">
           <span id="qh-seconds-timer">5.0</span>s
         </div>
-        <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+        <div class="w-full h-2 bg-white/10 overflow-hidden">
           <div id="qh-timer-bar" class="h-full bg-dive-red w-full transition-all duration-100 ease-linear"></div>
         </div>
       </div>
 
-      <button id="close-quickhack-overlay-btn" class="w-full py-2.5 rounded-xl bg-white/10 text-slate-300 font-mono text-xs uppercase hover:bg-white/20 transition-colors">
+      <button id="close-quickhack-overlay-btn" class="w-full py-2.5 rounded-sm bg-white/10 text-slate-300 font-mono text-xs uppercase hover:bg-white/20 transition-colors">
         CHIUDI
       </button>
-
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: SEDIA DEL RIPPERDOC                                                -->
-  <!-- ========================================================================= -->
+  <!-- MODAL: SEDIA DEL RIPPERDOC -->
   <div id="ripperdoc-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="relative max-w-md w-full bg-[#080D18] border border-white/10 rounded-2xl p-6 space-y-4">
-      
-      <div class="flex items-center justify-between pb-3 border-b border-white/5">
+    <div class="relative max-w-md w-full bg-[#080B12] border border-white/15 p-6 space-y-4 cyber-panel">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
         <span class="font-mono text-xs text-dive-orange font-bold uppercase tracking-wider">CLINICA RIPPERDOC</span>
-        <button id="close-ripperdoc-btn" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center text-xs">✕</button>
+        <button id="close-ripperdoc-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs">X</button>
       </div>
 
       <p class="text-slate-300 font-sans text-xs leading-relaxed">
         Sulla sedia del Ripperdoc puoi curare ferite critiche, suturare i traumi da svenimento e stabilizzare il carico di cyberpsicosi.
       </p>
 
-      <button id="execute-heal-btn" class="w-full py-3 rounded-xl bg-dive-orange text-black font-mono font-bold text-xs uppercase tracking-widest hover:bg-white transition-all">
-        CURA COMPLETA & RESET TRAUMI (€$ 0)
+      <button id="execute-heal-btn" class="cyber-btn w-full py-3 bg-dive-orange text-black font-mono font-bold text-xs uppercase tracking-widest hover:bg-white">
+        CURA COMPLETA E RESET TRAUMI (€$ 0)
       </button>
-
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: CONFIGURA CALLSIGN RUNNER                                          -->
-  <!-- ========================================================================= -->
+  <!-- MODAL: PROFILO RUNNER -->
   <div id="profile-edit-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="relative max-w-sm w-full bg-[#080D18] border border-white/10 rounded-2xl p-6 space-y-4">
-      
-      <div class="flex items-center justify-between pb-3 border-b border-white/5">
+    <div class="relative max-w-sm w-full bg-[#080B12] border border-white/15 p-6 space-y-4 cyber-panel">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
         <span class="font-mono text-xs text-dive-orange font-bold uppercase">PROFILO RUNNER</span>
-        <button id="close-profile-modal-btn" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center text-xs">✕</button>
+        <button id="close-profile-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs">X</button>
       </div>
 
       <form id="profile-edit-form" class="space-y-4 font-mono text-xs">
         <div>
           <label class="block text-slate-300 mb-1">Callsign (@Nome):</label>
-          <input type="text" id="input-new-callsign" placeholder="@V_Solo" class="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white font-mono text-xs outline-none focus:border-dive-orange" required>
+          <input type="text" id="input-new-callsign" placeholder="@V_Solo" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-mono text-xs outline-none focus:border-dive-orange" required>
         </div>
 
         <div>
           <label class="block text-slate-300 mb-1">Ruolo:</label>
-          <select id="input-new-role" class="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white font-mono text-xs outline-none focus:border-dive-orange">
+          <select id="input-new-role" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-mono text-xs outline-none focus:border-dive-orange">
             <option value="MERCENARIO // SOLO">MERCENARIO // SOLO</option>
             <option value="NETRUNNER // HACKER">NETRUNNER // HACKER</option>
             <option value="MEDIA // REPORTER">MEDIA // REPORTER</option>
@@ -985,110 +932,103 @@
           </select>
         </div>
 
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-dive-orange text-black font-bold uppercase hover:bg-white transition-colors">
+        <button type="submit" class="cyber-btn w-full py-2.5 bg-dive-orange text-black font-bold uppercase hover:bg-white">
           SALVA IDENTITÀ
         </button>
       </form>
-
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: CARICA FOTO // SOCIAL UPLOAD                                       -->
-  <!-- ========================================================================= -->
+  <!-- MODAL: CARICA FOTO -->
   <div id="upload-photo-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="relative max-w-sm w-full bg-[#080D18] border border-white/10 rounded-2xl p-6 space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-white/5">
+    <div class="relative max-w-sm w-full bg-[#080B12] border border-white/15 p-6 space-y-4 cyber-panel">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
         <span class="font-mono text-xs text-dive-orange font-bold uppercase">CARICA FOTO NEL FEED</span>
-        <button id="close-upload-modal-btn" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center text-xs">✕</button>
+        <button id="close-upload-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs">X</button>
       </div>
 
       <form id="upload-photo-form" class="space-y-4 font-mono text-xs">
         <div>
           <label class="block text-slate-300 mb-1">Seleziona Scatto:</label>
-          <input type="file" id="photo-file-input" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-mono file:bg-white/10 file:text-white hover:file:bg-dive-orange hover:file:text-black file:cursor-pointer" required>
+          <input type="file" id="photo-file-input" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-sm file:border-0 file:text-xs file:font-mono file:bg-white/10 file:text-white hover:file:bg-dive-orange hover:file:text-black file:cursor-pointer" required>
         </div>
 
         <div>
           <label class="block text-slate-300 mb-1">Didascalia / Commento:</label>
-          <textarea id="photo-caption-input" rows="3" placeholder="Scrivi una didascalia per i runner..." class="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white font-sans text-xs outline-none focus:border-dive-orange resize-none" required></textarea>
+          <textarea id="photo-caption-input" rows="3" placeholder="Scrivi una didascalia per i runner..." class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-sans text-xs outline-none focus:border-dive-orange resize-none" required></textarea>
         </div>
 
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-dive-orange text-black font-bold uppercase hover:bg-white transition-colors">
+        <button type="submit" class="cyber-btn w-full py-2.5 bg-dive-orange text-black font-bold uppercase hover:bg-white">
           PUBBLICA SCATTO
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: PUBBLICA NOTIZIA / LEAK ANONIMO                                    -->
-  <!-- ========================================================================= -->
+  <!-- MODAL: PUBBLICA NOTIZIA / LEAK -->
   <div id="publish-news-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="relative max-w-md w-full bg-[#080D18] border border-white/10 rounded-2xl p-6 space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-white/5">
+    <div class="relative max-w-md w-full bg-[#080B12] border border-white/15 p-6 space-y-4 cyber-panel">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
         <span class="font-mono text-xs text-dive-cyan font-bold uppercase">PUBBLICA COMUNICATO O LEAK</span>
-        <button id="close-news-modal-btn" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center text-xs">✕</button>
+        <button id="close-news-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs">X</button>
       </div>
 
       <form id="publish-news-form" class="space-y-4 font-mono text-xs">
         <div>
           <label class="block text-slate-300 mb-1">Titolo:</label>
-          <input type="text" id="news-title-input" placeholder="es. [ALERT] Movimenti al Settore 04" class="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white font-mono text-xs outline-none focus:border-dive-cyan" required>
+          <input type="text" id="news-title-input" placeholder="es. [ALERT] Movimenti al Settore 04" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-mono text-xs outline-none focus:border-dive-cyan" required>
         </div>
 
         <div>
           <label class="block text-slate-300 mb-1">Testo del Comunicato:</label>
-          <textarea id="news-content-input" rows="4" placeholder="Inserisci i dettagli della trasmissione..." class="w-full px-3 py-2 rounded-xl bg-black border border-white/15 text-white font-sans text-xs outline-none focus:border-dive-cyan resize-none" required></textarea>
+          <textarea id="news-content-input" rows="4" placeholder="Inserisci i dettagli della trasmissione..." class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-sans text-xs outline-none focus:border-dive-cyan resize-none" required></textarea>
         </div>
 
         <div class="flex items-center gap-2 pt-1">
-          <input type="checkbox" id="news-anon-check" class="rounded bg-black border-white/20 text-dive-cyan focus:ring-0">
+          <input type="checkbox" id="news-anon-check" class="bg-black border-white/20 text-dive-cyan focus:ring-0">
           <label for="news-anon-check" class="text-slate-300 text-[11px] cursor-pointer">
             Trasmetti come Leak Anonimo (Ghost Net)
           </label>
         </div>
 
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-dive-cyan text-black font-bold uppercase hover:bg-white transition-colors">
+        <button type="submit" class="cyber-btn w-full py-2.5 bg-dive-cyan text-black font-bold uppercase hover:bg-white">
           TRASMETTI IN RETE
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MOBILE BOTTOM NAVIGATION DOCK                                             -->
-  <!-- ========================================================================= -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#04060A]/95 backdrop-blur-2xl border-t border-white/5 px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+  <!-- MOBILE BOTTOM NAVIGATION DOCK -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#04060A]/95 border-t border-white/10 px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
     <div class="flex items-center justify-around font-mono text-[9px] tracking-wider text-slate-400">
       
       <button class="nav-tab-trigger mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2 text-dive-orange" data-tab="home">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
         <span>HOME</span>
       </button>
 
       <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="net">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
         <span>NET</span>
       </button>
 
       <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="comm">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
         <span>CHAT</span>
       </button>
 
       <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="cyberdeck">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         <span>DECK</span>
       </button>
 
       <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="wallet">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
         <span>WALLET</span>
       </button>
 
       <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="profile">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
         <span>SCHEDA</span>
       </button>
 
