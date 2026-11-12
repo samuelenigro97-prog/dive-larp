@@ -96,12 +96,12 @@
     <!-- ========================================================================= -->
     <!-- TAB 0: HOME // LANDING MANIFESTO                                          -->
     <!-- ========================================================================= -->
-    <section id="tab-home" class="app-tab active flex flex-col justify-center min-h-[calc(100dvh-12rem)]">
+    <section id="tab-home" class="app-tab active pt-2 pb-8">
       
-      <div class="max-w-4xl mx-auto w-full space-y-10 sm:space-y-12">
+      <div class="max-w-5xl mx-auto w-full space-y-8 sm:space-y-10">
         
         <!-- Hero Header (No fake eyebrow pill, sharp typography) -->
-        <div class="text-center space-y-4 pt-2 sm:pt-6">
+        <div class="text-center space-y-4 pt-2 sm:pt-4">
           <h1 class="font-orbitron font-black text-4xl sm:text-7xl lg:text-8xl tracking-tight leading-[0.95] uppercase">
             <span class="block text-white">CAMBIA</span>
             <span class="block text-dive-orange">REALTÀ.</span>
@@ -133,8 +133,8 @@
           </div>
         </div>
 
-        <!-- 2 Direct Operational Modules -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- All Game Sections Direct Modules -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           
           <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-orange transition-colors flex flex-col justify-between space-y-4" data-tab="net">
             <div class="flex items-center justify-between font-mono text-[11px]">
@@ -142,7 +142,7 @@
               <span class="text-slate-500">FEED SOCIAL</span>
             </div>
             <div>
-              <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-dive-orange transition-colors">
+              <h3 class="font-orbitron font-bold text-base sm:text-lg text-white group-hover:text-dive-orange transition-colors">
                 BACHECA NOTIZIE E SCATTI
               </h3>
               <p class="text-xs text-slate-400 mt-1">
@@ -151,17 +151,62 @@
             </div>
           </button>
 
+          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-green transition-colors flex flex-col justify-between space-y-4" data-tab="chat">
+            <div class="flex items-center justify-between font-mono text-[11px]">
+              <span class="text-dive-green font-semibold uppercase tracking-widest">02 // RADIO & CHAT</span>
+              <span class="text-slate-500">COMUNICAZIONI</span>
+            </div>
+            <div>
+              <h3 class="font-orbitron font-bold text-base sm:text-lg text-white group-hover:text-dive-green transition-colors">
+                CANALI FIXER E DM 1-A-1
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Frequenze crittografate per contratti di squadra e messaggi privati diretti.
+              </p>
+            </div>
+          </button>
+
           <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-cyan transition-colors flex flex-col justify-between space-y-4" data-tab="cyberdeck">
             <div class="flex items-center justify-between font-mono text-[11px]">
-              <span class="text-dive-cyan font-semibold uppercase tracking-widest">02 // CYBERDECK</span>
+              <span class="text-dive-cyan font-semibold uppercase tracking-widest">03 // CYBERDECK</span>
               <span class="text-slate-500">HACKING OS</span>
             </div>
             <div>
-              <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-dive-cyan transition-colors">
+              <h3 class="font-orbitron font-bold text-base sm:text-lg text-white group-hover:text-dive-cyan transition-colors">
                 SCANNER QR E OVERRIDE 5S
               </h3>
               <p class="text-xs text-slate-400 mt-1">
                 Scansiona QR personali o ambientali ed esegui intrusioni contro difese ICE.
+              </p>
+            </div>
+          </button>
+
+          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-cyan transition-colors flex flex-col justify-between space-y-4" data-tab="wallet">
+            <div class="flex items-center justify-between font-mono text-[11px]">
+              <span class="text-dive-cyan font-semibold uppercase tracking-widest">04 // WALLET</span>
+              <span class="text-slate-500">EURODOLLARI</span>
+            </div>
+            <div>
+              <h3 class="font-orbitron font-bold text-base sm:text-lg text-white group-hover:text-dive-cyan transition-colors">
+                SALDO €$ E BONIFICI P2P
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Invia e ricevi EuroDollari istantanei e consulta lo storico transazioni.
+              </p>
+            </div>
+          </button>
+
+          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-orange transition-colors flex flex-col justify-between space-y-4 sm:col-span-2 lg:col-span-2" data-tab="profile">
+            <div class="flex items-center justify-between font-mono text-[11px]">
+              <span class="text-dive-orange font-semibold uppercase tracking-widest">05 // SCHEDA PG</span>
+              <span class="text-slate-500">BIOMONITOR & CROMO</span>
+            </div>
+            <div>
+              <h3 class="font-orbitron font-bold text-base sm:text-lg text-white group-hover:text-dive-orange transition-colors">
+                IDENTITÀ RUNNER, QR PERSONALE E IMPIANTI CYBERWARE
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Controlla HP, carico di Cyberpsicosi, traumi, QR identificativo e schema anatomico dei 4 impianti installati.
               </p>
             </div>
           </button>
