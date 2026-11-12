@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         playerPsychText.textContent = `${p}% CYBERPSICOSI!`;
         playerPsychText.className = 'text-dive-purple font-black animate-pulse';
         playerPsychBar.className = 'h-full bg-dive-purple animate-pulse transition-all duration-500';
-        playerPsychDesc.textContent = '⚠️ CYBERPSICOSI CONCLAMATA: Perdita totale di controllo. Necessario intervento Ripperdoc immediato!';
+        playerPsychDesc.textContent = '[CRITICO] CYBERPSICOSI CONCLAMATA: Perdita totale di controllo. Necessario intervento Ripperdoc immediato!';
       }
     }
 
@@ -191,8 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
         traumasList.innerHTML = `<span class="text-slate-500 italic block">Nessun danno critico rilevato.</span>`;
       } else {
         traumasList.innerHTML = player.traumas.map(t => `
-          <div class="px-2.5 py-1 rounded-lg bg-dive-red/10 border border-dive-red/30 text-dive-red font-mono text-[10px] flex items-center justify-between">
-            <span>⚠️ ${t.name}</span>
+          <div class="px-2.5 py-1 rounded-sm bg-dive-red/10 border border-dive-red/30 text-dive-red font-mono text-[10px] flex items-center justify-between">
+            <span>[!] ${t.name}</span>
             <span class="text-[9px] text-slate-400">${t.desc}</span>
           </div>
         `).join('');
@@ -285,11 +285,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Desktop Nav
     document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
       if (btn.getAttribute('data-tab') === tabId) {
-        btn.classList.add('text-dive-orange', 'font-bold');
-        btn.classList.remove('text-slate-400', 'font-normal');
+        btn.classList.add('text-dive-orange', 'font-bold', 'border-dive-orange');
+        btn.classList.remove('text-slate-400', 'font-normal', 'border-transparent');
       } else {
-        btn.classList.remove('text-dive-orange', 'font-bold');
-        btn.classList.add('text-slate-400', 'font-normal');
+        btn.classList.remove('text-dive-orange', 'font-bold', 'border-dive-orange');
+        btn.classList.add('text-slate-400', 'font-normal', 'border-transparent');
       }
     });
 
@@ -426,15 +426,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       detectedPlayer = { callsign, secretId };
 
-      scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
-      scanBadge.textContent = '🪪 PROFILO RUNNER RILEVATO';
+      scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
+      scanBadge.textContent = '[ID] RUNNER';
       scanOutputText.textContent = `[TARGET ACQUISITO] Rilevato Cyberdeck di ${callsign} (ID: ${secretId}). Scegli se trasferire EuroDollari o avviare l'intrusione clandestina.`;
       
       if (scanPlayerActions) scanPlayerActions.classList.remove('hidden');
 
     } else if (code.includes('GREEN') || code.startsWith('RIPPER') || code.startsWith('CYB-G')) {
-      scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-green/20 text-dive-green border border-dive-green/40';
-      scanBadge.textContent = '🟢 IMPIANTO VERDE';
+      scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-green/20 text-dive-green border border-dive-green/40';
+      scanBadge.textContent = '[VERDE] IMPIANTO';
       scanOutputText.textContent = `[ACCESSO CONCESSO] Rilevato cromo di scena compatibile: "Stabilizzatore Neurale Mk.3". Salute +25% e rimozione traumi.`;
       player.hp = Math.min(100, player.hp + 25);
       player.traumas = [];
@@ -442,8 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } else if (code.includes('BLUE') || code.startsWith('TERM') || code.startsWith('CYB-B')) {
       const lootedEddies = Math.floor(Math.random() * 200) + 100;
-      scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-cyan/20 text-dive-cyan border border-dive-cyan/40';
-      scanBadge.textContent = '🔵 TERMINALE BLU';
+      scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-cyan/20 text-dive-cyan border border-dive-cyan/40';
+      scanBadge.textContent = '[BLU] TERMINALE';
       scanOutputText.textContent = `[HACKING RIUSCITO] Terminale di sicurezza violato! Scaricati file riservati e accreditati +€$ ${lootedEddies} nel tuo Wallet.`;
       player.wallet += lootedEddies;
       player.transactions.unshift({
@@ -456,13 +456,13 @@ document.addEventListener('DOMContentLoaded', () => {
       savePlayerState(player);
 
     } else if (code.includes('RED') || code.startsWith('SAFE') || code.startsWith('CYB-R')) {
-      scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-red/20 text-dive-red border border-dive-red/40';
-      scanBadge.textContent = '🔴 CASSAFORTE / ICE';
+      scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-red/20 text-dive-red border border-dive-red/40';
+      scanBadge.textContent = '[ROSSO] ICE';
       scanOutputText.textContent = `[ALLARME SICUREZZA] Dispositivo protetto da ICE corporativo! Richiesto comando vocale "OVERRIDE AL BUIO!" per disinnescare.`;
       launchQuickhackCombat('AL BUIO!', 'Neutralizza il sensore rosso entro 5 secondi prima che scatti l\'allarme sonoro!');
 
     } else {
-      scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
+      scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
       scanBadge.textContent = 'DATASHARD GENERICO';
       scanOutputText.textContent = `Codice [${code}] decifrato: Log archiviato nel dataspace locale.`;
     }
@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
     txHistoryList.innerHTML = txs.map(t => {
       const isIn = t.type === 'in';
       return `
-        <div class="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs font-mono">
+        <div class="p-3 rounded-sm bg-[#080B12] border border-white/10 flex items-center justify-between text-xs font-mono">
           <div>
             <span class="text-slate-200 font-medium block">${t.desc}</span>
             <span class="text-[10px] text-slate-500">${t.time}</span>
@@ -806,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="font-bold ${isMe ? 'text-dive-orange' : 'text-dive-cyan'}">${msg.author}</span>
             <span>• ${msg.time}</span>
           </div>
-          <div class="px-3.5 py-2 rounded-xl max-w-[85%] text-xs ${isMe ? 'bg-dive-orange/20 border border-dive-orange/30 text-white rounded-tr-none' : 'bg-black/60 border border-white/10 text-slate-200 rounded-tl-none'}">
+          <div class="px-3.5 py-2 rounded-sm max-w-[85%] text-xs ${isMe ? 'bg-dive-orange/15 border border-dive-orange/35 text-white' : 'bg-[#080B12] border border-white/10 text-slate-200'}">
             ${msg.text}
           </div>
         </div>
@@ -938,20 +938,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const isAnon = post.isAnonymous;
 
       return `
-        <article class="cyber-panel p-1.5 transition-all ${post.isPinned ? 'border-dive-orange/50' : ''}" data-id="${post.id}" data-type="${post.type}" data-anon="${isAnon ? 'true' : 'false'}">
-          <div class="cyber-panel-inner p-4 sm:p-5 space-y-4">
+        <article class="cyber-panel p-4 sm:p-5 space-y-4 transition-colors ${post.isPinned ? 'border-dive-orange/60' : ''}" data-id="${post.id}" data-type="${post.type}" data-anon="${isAnon ? 'true' : 'false'}">
             
             <!-- User Header -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center font-mono font-bold text-xs text-dive-orange">
-                  ${isAnon ? '🕵️' : (post.author ? post.author.slice(0, 2).toUpperCase() : 'RN')}
+                <div class="w-8 h-8 rounded-sm border border-white/15 bg-[#080B12] flex items-center justify-center font-mono font-bold text-[10px] text-dive-orange">
+                  ${isAnon ? 'ANON' : (post.author ? post.author.slice(0, 2).toUpperCase() : 'RN')}
                 </div>
                 <div>
-                  <div class="flex items-center gap-1 font-mono text-xs font-bold text-white">
+                  <div class="flex items-center gap-1.5 font-mono text-xs font-bold text-white">
                     <span>${isAnon ? 'Ghost Net (Anonimo)' : post.author}</span>
-                    ${post.isVerified ? '<span class="text-dive-cyan text-[10px]" title="Verificato Media/Corp">✓</span>' : ''}
-                    ${post.isPinned ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-dive-orange/20 text-dive-orange font-mono">PINNED</span>' : ''}
+                    ${post.isVerified ? '<span class="text-dive-cyan text-[10px]" title="Verificato Media/Corp">[VER]</span>' : ''}
+                    ${post.isPinned ? '<span class="text-[9px] px-1.5 py-0.5 rounded-sm bg-dive-orange/20 border border-dive-orange/40 text-dive-orange font-mono">PINNED</span>' : ''}
                   </div>
                   <div class="font-mono text-[10px] text-slate-500">${post.location || 'Settore 04'} • ${post.timestamp}</div>
                 </div>
@@ -960,14 +959,14 @@ document.addEventListener('DOMContentLoaded', () => {
               <!-- Media Powers: Pin and Delete -->
               <div class="flex items-center gap-2">
                 ${isMediaOrAdmin ? `
-                  <button class="media-pin-btn text-[10px] text-slate-400 hover:text-dive-orange" data-id="${post.id}" title="Pinna in alto">
-                    📌
+                  <button class="media-pin-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-orange hover:border-dive-orange/40" data-id="${post.id}" title="Pinna in alto">
+                    [PIN]
                   </button>
-                  <button class="media-delete-btn text-[10px] text-slate-400 hover:text-dive-red" data-id="${post.id}" title="Cancella post">
-                    🗑️
+                  <button class="media-delete-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-red hover:border-dive-red/40" data-id="${post.id}" title="Cancella post">
+                    [DEL]
                   </button>
                 ` : ''}
-                <span class="px-2 py-0.5 rounded-full bg-white/5 border border-white/5 text-[9px] font-mono uppercase text-slate-400">
+                <span class="px-2 py-0.5 rounded-sm bg-[#080B12] border border-white/10 text-[9px] font-mono uppercase text-slate-400">
                   ${isAnon ? 'LEAK' : (isNews ? 'NOTIZIA' : 'FOTO')}
                 </span>
               </div>
@@ -975,7 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Image (if available) -->
             ${post.image ? `
-              <div class="relative w-full rounded-xl overflow-hidden bg-black/80 border border-white/5">
+              <div class="relative w-full rounded-sm overflow-hidden bg-black border border-white/10">
                 <img src="${post.image}" alt="Media Post" class="w-full h-auto object-cover max-h-[500px]">
               </div>
             ` : ''}
@@ -987,7 +986,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Interaction Bar -->
-            <div class="pt-3 border-t border-white/5 flex items-center justify-between font-mono text-xs text-slate-400">
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
               <div class="flex items-center gap-4">
                 <button class="social-like-btn flex items-center gap-1.5 hover:text-dive-orange transition-colors" data-id="${post.id}">
                   <svg class="w-4 h-4 text-dive-orange" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -1007,10 +1006,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Comment Drawer -->
-            <div class="social-comments-wrap hidden pt-3 border-t border-white/5 space-y-2.5">
+            <div class="social-comments-wrap hidden pt-3 border-t border-white/10 space-y-2.5">
               <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                 ${(post.comments && post.comments.length > 0) ? post.comments.map(c => `
-                  <div class="p-2.5 rounded-lg bg-black/40 border border-white/5 text-xs">
+                  <div class="p-2.5 rounded-sm bg-[#080B12] border border-white/10 text-xs">
                     <div class="flex justify-between font-mono text-[10px] text-dive-cyan mb-1">
                       <span class="font-bold">${c.author}</span>
                       <span class="text-slate-500">${c.time}</span>
@@ -1021,14 +1020,13 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <form class="social-add-comment-form flex gap-2 pt-1" data-id="${post.id}">
-                <input type="text" placeholder="Aggiungi un commento..." class="flex-1 px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 focus:border-dive-orange text-white text-xs outline-none" required>
-                <button type="submit" class="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white hover:text-black text-white font-mono font-bold text-[11px] uppercase transition-colors">
+                <input type="text" placeholder="Aggiungi un commento..." class="flex-1 px-3 py-1.5 rounded-sm bg-[#080B12] border border-white/15 focus:border-dive-orange text-white text-xs outline-none" required>
+                <button type="submit" class="px-3.5 py-1.5 rounded-sm bg-white/10 hover:bg-white hover:text-black text-white font-mono font-bold text-[11px] uppercase transition-colors">
                   Invia
                 </button>
               </form>
             </div>
 
-          </div>
         </article>
       `;
     }).join('');
@@ -1128,9 +1126,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.feed-filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.feed-filter-btn').forEach(b => {
-        b.className = 'feed-filter-btn px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap transition-colors';
+        b.className = 'feed-filter-btn px-3.5 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap transition-colors';
       });
-      btn.className = 'feed-filter-btn active px-3.5 py-1.5 rounded-full border border-dive-orange bg-dive-orange/15 text-dive-orange font-semibold whitespace-nowrap transition-colors';
+      btn.className = 'feed-filter-btn active px-3.5 py-1.5 rounded-sm border border-dive-orange bg-dive-orange/15 text-dive-orange font-semibold whitespace-nowrap transition-colors';
 
       const filter = btn.getAttribute('data-filter');
       document.querySelectorAll('#social-feed-grid article').forEach(card => {

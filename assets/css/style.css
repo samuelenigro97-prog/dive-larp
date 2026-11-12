@@ -1,90 +1,142 @@
 /* ==========================================================================
-   DIVE Cyberpunk LARP - Minimalist High-End Theme & Aesthetics
-   Anti-Clutter / Clean Cinematic Cyberpunk
+   DIVE Cyberpunk LARP - Authentic Hardware HUD & Cyberware Aesthetics
    ========================================================================== */
 
-/* Base OLED Background & Noise */
 :root {
-  --bg-oled: #04060A;
-  --bg-card: rgba(8, 12, 20, 0.78);
-  --bg-card-inner: rgba(14, 20, 32, 0.65);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-active: rgba(255, 102, 0, 0.5);
+  --bg-obsidian: #04060A;
+  --bg-carbon: #080B12;
+  --bg-slot: #0C111C;
+  --border-tech: rgba(255, 255, 255, 0.1);
+  --border-cyan: rgba(0, 240, 255, 0.35);
+  --border-orange: rgba(255, 102, 0, 0.45);
   --dive-orange: #FF6600;
   --dive-cyan: #00F0FF;
+  --dive-red: #FF2A4B;
 }
 
-/* Subtle Film Scanlines */
+/* Subtle CRT Scanlines */
 .scanlines {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.22) 50%
+    rgba(0, 0, 0, 0.24) 50%
   );
   background-size: 100% 3px;
   pointer-events: none;
 }
 
-/* Double-Bezel Card Architecture (Outer shell + Inner core) */
+/* Authentic Cyberpunk Chamfered Panel (45-deg cut corners, matte carbon) */
 .cyber-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 1.5rem;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--bg-carbon);
+  border: 1px solid var(--border-tech);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  transition: border-color 0.2s ease;
 }
 
 .cyber-panel:hover {
-  border-color: rgba(255, 102, 0, 0.3);
+  border-color: rgba(255, 102, 0, 0.35);
 }
 
 .cyber-panel-inner {
-  background: var(--bg-card-inner);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 1rem;
+  background: var(--bg-slot);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Tactical HUD Reticle Corners */
-.hud-corner {
+/* Cyberware Slot Card (CP2077 Ripperdoc Menu style) */
+.cyberware-slot {
+  position: relative;
+  background: linear-gradient(135deg, rgba(14, 20, 34, 0.95) 0%, rgba(7, 10, 18, 0.98) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%
+  );
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cyberware-slot:hover {
+  border-color: var(--dive-cyan);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.07) 0%, rgba(7, 10, 18, 0.98) 100%);
+}
+
+.cyberware-slot-orange {
+  border-color: rgba(255, 102, 0, 0.28);
+}
+
+.cyberware-slot-orange:hover {
+  border-color: var(--dive-orange);
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.08) 0%, rgba(7, 10, 18, 0.98) 100%);
+}
+
+.cyberware-slot-red {
+  border-color: rgba(255, 42, 75, 0.28);
+}
+
+.cyberware-slot-red:hover {
+  border-color: var(--dive-red);
+  background: linear-gradient(135deg, rgba(255, 42, 75, 0.08) 0%, rgba(7, 10, 18, 0.98) 100%);
+}
+
+/* Technical Corner Reticle */
+.hud-bracket {
   position: relative;
 }
 
-.hud-corner::before,
-.hud-corner::after {
+.hud-bracket::before,
+.hud-bracket::after {
   content: '';
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-color: var(--dive-orange);
   pointer-events: none;
-  opacity: 0.65;
 }
 
-.hud-corner::before {
-  top: -1px;
-  left: -1px;
+.hud-bracket::before {
+  top: 0;
+  left: 0;
   border-top: 2px solid;
   border-left: 2px solid;
-  border-top-left-radius: 6px;
 }
 
-.hud-corner::after {
-  bottom: -1px;
-  right: -1px;
+.hud-bracket::after {
+  bottom: 0;
+  right: 0;
   border-bottom: 2px solid;
   border-right: 2px solid;
-  border-bottom-right-radius: 6px;
 }
 
-/* Smooth Tab Fade Transitions */
+/* Tactical Chamfered Button */
+.cyber-btn {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Smooth Tab Transition */
 .app-tab {
-  animation: tabFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: tabFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes tabFadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -94,8 +146,8 @@
 
 /* Custom Minimalist Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -103,19 +155,55 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--dive-orange);
 }
 
-/* Utility to hide scrollbars for horizontal pills */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Desktop Full-Width & Responsive Cyberware Anatomy Grid Utilities */
+.max-w-7xl {
+  max-width: 80rem;
+}
+
+.rounded-sm {
+  border-radius: 0.125rem;
+}
+
+.aspect-\[3\/4\] {
+  aspect-ratio: 3 / 4;
+}
+
+.max-w-\[220px\] {
+  max-width: 220px;
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .md\:col-span-4 {
+    grid-column: span 4 / span 4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .lg\:col-span-4 {
+    grid-column: span 4 / span 4;
+  }
+  .lg\:col-span-8 {
+    grid-column: span 8 / span 8;
+  }
 }
