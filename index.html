@@ -162,8 +162,13 @@
             
             <!-- Dati Anagrafici PG -->
             <div class="flex items-start gap-4 flex-1 min-w-0">
-              <div class="w-20 h-20 rounded-sm overflow-hidden border border-dive-orange/50 bg-black flex-shrink-0">
-                <img src="assets/images/runner-post.jpg" alt="Avatar" class="w-full h-full object-cover">
+              <div id="card-avatar-frame" class="cyber-panel relative w-24 h-28 sm:w-28 sm:h-32 overflow-hidden border border-dive-orange/60 bg-black flex-shrink-0">
+                <img id="card-avatar-img" src="assets/images/avatars/pg-1.jpg" alt="Avatar PG" class="w-full h-full object-cover contrast-110 saturate-110">
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+                <div class="pointer-events-none absolute bottom-1 left-1.5 right-1.5 flex items-center justify-between font-mono text-[8px] text-white/80">
+                  <span>RUNNER</span>
+                  <span id="card-avatar-tag" class="text-dive-orange font-bold">SOLO</span>
+                </div>
               </div>
               <div class="flex-1 min-w-0 space-y-1">
                 <span class="font-mono text-[10px] text-slate-400 uppercase block">IDENTIFICATIVO RUNNER</span>
