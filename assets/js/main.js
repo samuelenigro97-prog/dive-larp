@@ -1313,13 +1313,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <!-- Interaction Bar -->
             <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
               <div class="flex items-center gap-4">
-                <button class="social-like-btn flex items-center gap-1.5 hover:text-dive-orange transition-colors" data-id="${post.id}">
-                  <svg class="w-4 h-4 text-dive-orange" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <button class="social-like-btn flex items-center gap-1.5 ${(post.likedBy || []).includes(player.secretId || player.callsign) ? 'text-dive-orange font-bold' : 'hover:text-dive-orange'} transition-colors" data-id="${post.id}">
+                  <svg class="w-4 h-4 ${(post.likedBy || []).includes(player.secretId || player.callsign) ? 'text-dive-orange' : 'text-dive-orange/70'}" fill="${(post.likedBy || []).includes(player.secretId || player.callsign) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                   <span class="font-bold text-white">${post.likes || 0}</span>
                 </button>
 
-                <button class="social-dislike-btn flex items-center gap-1.5 hover:text-dive-cyan transition-colors" data-id="${post.id}" title="Dislike">
-                  <svg class="w-4 h-4 text-dive-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
+                <button class="social-dislike-btn flex items-center gap-1.5 ${(post.dislikedBy || []).includes(player.secretId || player.callsign) ? 'text-dive-cyan font-bold' : 'hover:text-dive-cyan'} transition-colors" data-id="${post.id}" title="Dislike">
+                  <svg class="w-4 h-4 ${(post.dislikedBy || []).includes(player.secretId || player.callsign) ? 'text-dive-cyan' : 'text-dive-cyan/70'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
                   <span>${post.dislikes || 0}</span>
                 </button>
               </div>
@@ -1371,16 +1371,30 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
-    // Like
+    // Like / Dislike toggle (1 reazione per runner per post)
+    const voterKey = player.secretId || player.callsign;
+
     document.querySelectorAll('.social-like-btn').forEach(btn => {
       btn.onclick = () => {
         const id = btn.getAttribute('data-id');
         const p = posts.find(x => x.id === id);
-        if (p) {
+        if (!p) return;
+        p.likedBy = Array.isArray(p.likedBy) ? p.likedBy : [];
+        p.dislikedBy = Array.isArray(p.dislikedBy) ? p.dislikedBy : [];
+
+        if (p.likedBy.includes(voterKey)) {
+          p.likedBy = p.likedBy.filter(v => v !== voterKey);
+          p.likes = Math.max(0, (p.likes || 0) - 1);
+        } else {
+          p.likedBy.push(voterKey);
           p.likes = (p.likes || 0) + 1;
-          saveSocialPosts(posts);
-          playCyberSound(800, 'triangle', 0.08);
+          if (p.dislikedBy.includes(voterKey)) {
+            p.dislikedBy = p.dislikedBy.filter(v => v !== voterKey);
+            p.dislikes = Math.max(0, (p.dislikes || 0) - 1);
+          }
         }
+        saveSocialPosts(posts);
+        playCyberSound(800, 'triangle', 0.08);
       };
     });
 
@@ -1389,11 +1403,23 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.onclick = () => {
         const id = btn.getAttribute('data-id');
         const p = posts.find(x => x.id === id);
-        if (p) {
+        if (!p) return;
+        p.likedBy = Array.isArray(p.likedBy) ? p.likedBy : [];
+        p.dislikedBy = Array.isArray(p.dislikedBy) ? p.dislikedBy : [];
+
+        if (p.dislikedBy.includes(voterKey)) {
+          p.dislikedBy = p.dislikedBy.filter(v => v !== voterKey);
+          p.dislikes = Math.max(0, (p.dislikes || 0) - 1);
+        } else {
+          p.dislikedBy.push(voterKey);
           p.dislikes = (p.dislikes || 0) + 1;
-          saveSocialPosts(posts);
-          playCyberSound(400, 'sawtooth', 0.08);
+          if (p.likedBy.includes(voterKey)) {
+            p.likedBy = p.likedBy.filter(v => v !== voterKey);
+            p.likes = Math.max(0, (p.likes || 0) - 1);
+          }
         }
+        saveSocialPosts(posts);
+        playCyberSound(400, 'sawtooth', 0.08);
       };
     });
 
