@@ -48,8 +48,8 @@
         <span class="hidden sm:inline font-mono text-[10px] tracking-[0.25em] text-slate-400 uppercase font-semibold">CYBERPUNK EXPERIENCE</span>
       </a>
 
-      <!-- Desktop Navigation Tabs -->
-      <nav class="hidden md:flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-slate-400">
+      <!-- Desktop Navigation Tabs (Hidden on Home Landing) -->
+      <nav id="desktop-game-nav" class="hidden items-center gap-1 font-mono text-xs uppercase tracking-wider text-slate-400">
         <button class="nav-tab-trigger px-3 py-1.5 text-dive-orange font-bold border-b-2 border-dive-orange transition-colors" data-tab="home">HOME</button>
         <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="net">THE NET</button>
         <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="comm">CHAT</button>
@@ -168,7 +168,7 @@
             </div>
           </button>
 
-          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-green transition-colors flex flex-col justify-between space-y-4" data-tab="chat">
+          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-green transition-colors flex flex-col justify-between space-y-4" data-tab="comm">
             <div class="flex items-center justify-between font-mono text-[11px]">
               <span class="text-dive-green font-semibold uppercase tracking-widest">02 // RADIO & CHAT</span>
               <span class="text-slate-500">COMUNICAZIONI</span>
@@ -1031,8 +1031,8 @@
     </div>
   </div>
 
-  <!-- MOBILE BOTTOM NAVIGATION DOCK -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#04060A]/95 border-t border-white/10 px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+  <!-- MOBILE BOTTOM NAVIGATION DOCK (Hidden on Home Landing) -->
+  <nav id="mobile-game-dock" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-[#04060A]/95 border-t border-white/10 px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
     <div class="flex items-center justify-around font-mono text-[9px] tracking-wider text-slate-400">
       
       <button class="nav-tab-trigger mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2 text-dive-orange" data-tab="home">

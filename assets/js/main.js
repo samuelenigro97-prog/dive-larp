@@ -271,7 +271,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabTriggers = document.querySelectorAll('.nav-tab-trigger');
   const appTabs = document.querySelectorAll('.app-tab');
 
+  const desktopGameNav = document.getElementById('desktop-game-nav');
+  const mobileGameDock = document.getElementById('mobile-game-dock');
+
   function switchTab(tabId) {
+    const isHome = tabId === 'home';
+
+    if (desktopGameNav) {
+      if (isHome) {
+        desktopGameNav.classList.add('hidden');
+        desktopGameNav.classList.remove('md:flex');
+      } else {
+        desktopGameNav.classList.add('hidden', 'md:flex');
+      }
+    }
+
+    if (mobileGameDock) {
+      if (isHome) {
+        mobileGameDock.classList.add('hidden');
+        mobileGameDock.classList.remove('md:hidden');
+      } else {
+        mobileGameDock.classList.remove('hidden');
+        mobileGameDock.classList.add('md:hidden');
+      }
+    }
+
     appTabs.forEach(tab => {
       if (tab.id === `tab-${tabId}`) {
         tab.classList.remove('hidden');
