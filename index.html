@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>DIVE — Cyberpunk Roleplay</title>
-  <meta name="description" content="DIVE: Cyberpunk Experience. Associazione di Gioco di Ruolo. Un altro mondo. Un'altra identità. La prossima storia inizia con te.">
+  <title>DIVE — Cyberpunk Roleplay Companion App</title>
+  <meta name="description" content="DIVE Companion App: Cyberpunk Roleplay Live Action. Scheda PG, Social Net, Hacking, Wallet EuroDollari, Scanner QR e Chat.">
   
   <!-- PWA & Mobile Web App Meta -->
   <meta name="theme-color" content="#04060A">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="DIVE">
+  <meta name="apple-mobile-web-app-title" content="DIVE App">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="assets/images/dive-logo.png">
   
@@ -31,7 +31,7 @@
             cyber: {
               black: '#04060A',
               dark: '#080C16',
-              surface: 'rgba(8, 14, 26, 0.78)',
+              surface: 'rgba(8, 14, 26, 0.82)',
               orange: '#FF6600',
               amber: '#FF7700',
               orangeGlow: 'rgba(255, 102, 0, 0.5)',
@@ -40,6 +40,9 @@
               magenta: '#E024C3',
               purple: '#9333EA',
               magentaGlow: 'rgba(224, 36, 195, 0.45)',
+              green: '#00FF66',
+              greenGlow: 'rgba(0, 255, 102, 0.45)',
+              red: '#FF1133',
               border: 'rgba(0, 240, 255, 0.35)',
               borderOrange: 'rgba(255, 102, 0, 0.45)'
             }
@@ -55,110 +58,93 @@
     }
   </script>
   
+  <!-- HTML5 QR Code Scanner Library for Web -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
   <!-- Custom Cyberpunk Styling -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="bg-cyber-black text-slate-100 font-sans antialiased selection:bg-cyber-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
+<body class="bg-cyber-black text-slate-100 font-sans antialiased selection:bg-cyber-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-24 md:pb-0">
 
   <!-- Background Layer: Clean Cyberpunk City with Rain & Neon Lights -->
   <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
     <div id="city-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100" style="background-image: url('assets/images/city-bg.jpg');"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/60 via-[#04060A]/40 to-[#04060A]/80"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/60 via-[#04060A]/40 to-[#04060A]/85"></div>
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#04060A_95%)] opacity-70"></div>
     <div class="absolute inset-0 scanlines opacity-25"></div>
   </div>
 
-  <!-- MOBILE TOP HUD TELEMETRY BAR (Visible on Mobile) -->
-  <div class="md:hidden sticky top-0 z-50 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/90 backdrop-blur-xl border-b border-cyber-cyan/20 px-4 py-2 flex items-center justify-between font-mono text-[10px] text-slate-400">
-    <div class="flex items-center gap-2">
-      <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-pulse"></span>
-      <a href="#hero" class="flex items-center">
-        <img src="assets/images/dive-logo.png" alt="DIVE" class="h-4 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,102,0,0.6)]">
-      </a>
-      <span class="text-cyber-cyan font-bold tracking-wider ml-1">// THE NET</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <span id="mobile-live-clock" class="text-slate-300">19:14:00</span>
-      <span class="text-cyber-cyan/60">|</span>
-      <span class="text-cyber-orange font-semibold tracking-wider">SYNC:100%</span>
-      <button id="sfx-mobile-toggle" class="p-1 rounded text-cyber-cyan hover:text-white" title="Toggle Audio">
-        <span id="sfx-mobile-icon">🔊</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- DESKTOP TOP NAVIGATION BAR -->
-  <header class="hidden md:block sticky top-0 z-50 w-full backdrop-blur-xl bg-[#04060A]/60 border-b border-cyber-cyan/20 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+  <!-- TOP HUD TELEMETRY BAR (Mobile & Desktop App Header) -->
+  <header class="sticky top-0 z-50 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/90 backdrop-blur-2xl border-b border-cyber-cyan/25 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-20 flex items-center justify-between">
       
-      <!-- Official Brand Logo -->
-      <a href="#hero" class="flex items-center gap-3 group cyber-btn-sound">
-        <img src="assets/images/dive-logo.png" alt="DIVE Cyberpunk Experience" class="h-8 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_15px_rgba(255,102,0,0.5)]">
-      </a>
+      <!-- Logo & Player Active Identity Chip -->
+      <div class="flex items-center gap-3">
+        <a href="#tab-home" class="nav-tab-trigger flex items-center gap-2 group" data-tab="home">
+          <img src="assets/images/dive-logo.png" alt="DIVE" class="h-6 sm:h-8 w-auto object-contain drop-shadow-[0_0_12px_rgba(255,102,0,0.6)]">
+        </a>
 
-      <!-- Desktop Navigation Menu (HUD Frame Bracket) -->
-      <nav class="flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-slate-300 px-4 py-2 rounded-full border border-cyber-cyan/30 bg-[#080C16]/70 backdrop-blur-md">
-        <span class="text-cyber-cyan/60 font-mono mr-2">┌</span>
-        <a href="#hero" class="px-3 py-1 text-cyber-cyan hover:text-white transition-colors flex items-center gap-1.5 cyber-btn-sound">
-          <span class="text-[10px] text-cyber-cyan/60">00</span> Home
-        </a>
-        <a href="#social-net" class="px-3 py-1 hover:text-cyber-orange transition-colors flex items-center gap-1.5 cyber-btn-sound">
-          <span class="text-[10px] text-cyber-orange">01</span> The Net & Notizie
-        </a>
-        <a href="#accesso" class="px-3 py-1 hover:text-cyber-cyan transition-colors flex items-center gap-1.5 cyber-btn-sound">
-          <span class="text-[10px] text-slate-500">02</span> Eventi & Portali
-        </a>
-        <a href="#footer" class="px-3 py-1 hover:text-cyber-cyan transition-colors flex items-center gap-1.5 cyber-btn-sound">
-          <span class="text-[10px] text-slate-500">03</span> Premesse
-        </a>
-        <span class="text-cyber-cyan/60 font-mono ml-2">┐</span>
+        <!-- Player Profile Chip (Tap to configure) -->
+        <button id="open-profile-btn" class="flex items-center gap-2 px-2.5 py-1 rounded-full border border-cyber-orange/40 bg-cyber-orange/10 hover:border-cyber-orange transition-colors">
+          <span class="w-2 h-2 rounded-full bg-cyber-green animate-pulse"></span>
+          <span id="header-player-callsign" class="font-mono text-[10px] sm:text-xs text-cyber-orange font-bold">@V_Solo</span>
+          <span class="text-[9px] text-slate-400 font-mono hidden sm:inline">| HP <span id="header-hp" class="text-cyber-green font-bold">100%</span></span>
+        </button>
+      </div>
+
+      <!-- Desktop Navigation Menu Tabs -->
+      <nav class="hidden md:flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-slate-300 px-4 py-2 rounded-full border border-cyber-cyan/30 bg-[#080C16]/80 backdrop-blur-md">
+        <button class="nav-tab-trigger px-3 py-1 text-cyber-orange font-bold transition-colors" data-tab="home">00 HOME</button>
+        <button class="nav-tab-trigger px-3 py-1 hover:text-cyber-orange text-slate-300 transition-colors" data-tab="net">01 THE NET</button>
+        <button class="nav-tab-trigger px-3 py-1 hover:text-cyber-cyan text-slate-300 transition-colors" data-tab="comm">02 CHAT</button>
+        <button class="nav-tab-trigger px-3 py-1 hover:text-cyber-cyan text-slate-300 transition-colors" data-tab="cyberdeck">03 HACKING & QR</button>
+        <button class="nav-tab-trigger px-3 py-1 hover:text-cyber-green text-slate-300 transition-colors" data-tab="wallet">04 WALLET (€$)</button>
+        <button class="nav-tab-trigger px-3 py-1 hover:text-cyber-magenta text-slate-300 transition-colors" data-tab="profile">05 SCHEDA & CROMO</button>
       </nav>
 
-      <!-- Desktop CTA & SFX Controls -->
-      <div class="flex items-center gap-4">
-        <button id="sfx-toggle" class="px-3.5 py-1.5 rounded-full bg-[#080C16]/85 border border-cyber-cyan/40 text-[11px] font-mono tracking-wider text-cyber-cyan hover:bg-cyber-cyan/20 transition-all flex items-center gap-2 backdrop-blur-md shadow-[0_0_15px_rgba(0,240,255,0.2)]">
-          <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
-          <span id="sfx-label">SFX: OFF</span>
-        </button>
+      <!-- Status Indicators & Quick Actions -->
+      <div class="flex items-center gap-3 font-mono text-[11px]">
+        <div class="hidden sm:flex items-center gap-2 text-slate-400">
+          <span id="desktop-live-clock" class="text-slate-300">19:20:00</span>
+          <span class="text-cyber-cyan/40">|</span>
+          <span class="text-cyber-green font-semibold">€$ <span id="header-wallet-balance">1.500</span></span>
+        </div>
 
-        <a href="#social-net" class="relative group cyber-btn-sound">
-          <div class="px-5 py-2.5 rounded-full border border-cyber-orange/60 bg-cyber-orange/15 text-cyber-orange text-xs font-mono font-bold tracking-widest uppercase flex items-center gap-2 group-hover:bg-cyber-orange group-hover:text-black group-hover:shadow-[0_0_20px_rgba(255,102,0,0.6)] transition-all duration-300">
-            <span>ENTRA NELLA RETE</span>
-            <span class="w-5 h-5 rounded-full bg-cyber-orange/25 group-hover:bg-black/25 flex items-center justify-center text-[10px] transition-colors">↗</span>
-          </div>
-        </a>
+        <button id="sfx-toggle" class="p-1.5 sm:px-3 sm:py-1 rounded-full border border-cyber-cyan/40 bg-[#080C16]/85 text-cyber-cyan hover:bg-cyber-cyan/20 transition-all flex items-center gap-1.5">
+          <span id="sfx-icon">🔊</span>
+          <span id="sfx-label" class="hidden sm:inline text-[10px]">SFX: ON</span>
+        </button>
       </div>
 
     </div>
   </header>
 
-  <!-- Side Telemetry (Visible on Large Desktops) -->
+  <!-- Side Telemetry (Visible on Widescreen) -->
   <aside class="hidden xl:flex fixed right-8 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-6 pointer-events-none text-slate-400 font-mono text-[10px] tracking-[0.25em]">
     <div class="w-[1px] h-24 bg-gradient-to-b from-transparent via-cyber-orange/50 to-transparent"></div>
     <span class="rotate-90 origin-center whitespace-nowrap text-cyber-orange font-bold tracking-widest drop-shadow-[0_0_8px_rgba(255,102,0,0.6)]">
-      DIVE // THE NET SOCIAL BBS
+      DIVE // LIVE CYBERDECK OS
     </span>
     <div class="w-[1px] h-12 bg-white/20"></div>
     <span id="telemetry-coord" class="rotate-90 origin-center whitespace-nowrap text-slate-400">SYS:35.6895 // 139.6917</span>
     <div class="w-[1px] h-24 bg-gradient-to-b from-cyber-cyan/50 to-transparent"></div>
   </aside>
 
-  <!-- Main Content Wrap -->
-  <main class="flex-grow z-10 flex flex-col justify-between">
+  <!-- APP VIEW TABS WRAPPER -->
+  <main class="flex-grow z-10 flex flex-col justify-between max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- HERO SECTION (Mobile-First Ergonomic Layout with Official Logo) -->
-    <section id="hero" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-16 sm:pb-20 w-full flex flex-col justify-center min-h-[calc(100dvh-7rem)]">
+    <!-- ========================================================================= -->
+    <!-- TAB 0: HOME / LANDING MANIFESTO                                           -->
+    <!-- ========================================================================= -->
+    <section id="tab-home" class="app-tab active flex flex-col justify-center min-h-[calc(100dvh-10rem)]">
       
-      <!-- Central Cyber HUD Glass Container -->
       <div class="relative w-full max-w-3xl mx-auto backdrop-blur-xl bg-[#060912]/80 border border-cyber-cyan/35 rounded-3xl p-5 sm:p-10 shadow-[0_0_40px_rgba(0,0,0,0.7)]">
         
-        <!-- Corner Cyber Accents -->
         <div class="absolute -top-[1px] -left-[1px] w-4 h-4 border-t-2 border-l-2 border-cyber-cyan rounded-tl-xl"></div>
         <div class="absolute -top-[1px] -right-[1px] w-4 h-4 border-t-2 border-r-2 border-cyber-cyan rounded-tr-xl"></div>
         <div class="absolute -bottom-[1px] -left-[1px] w-4 h-4 border-b-2 border-l-2 border-cyber-cyan rounded-bl-xl"></div>
         <div class="absolute -bottom-[1px] -right-[1px] w-4 h-4 border-b-2 border-r-2 border-cyber-cyan rounded-br-xl"></div>
 
-        <!-- Official Logo Centerpiece Presentation -->
         <div class="flex flex-col items-center justify-center text-center mb-6 pt-2">
           <div class="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-cyber-orange/10 border border-cyber-orange/30 text-cyber-orange font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] font-semibold">
             <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-pulse"></span>
@@ -170,7 +156,6 @@
           </div>
         </div>
 
-        <!-- Main Headline -->
         <div class="space-y-1 mb-4 sm:mb-6 text-center sm:text-left">
           <h1 class="font-orbitron font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.98] uppercase">
             <span class="block text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">CAMBIA</span>
@@ -178,7 +163,6 @@
           </h1>
         </div>
 
-        <!-- Geometric Prism Chevron Grid (From Canva Mockup) -->
         <div class="flex items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 opacity-85">
           <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-orange rotate-45"></div>
           <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-orange/60 rotate-45"></div>
@@ -188,13 +172,12 @@
           <span class="font-mono text-[9px] sm:text-[10px] text-cyber-orange tracking-[0.25em] font-bold">ENTER THE SYSTEM</span>
         </div>
 
-        <!-- Subtitle Description -->
         <div class="max-w-xl mb-6 sm:mb-8 space-y-1 text-slate-200 font-sans text-sm sm:text-lg sm:leading-relaxed">
           <p class="font-medium text-white">Un altro mondo. Un'altra identità.</p>
           <p class="text-slate-300">La prossima storia inizia con te.</p>
         </div>
 
-        <!-- 3 Pillars Grid (People / Stories / Worlds) -->
+        <!-- 3 Pillars Grid -->
         <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-3 mb-6 sm:mb-8 border-t border-white/10 font-mono text-center">
           <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyber-orange/50 active:scale-95 transition-all">
             <span class="text-xs sm:text-sm font-bold text-cyber-orange block uppercase">PEOPLE</span>
@@ -210,96 +193,62 @@
           </div>
         </div>
 
-        <!-- Action Buttons Row -->
+        <!-- Quick Access Dashboard Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-6">
+          <button class="nav-tab-trigger p-3 rounded-2xl bg-cyber-orange/15 border border-cyber-orange/40 hover:bg-cyber-orange/25 text-left transition-colors flex flex-col justify-between" data-tab="net">
+            <span class="text-lg">📰</span>
+            <span class="font-mono text-xs font-bold text-cyber-orange">THE NET & NEWS</span>
+          </button>
+          <button class="nav-tab-trigger p-3 rounded-2xl bg-cyber-cyan/15 border border-cyber-cyan/40 hover:bg-cyber-cyan/25 text-left transition-colors flex flex-col justify-between" data-tab="comm">
+            <span class="text-lg">💬</span>
+            <span class="font-mono text-xs font-bold text-cyber-cyan">CHAT LIVE</span>
+          </button>
+          <button class="nav-tab-trigger p-3 rounded-2xl bg-cyber-green/15 border border-cyber-green/40 hover:bg-cyber-green/25 text-left transition-colors flex flex-col justify-between" data-tab="wallet">
+            <span class="text-lg">💶</span>
+            <span class="font-mono text-xs font-bold text-cyber-green">WALLET €$</span>
+          </button>
+          <button class="nav-tab-trigger p-3 rounded-2xl bg-cyber-magenta/15 border border-cyber-magenta/40 hover:bg-cyber-magenta/25 text-left transition-colors flex flex-col justify-between" data-tab="cyberdeck">
+            <span class="text-lg">⚡</span>
+            <span class="font-mono text-xs font-bold text-cyber-magenta">HACKING & QR</span>
+          </button>
+        </div>
+
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          
-          <!-- Primary CTA Button to Social Net -->
-          <a href="#social-net" class="relative group cyber-btn-sound flex-1">
-            <div class="min-h-[48px] px-6 py-3.5 sm:py-4 rounded-2xl sm:rounded-full bg-cyber-orange text-black font-mono font-bold text-xs sm:text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_0_25px_rgba(255,102,0,0.5)] hover:shadow-[0_0_40px_rgba(255,102,0,0.8)] active:scale-[0.97] transition-all duration-200">
-              <span>📰 THE NET // SOCIAL & NEWS</span>
-              <span class="w-6 h-6 rounded-full bg-black/15 flex items-center justify-center font-black text-xs">↗</span>
-            </div>
-          </a>
-
-          <!-- Access Event Button -->
-          <a href="#accesso" class="min-h-[48px] px-5 py-3 sm:py-4 rounded-2xl sm:rounded-full border border-cyber-cyan/40 bg-[#080C16]/80 text-cyber-cyan font-mono text-xs sm:text-sm tracking-wider uppercase hover:bg-cyber-cyan/15 hover:border-cyber-cyan active:scale-[0.97] transition-all flex items-center justify-center gap-2.5 backdrop-blur-md cyber-btn-sound">
-            <span>ESPLORA EVENTI</span>
+          <button class="nav-tab-trigger min-h-[48px] px-6 py-3.5 rounded-2xl sm:rounded-full bg-cyber-orange text-black font-mono font-bold text-xs sm:text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_0_25px_rgba(255,102,0,0.5)] hover:shadow-[0_0_40px_rgba(255,102,0,0.8)] active:scale-98 transition-all flex-1" data-tab="profile">
+            <span>🪪 ACCEDI ALLA SCHEDA RUNNER</span>
             <span>↗</span>
-          </a>
-
+          </button>
         </div>
 
-      </div>
-
-      <!-- Bottom Hint (Mobile) -->
-      <div class="mt-6 sm:hidden flex items-center justify-center gap-2 text-slate-400 font-mono text-[10px] tracking-widest">
-        <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-ping"></span>
-        <span>SCORRI PER IL SOCIAL FEED E LE NOTIZIE</span>
       </div>
 
     </section>
 
-    <!-- MIDDLE TICKER / DIVIDER STRIP -->
-    <section id="ticker" class="w-full border-y border-cyber-cyan/25 bg-[#060912]/85 backdrop-blur-xl py-3 relative overflow-hidden z-20 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hidden md:flex items-center justify-between text-xs font-mono tracking-widest text-slate-300">
-        <div class="flex items-center gap-2 text-cyber-cyan">
-          <span class="text-cyber-cyan font-bold">[ ]</span>
-          <span class="uppercase">OLTRE LA SUPERFICIE</span>
-        </div>
-        <div class="flex items-center gap-4">
-          <span class="text-cyber-orange font-semibold">// HIGH TECH. HUMAN STORIES.</span>
-          <span class="text-slate-600">|</span>
-          <span class="text-white font-bold tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">IMMAGINA · SCEGLI · VIVI</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="text-slate-400">LE TUE SCELTE. LA TUA STORIA.</span>
-          <span class="text-cyber-cyan font-bold">DIVE INTO ANOTHER LIFE ↗</span>
-        </div>
-      </div>
-
-      <div class="md:hidden flex whitespace-nowrap overflow-hidden marquee-container text-xs font-mono tracking-widest">
-        <div class="marquee-content flex items-center gap-6 text-slate-300">
-          <span class="text-cyber-cyan font-bold">[ ] OLTRE LA SUPERFICIE</span>
-          <span class="text-cyber-orange font-semibold">// HIGH TECH. HUMAN STORIES.</span>
-          <span class="text-white font-bold">IMMAGINA · SCEGLI · VIVI</span>
-          <span class="text-slate-400">LE TUE SCELTE. LA TUA STORIA.</span>
-          <span class="text-cyber-cyan font-bold">DIVE INTO ANOTHER LIFE ↗</span>
-        </div>
-        <div class="marquee-content flex items-center gap-6 text-slate-300" aria-hidden="true">
-          <span class="text-cyber-cyan font-bold">[ ] OLTRE LA SUPERFICIE</span>
-          <span class="text-cyber-orange font-semibold">// HIGH TECH. HUMAN STORIES.</span>
-          <span class="text-white font-bold">IMMAGINA · SCEGLI · VIVI</span>
-          <span class="text-slate-400">LE TUE SCELTE. LA TUA STORIA.</span>
-          <span class="text-cyber-cyan font-bold">DIVE INTO ANOTHER LIFE ↗</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 02: THE NET // CYBER SOCIAL FEED (NEWS + PLAYER PHOTOS + COMMENTS) -->
-    <section id="social-net" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24 w-full">
+    <!-- ========================================================================= -->
+    <!-- TAB 1: THE NET (SOCIAL, NOTIZIE, DISLIKE, POST ANONIMI & COMMENTI)        -->
+    <!-- ========================================================================= -->
+    <section id="tab-net" class="app-tab hidden py-4 sm:py-8 space-y-6">
       
-      <!-- Section Header with Post Action -->
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-cyber-cyan/25">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-cyber-cyan/25">
         <div>
           <div class="inline-flex items-center gap-2 mb-1">
             <span class="w-2 h-2 rounded-full bg-cyber-orange animate-ping"></span>
-            <span class="text-cyber-orange font-mono text-xs sm:text-sm tracking-[0.2em] uppercase font-bold drop-shadow-[0_0_8px_rgba(255,102,0,0.5)]">
-              THE NET // COMMUNITY HUB & NOTIZIARIO CYBERPUNK
+            <span class="text-cyber-orange font-mono text-xs uppercase tracking-widest font-bold">
+              THE NET // SOCIAL & GIORNALE IN-GAME
             </span>
           </div>
-          <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white tracking-wide">
-            FEED SOCIAL & NEWS DI GIOCO
+          <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white">
+            BACHECA NOTIZIE & SCATTI
           </h2>
-          <p class="text-slate-400 font-sans text-xs sm:text-sm mt-1">
-            Notizie in-game dalle corporazioni, foto scattate dai runner e discussioni con sezione commenti live.
+          <p class="text-slate-400 font-sans text-xs sm:text-sm">
+            Notizie corporative, comunicati dei Media, leak anonimi e foto scattate dai runner con commenti in tempo reale.
           </p>
         </div>
 
-        <!-- Open Publish Modal (Action Menu) -->
         <div class="flex items-center gap-2">
           <button id="open-publish-news-btn" class="px-4 py-2.5 rounded-xl border border-cyber-cyan/50 bg-cyber-cyan/15 text-cyber-cyan hover:bg-cyber-cyan hover:text-black font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all">
             <span>📰</span>
-            <span>SCRIVI NOTIZIA</span>
+            <span>NOTIZIA / LEAK</span>
           </button>
           
           <button id="open-upload-modal-btn" class="px-5 py-2.5 rounded-xl bg-cyber-orange text-black font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_20px_rgba(255,102,0,0.5)] hover:shadow-[0_0_35px_rgba(255,102,0,0.8)] active:scale-95 transition-all">
@@ -309,523 +258,668 @@
         </div>
       </div>
 
-      <!-- Feed Category Filter Tabs -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 font-mono text-xs no-scrollbar">
+      <!-- Category Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 font-mono text-xs no-scrollbar">
         <button class="feed-filter-btn active px-4 py-2 rounded-full border border-cyber-orange bg-cyber-orange/20 text-cyber-orange font-bold whitespace-nowrap transition-colors" data-filter="all">
-          TUTTI I POST (<span id="feed-count">3</span>)
+          TUTTI I FLUSSI (<span id="feed-count">3</span>)
         </button>
         <button class="feed-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 whitespace-nowrap transition-colors" data-filter="news">
           📰 NOTIZIE & LORE
         </button>
         <button class="feed-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 whitespace-nowrap transition-colors" data-filter="photos">
-          📸 FOTO DEI GIOCATORI
+          📸 FOTO RUNNER
         </button>
-        <button class="feed-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 whitespace-nowrap transition-colors" data-filter="discussions">
-          💬 CON PIÙ COMMENTI
+        <button class="feed-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 whitespace-nowrap transition-colors" data-filter="anonymous">
+          🕵️ LEAK ANONIMI
         </button>
       </div>
 
-      <!-- Social Stream Cards Grid (Responsive Multi-Column) -->
+      <!-- Feed Grid -->
       <div id="social-feed-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered dynamically via JavaScript with comments, like/dislike & pin -->
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: COMM // CHAT IN-GAME (INDIVIDUALI & DI GRUPPO)                     -->
+    <!-- ========================================================================= -->
+    <section id="tab-comm" class="app-tab hidden py-4 sm:py-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-cyber-cyan/25">
+        <div>
+          <div class="inline-flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></span>
+            <span class="text-cyber-cyan font-mono text-xs uppercase tracking-widest font-bold">
+              COMMUNICATIONS // FREQUENZE CRIPTATE
+            </span>
+          </div>
+          <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white">
+            CHAT RADIO & DMS PRIVATI
+          </h2>
+          <p class="text-slate-400 font-sans text-xs sm:text-sm">
+            Canali sicuri per comunicare con la tua squadra, i fixer o mandare messaggi anonimi a singoli bersagli.
+          </p>
+        </div>
+
+        <!-- Channel Select Bar -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 font-mono text-xs no-scrollbar">
+          <button class="chat-channel-btn active px-3.5 py-1.5 rounded-xl border border-cyber-cyan bg-cyber-cyan/20 text-cyber-cyan font-bold" data-channel="general">
+            # FREQUENZA PUBBLICA
+          </button>
+          <button class="chat-channel-btn px-3.5 py-1.5 rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white" data-channel="squad">
+            # SQUADRA CORPO
+          </button>
+          <button class="chat-channel-btn px-3.5 py-1.5 rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white" data-channel="fixer">
+            # TAGLIE & CONTRATTI
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Box Frame -->
+      <div class="relative w-full max-w-4xl mx-auto rounded-3xl bg-[#060912]/90 border border-cyber-cyan/40 p-4 sm:p-6 shadow-[0_0_35px_rgba(0,240,255,0.25)] flex flex-col h-[65dvh]">
         
-        <!-- POST 1: NOTIZIA UFFICIALE (CORP DISPATCH / NEWS) -->
-        <article class="feed-card group rounded-3xl bg-[#070B14]/90 border border-cyber-cyan/50 p-5 flex flex-col justify-between backdrop-blur-xl hover:border-cyber-cyan hover:shadow-[0_0_35px_rgba(0,240,255,0.35)] transition-all duration-300" data-id="post_news_1" data-type="news">
-          
-          <div>
-            <!-- Post Header -->
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-full border border-cyber-cyan bg-cyber-cyan/20 flex items-center justify-center font-mono font-bold text-xs text-cyber-cyan">
-                  N54
-                </div>
-                <div>
-                  <span class="font-mono text-xs font-bold text-white flex items-center gap-1.5">
-                    <span>DIVE_Network</span>
-                    <span class="text-cyber-cyan text-[10px]">✔</span>
-                  </span>
-                  <span class="font-mono text-[10px] text-slate-400">Canale Ufficiale • 1 ora fa</span>
-                </div>
-              </div>
-              <span class="px-2.5 py-0.5 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan font-mono text-[9px] tracking-wider uppercase font-bold">
-                📰 NOTIZIA
-              </span>
-            </div>
-
-            <!-- News Headline & Content -->
-            <div class="space-y-2 mb-4">
-              <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-cyber-cyan transition-colors">
-                [ALERT] Nuova Corporation Rilevata nel Settore Ciminiere
-              </h3>
-              <p class="text-sm font-sans text-slate-300 leading-relaxed">
-                Le frequenze neurali confermano movimenti non autorizzati nell'area industriale. I fixer locali hanno iniziato ad arruolare mercenari e netrunner per la prossima missione. Preparate il vostro cromo.
-              </p>
-              <div class="flex flex-wrap gap-1.5 font-mono text-[10px] text-cyber-cyan">
-                <span>#notizie_dive</span>
-                <span>#settore04</span>
-                <span>#nuovastoria</span>
-              </div>
-            </div>
+        <!-- Chat Channel Info Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-white/10 font-mono text-xs text-slate-400">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-cyber-green"></span>
+            <span id="current-channel-label" class="text-cyber-cyan font-bold"># FREQUENZA PUBBLICA CIMINIERE</span>
           </div>
+          <span class="text-[10px] text-slate-500">ENCRYPTION: QUANTUM 256-BIT</span>
+        </div>
 
-          <!-- Interactive Actions: Like & Toggle Comments -->
-          <div>
-            <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
-              <button class="like-btn flex items-center gap-1.5 hover:text-cyber-cyan transition-colors" data-likes="76">
-                <span class="heart-icon">❤️</span>
-                <span class="like-count font-bold">76</span>
-              </button>
-              
-              <button class="toggle-comments-btn text-cyber-cyan hover:text-white transition-colors flex items-center gap-1 text-[11px] font-bold">
-                <span>💬</span>
-                <span class="comments-counter">3 Commenti</span>
-                <span class="toggle-arrow text-[10px]">▼</span>
-              </button>
-            </div>
+        <!-- Chat Messages Container -->
+        <div id="chat-messages-container" class="flex-grow overflow-y-auto py-4 space-y-3 font-sans text-xs pr-2">
+          <!-- Default & dynamic messages inserted via JS -->
+        </div>
 
-            <!-- Expandable Comments Thread Section -->
-            <div class="comments-thread-container hidden mt-4 pt-3 border-t border-white/10 space-y-3">
-              <div class="comments-list space-y-2 max-h-48 overflow-y-auto pr-1">
-                <div class="p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs">
-                  <div class="flex items-center justify-between font-mono text-[10px] text-cyber-cyan mb-1">
-                    <span class="font-bold">@V_Solo</span>
-                    <span class="text-slate-500">45 min fa</span>
-                  </div>
-                  <p class="text-slate-200">Ho già calibrato le ottiche. Ci vediamo sul campo Choom.</p>
-                </div>
-                <div class="p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs">
-                  <div class="flex items-center justify-between font-mono text-[10px] text-cyber-orange mb-1">
-                    <span class="font-bold">@NetPhantom</span>
-                    <span class="text-slate-500">20 min fa</span>
-                  </div>
-                  <p class="text-slate-200">Qualcuno sa quali ICE proteggono i terminali della nuova corp?</p>
-                </div>
-                <div class="p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs">
-                  <div class="flex items-center justify-between font-mono text-[10px] text-cyber-magenta mb-1">
-                    <span class="font-bold">@Kira_Blade</span>
-                    <span class="text-slate-500">5 min fa</span>
-                  </div>
-                  <p class="text-slate-200">Chi offre la paga più alta ha la mia lama. A presto alle Ciminiere.</p>
-                </div>
-              </div>
-
-              <!-- Add New Comment Form -->
-              <form class="add-comment-form flex items-center gap-2 pt-2">
-                <input type="text" placeholder="Nome/Callsign..." class="comment-author-input w-24 px-2.5 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-cyan text-white font-mono text-[10px] outline-none" required>
-                <input type="text" placeholder="Scrivi un commento..." class="comment-text-input flex-1 px-3 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-cyan text-white font-sans text-xs outline-none" required>
-                <button type="submit" class="px-3 py-1.5 rounded-lg bg-cyber-cyan text-black font-mono font-bold text-[10px] uppercase hover:bg-white transition-colors">
-                  Invia
-                </button>
-              </form>
-            </div>
-          </div>
-
-        </article>
-
-        <!-- POST 2: FOTO RUNNER CON COMMENTI -->
-        <article class="feed-card group rounded-3xl bg-[#070B14]/90 border border-cyber-orange/50 p-5 flex flex-col justify-between backdrop-blur-xl hover:border-cyber-orange hover:shadow-[0_0_35px_rgba(255,102,0,0.35)] transition-all duration-300" data-id="post_photo_1" data-type="photos">
-          
-          <div>
-            <!-- Post Header -->
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-full border border-cyber-orange bg-cyber-orange/20 flex items-center justify-center font-mono font-bold text-xs text-cyber-orange">
-                  VR
-                </div>
-                <div>
-                  <span class="font-mono text-xs font-bold text-white block">@Runner_Insolito</span>
-                  <span class="font-mono text-[10px] text-slate-400">Ciminiere Catania • 29 mag</span>
-                </div>
-              </div>
-              <span class="px-2.5 py-0.5 rounded-full bg-cyber-orange/15 border border-cyber-orange/30 text-cyber-orange font-mono text-[9px] tracking-wider uppercase font-semibold">
-                📸 FOTO
-              </span>
-            </div>
-
-            <!-- Post Photo -->
-            <div class="relative w-full aspect-square rounded-2xl overflow-hidden mb-3.5 bg-black border border-white/10 group-hover:border-cyber-orange/30 transition-colors">
-              <img src="assets/images/runner-post.jpg" alt="Runner Cromo" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
-              <div class="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/10 font-mono text-[9px] text-cyber-orange">
-                ENTER_THE_SYSTEM.RAW
-              </div>
-            </div>
-
-            <!-- Post Caption & Tags -->
-            <div class="space-y-1.5 mb-4">
-              <p class="text-sm font-sans text-slate-200 leading-snug">
-                “Hey Choom, ho avuto notizia di un Runner insolito, porta con sé del cromo particolare...”
-              </p>
-              <div class="flex flex-wrap gap-1.5 font-mono text-[10px] text-cyber-orange">
-                <span>#diveexperience</span>
-                <span>#enter_the_system</span>
-                <span>#ciminiere</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Interactive Actions: Like & Toggle Comments -->
-          <div>
-            <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
-              <button class="like-btn flex items-center gap-1.5 hover:text-cyber-orange transition-colors" data-likes="58">
-                <span class="heart-icon">❤️</span>
-                <span class="like-count font-bold">58</span>
-              </button>
-              
-              <button class="toggle-comments-btn text-cyber-orange hover:text-white transition-colors flex items-center gap-1 text-[11px] font-bold">
-                <span>💬</span>
-                <span class="comments-counter">2 Commenti</span>
-                <span class="toggle-arrow text-[10px]">▼</span>
-              </button>
-            </div>
-
-            <!-- Expandable Comments Thread Section -->
-            <div class="comments-thread-container hidden mt-4 pt-3 border-t border-white/10 space-y-3">
-              <div class="comments-list space-y-2 max-h-48 overflow-y-auto pr-1">
-                <div class="p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs">
-                  <div class="flex items-center justify-between font-mono text-[10px] text-cyber-cyan mb-1">
-                    <span class="font-bold">@CyberRex</span>
-                    <span class="text-slate-500">Ieri</span>
-                  </div>
-                  <p class="text-slate-200">Quel visore è illegale nella maggior parte dei distretti aziendali!</p>
-                </div>
-                <div class="p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs">
-                  <div class="flex items-center justify-between font-mono text-[10px] text-cyber-orange mb-1">
-                    <span class="font-bold">@Echo_Fixer</span>
-                    <span class="text-slate-500">2 ore fa</span>
-                  </div>
-                  <p class="text-slate-200">Ho un lavoro perfetto per questo runner. Mandatelo al molo.</p>
-                </div>
-              </div>
-
-              <!-- Add New Comment Form -->
-              <form class="add-comment-form flex items-center gap-2 pt-2">
-                <input type="text" placeholder="Callsign..." class="comment-author-input w-24 px-2.5 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-orange text-white font-mono text-[10px] outline-none" required>
-                <input type="text" placeholder="Rispondi al post..." class="comment-text-input flex-1 px-3 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-orange text-white font-sans text-xs outline-none" required>
-                <button type="submit" class="px-3 py-1.5 rounded-lg bg-cyber-orange text-black font-mono font-bold text-[10px] uppercase hover:bg-white transition-colors">
-                  Invia
-                </button>
-              </form>
-            </div>
-          </div>
-
-        </article>
-
-        <!-- POST 3: NOTIZIA LORE / EVENTO (FIXER BULLETIN) -->
-        <article class="feed-card group rounded-3xl bg-[#070B14]/90 border border-cyber-magenta/40 p-5 flex flex-col justify-between backdrop-blur-xl hover:border-cyber-magenta hover:shadow-[0_0_35px_rgba(224,36,195,0.3)] transition-all duration-300" data-id="post_news_2" data-type="news">
-          
-          <div>
-            <!-- Post Header -->
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-full border border-cyber-magenta bg-cyber-magenta/20 flex items-center justify-center font-mono font-bold text-xs text-cyber-magenta">
-                  FX
-                </div>
-                <div>
-                  <span class="font-mono text-xs font-bold text-white block">@The_Fixer_Board</span>
-                  <span class="font-mono text-[10px] text-slate-400">Canale Criptato • Oggi</span>
-                </div>
-              </div>
-              <span class="px-2.5 py-0.5 rounded-full bg-cyber-magenta/20 border border-cyber-magenta/40 text-cyber-magenta font-mono text-[9px] tracking-wider uppercase font-bold">
-                📰 BOLLETTINO
-              </span>
-            </div>
-
-            <!-- News Headline & Content -->
-            <div class="space-y-2 mb-4">
-              <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-cyber-magenta transition-colors">
-                Regolamento d'Ingaggio & Schede Personaggio
-              </h3>
-              <p class="text-sm font-sans text-slate-300 leading-relaxed">
-                Tutti i partecipanti sono tenuti a registrare il proprio impianto cyberware prima dell'inizio delle sessioni in-game. Le armi di scena dovranno passare l'ispezione di sicurezza al check-in.
-              </p>
-              <div class="flex flex-wrap gap-1.5 font-mono text-[10px] text-cyber-magenta">
-                <span>#regolamento</span>
-                <span>#larp_sicily</span>
-                <span>#cyberware</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Interactive Actions: Like & Toggle Comments -->
-          <div>
-            <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
-              <button class="like-btn flex items-center gap-1.5 hover:text-cyber-magenta transition-colors" data-likes="41">
-                <span class="heart-icon">❤️</span>
-                <span class="like-count font-bold">41</span>
-              </button>
-              
-              <button class="toggle-comments-btn text-cyber-magenta hover:text-white transition-colors flex items-center gap-1 text-[11px] font-bold">
-                <span>💬</span>
-                <span class="comments-counter">1 Commento</span>
-                <span class="toggle-arrow text-[10px]">▼</span>
-              </button>
-            </div>
-
-            <!-- Expandable Comments Thread Section -->
-            <div class="comments-thread-container hidden mt-4 pt-3 border-t border-white/10 space-y-3">
-              <div class="comments-list space-y-2 max-h-48 overflow-y-auto pr-1">
-                <div class="p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs">
-                  <div class="flex items-center justify-between font-mono text-[10px] text-cyber-cyan mb-1">
-                    <span class="font-bold">@Doc_Chrome</span>
-                    <span class="text-slate-500">10 min fa</span>
-                  </div>
-                  <p class="text-slate-200">Ho il kit di calibrazione pronto per chiunque debba registrare protesi di scena.</p>
-                </div>
-              </div>
-
-              <!-- Add New Comment Form -->
-              <form class="add-comment-form flex items-center gap-2 pt-2">
-                <input type="text" placeholder="Callsign..." class="comment-author-input w-24 px-2.5 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-magenta text-white font-mono text-[10px] outline-none" required>
-                <input type="text" placeholder="Aggiungi una nota..." class="comment-text-input flex-1 px-3 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-magenta text-white font-sans text-xs outline-none" required>
-                <button type="submit" class="px-3 py-1.5 rounded-lg bg-cyber-magenta text-white font-mono font-bold text-[10px] uppercase hover:bg-white hover:text-black transition-colors">
-                  Invia
-                </button>
-              </form>
-            </div>
-          </div>
-
-        </article>
+        <!-- Chat Input Form -->
+        <form id="chat-send-form" class="pt-3 border-t border-white/10 flex items-center gap-2">
+          <input type="text" id="chat-text-input" placeholder="Comunica sulla frequenza..." class="flex-1 px-4 py-3 rounded-2xl bg-black/70 border border-white/15 focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan text-white text-xs outline-none" required>
+          <button type="submit" class="px-5 py-3 rounded-2xl bg-cyber-cyan text-black font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-white transition-colors">
+            <span>INVIA</span>
+            <span>↗</span>
+          </button>
+        </form>
 
       </div>
 
     </section>
 
-    <!-- SECTION 01: SCEGLI IL TUO ACCESSO (PORTALI OPERATIVI) -->
-    <section id="accesso" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24 w-full">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-8 pb-4 border-b border-cyber-cyan/20">
+    <!-- ========================================================================= -->
+    <!-- TAB 3: CYBERDECK (SCANNER QR, HACKING OFF-FIGHT & QUICKHACK 5S COMBAT)    -->
+    <!-- ========================================================================= -->
+    <section id="tab-cyberdeck" class="app-tab hidden py-4 sm:py-8 space-y-8">
+      
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-cyber-magenta/25">
         <div>
-          <span class="text-cyber-cyan font-mono text-xs sm:text-sm tracking-[0.2em] uppercase font-bold block mb-1 drop-shadow-[0_0_8px_rgba(0,240,255,0.4)]">
-            01 / SCEGLI IL TUO ACCESSO
-          </span>
-          <h2 class="font-orbitron font-bold text-2xl sm:text-3xl text-white tracking-wide">
-            PORTALI OPERATIVI
+          <div class="inline-flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-cyber-magenta animate-ping"></span>
+            <span class="text-cyber-magenta font-mono text-xs uppercase tracking-widest font-bold">
+              CYBERDECK // HACKING & INTERAZIONE AMBIENTALE
+            </span>
+          </div>
+          <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white">
+            SCANNER QR & MODULO QUICKHACK
           </h2>
+          <p class="text-slate-400 font-sans text-xs sm:text-sm">
+            Scansiona QR code colorati per estrarre dati o lancia quickhack di combattimento con override temporizzato a 5 secondi.
+          </p>
         </div>
-        <span class="text-slate-400 font-mono text-xs tracking-widest uppercase">
-          LA STORIA CONTINUA DA QUI
-        </span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <!-- CARD 1: PROSSIMO EVENTO -->
-        <div class="cyber-card group relative p-1 rounded-3xl bg-cyber-orange/15 border border-cyber-orange/40 hover:border-cyber-orange hover:shadow-[0_0_35px_rgba(255,102,0,0.45)] transition-all duration-500 overflow-hidden">
-          <div class="relative h-full bg-[#060912]/85 rounded-[calc(1.5rem-2px)] p-6 sm:p-8 flex flex-col justify-between backdrop-blur-xl">
-            <div class="flex items-center justify-between mb-6 sm:mb-8">
-              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-orange/20 border border-cyber-orange/40 text-cyber-orange font-mono text-[11px] font-bold tracking-widest uppercase">
-                01 / NUOVA STORIA ↗
+        <!-- SECTION 1: SCANNER QR CODE (CAMERA & CODICE MANUALE) -->
+        <div class="rounded-3xl bg-[#060912]/85 border border-cyber-cyan/40 p-5 sm:p-6 backdrop-blur-xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10 font-mono">
+              <span class="text-cyber-cyan text-xs font-bold uppercase tracking-wider">
+                📷 SCANNER OTTICO // SENSORI KIROSHI
               </span>
-              <div class="w-10 h-10 rounded-2xl bg-cyber-orange/15 border border-cyber-orange/35 flex items-center justify-center text-cyber-orange">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
+              <span class="text-[10px] text-slate-400">CODICI QR O MANUALI</span>
+            </div>
+
+            <!-- Legend of QR Codes Colors from user document -->
+            <div class="grid grid-cols-3 gap-2 mb-4 font-mono text-[9px] text-center">
+              <div class="p-2 rounded-xl bg-cyber-green/10 border border-cyber-green/30 text-cyber-green">
+                <span class="font-bold block">🟢 VERDE</span>
+                <span>Impianti & Cromo</span>
+              </div>
+              <div class="p-2 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan">
+                <span class="font-bold block">🔵 BLU</span>
+                <span>Terminale Hackerabile</span>
+              </div>
+              <div class="p-2 rounded-xl bg-cyber-red/10 border border-cyber-red/30 text-cyber-red">
+                <span class="font-bold block">🔴 ROSSO</span>
+                <span>Casseforti & ICE</span>
               </div>
             </div>
 
-            <div class="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-              <h3 class="font-orbitron font-black text-2xl sm:text-4xl text-white group-hover:text-cyber-orange transition-colors">
-                Prossimo evento
-              </h3>
-              <p class="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
-                Scopri il mondo in cui entreremo.
-              </p>
+            <!-- Scanner Camera Box -->
+            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black border-2 border-dashed border-cyber-cyan/30 flex items-center justify-center mb-4">
+              <div id="qr-reader" class="w-full h-full"></div>
+              
+              <div id="camera-placeholder" class="flex flex-col items-center gap-2 p-4 text-center">
+                <div class="w-12 h-12 rounded-full bg-cyber-cyan/15 border border-cyber-cyan/40 flex items-center justify-center text-cyber-cyan text-2xl">
+                  📷
+                </div>
+                <button id="start-camera-scan-btn" class="px-4 py-2 rounded-xl bg-cyber-cyan text-black font-mono font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(0,240,255,0.5)] hover:bg-white transition-colors">
+                  ATTIVA FOTOCAMERA SCAN
+                </button>
+                <span class="text-[10px] text-slate-400 font-mono">Punta il sensore verso il QR code dell'oggetto</span>
+              </div>
             </div>
 
-            <div class="pt-4 border-t border-white/10 flex items-center justify-between">
-              <span class="font-mono text-xs text-cyber-orange tracking-wider uppercase font-bold">INFO ISCRIZIONE E LORE</span>
-              <span class="w-9 h-9 rounded-full bg-cyber-orange text-black flex items-center justify-center font-bold text-sm group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(255,102,0,0.6)] transition-all">↗</span>
+            <!-- Manual Fallback Code Input -->
+            <form id="manual-qr-form" class="space-y-2">
+              <label class="block font-mono text-[10px] text-slate-300 uppercase tracking-wider font-semibold">
+                Oppure digita il codice a mano:
+              </label>
+              <div class="flex gap-2">
+                <input type="text" id="manual-code-input" placeholder="es. CYB-GREEN-01 o TERM-BLUE-44" class="flex-1 px-3.5 py-2.5 rounded-xl bg-black/70 border border-white/15 focus:border-cyber-cyan text-white font-mono text-xs uppercase outline-none" required>
+                <button type="submit" class="px-4 py-2.5 rounded-xl bg-cyber-cyan text-black font-mono font-bold text-xs uppercase hover:bg-white transition-colors">
+                  RISOLVI
+                </button>
+              </div>
+            </form>
+
+            <!-- Scan Result Display -->
+            <div id="scan-result-card" class="hidden mt-4 p-4 rounded-2xl bg-black/80 border border-cyber-green text-xs font-mono space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-cyber-green font-bold">[RISULTATO SCANSIONE]</span>
+                <span id="scan-badge" class="px-2 py-0.5 rounded text-[9px] uppercase font-bold">INFO</span>
+              </div>
+              <p id="scan-output-text" class="text-slate-200 font-sans"></p>
             </div>
           </div>
         </div>
 
-        <!-- CARD 2: APP DI GIOCO -->
-        <div class="cyber-card group relative p-1 rounded-3xl bg-cyber-cyan/15 border border-cyber-cyan/40 hover:border-cyber-cyan hover:shadow-[0_0_35px_rgba(0,240,255,0.4)] transition-all duration-500 overflow-hidden">
-          <div class="relative h-full bg-[#060912]/85 rounded-[calc(1.5rem-2px)] p-6 sm:p-8 flex flex-col justify-between backdrop-blur-xl">
-            <div class="flex items-center justify-between mb-6 sm:mb-8">
-              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan font-mono text-[11px] font-bold tracking-widest uppercase">
-                02 / STRUMENTI DI GIOCO ↗
+        <!-- SECTION 2: SISTEMA DI HACKING (OFF-FIGHT & QUICKHACK COMBAT) -->
+        <div class="rounded-3xl bg-[#060912]/85 border border-cyber-magenta/40 p-5 sm:p-6 backdrop-blur-xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10 font-mono">
+              <span class="text-cyber-magenta text-xs font-bold uppercase tracking-wider">
+                ⚡ QUICKHACK COMBAT & SIFONE CREDITI
               </span>
-              <div class="w-10 h-10 rounded-2xl bg-cyber-cyan/15 border border-cyber-cyan/35 flex items-center justify-center text-cyber-cyan font-mono font-bold text-lg">
-                &gt;_
+              <span class="text-[10px] text-slate-400">TEMPO DI OVERRIDE: 5s</span>
+            </div>
+
+            <!-- Quickhack Combat Buttons (5s Override as per design doc) -->
+            <div class="space-y-3 mb-6">
+              <label class="block font-mono text-[11px] text-cyber-magenta uppercase tracking-wider font-bold">
+                Lancia Quickhack di Combattimento (Comando valido 5 secondi):
+              </label>
+              
+              <div class="grid grid-cols-3 gap-2 font-mono">
+                <!-- Quickhack 1: FERMO! -->
+                <button class="quickhack-trigger-btn p-3 rounded-2xl bg-cyber-red/15 border border-cyber-red/50 hover:bg-cyber-red hover:text-black transition-all flex flex-col items-center gap-1 group active:scale-95" data-hack="FERMO!" data-desc="Blocco cibernetico delle articolazioni! Il bersaglio non può muoversi per 5 secondi!">
+                  <span class="text-lg">🛑</span>
+                  <span class="font-bold text-xs">FERMO!</span>
+                  <span class="text-[9px] text-slate-400 group-hover:text-black">Blocco 5s</span>
+                </button>
+
+                <!-- Quickhack 2: AL BUIO! -->
+                <button class="quickhack-trigger-btn p-3 rounded-2xl bg-cyber-cyan/15 border border-cyber-cyan/50 hover:bg-cyber-cyan hover:text-black transition-all flex flex-col items-center gap-1 group active:scale-95" data-hack="AL BUIO!" data-desc="Sovraccarico ottico temporaneo! Il bersaglio deve chiudere gli occhi o voltarsi per 5 secondi!">
+                  <span class="text-lg">🌑</span>
+                  <span class="font-bold text-xs">AL BUIO!</span>
+                  <span class="text-[9px] text-slate-400 group-hover:text-black">Riavvio ottiche</span>
+                </button>
+
+                <!-- Quickhack 3: BUTTALA! -->
+                <button class="quickhack-trigger-btn p-3 rounded-2xl bg-cyber-orange/15 border border-cyber-orange/50 hover:bg-cyber-orange hover:text-black transition-all flex flex-col items-center gap-1 group active:scale-95" data-hack="BUTTALA!" data-desc="Spasmo neurale all'arto armato! Il bersaglio deve rilasciare o deporre l'arma di scena immediatamente!">
+                  <span class="text-lg">✋</span>
+                  <span class="font-bold text-xs">BUTTALA!</span>
+                  <span class="text-[9px] text-slate-400 group-hover:text-black">Rilascio arma</span>
+                </button>
               </div>
             </div>
 
-            <div class="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-              <h3 class="font-orbitron font-black text-2xl sm:text-4xl text-white group-hover:text-cyber-cyan transition-colors">
-                App di gioco
-              </h3>
-              <p class="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
-                Il tuo accesso all'esperienza DIVE.
+            <!-- Siphon Credits / In-Game Hacking Minigame -->
+            <div class="p-4 rounded-2xl bg-black/60 border border-white/10 space-y-3 font-mono">
+              <div class="flex items-center justify-between">
+                <span class="text-cyber-cyan text-xs font-bold uppercase">SIFONE CREDITI (OFF-FIGHT)</span>
+                <span class="text-[10px] text-slate-400">ICE BREAKER PROTOCOL</span>
+              </div>
+              <p class="text-[11px] text-slate-300 font-sans">
+                Inserisci il Callsign del bersaglio o del terminale per tentare l'intrusione e sottrarre EuroDollari.
               </p>
+              
+              <form id="hack-target-form" class="space-y-2">
+                <div class="flex gap-2">
+                  <input type="text" id="hack-target-callsign" placeholder="@Bersaglio_Corp" class="flex-1 px-3 py-2 rounded-xl bg-black/80 border border-white/15 focus:border-cyber-magenta text-white text-xs outline-none" required>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-cyber-magenta text-white font-bold text-xs uppercase hover:bg-white hover:text-black transition-colors">
+                    INTRUDI
+                  </button>
+                </div>
+              </form>
+              
+              <div id="hack-progress-bar-wrap" class="hidden space-y-1">
+                <div class="flex justify-between text-[10px] text-cyber-magenta">
+                  <span>VIOLAZIONE ICE IN CORSO...</span>
+                  <span id="hack-percentage">0%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div id="hack-fill-bar" class="h-full bg-cyber-magenta transition-all duration-300 w-0"></div>
+                </div>
+              </div>
             </div>
 
-            <div class="pt-4 border-t border-white/10 flex items-center justify-between">
-              <span class="font-mono text-xs text-cyber-cyan tracking-wider uppercase font-bold">TERMINALE GIOCATORE</span>
-              <span class="w-9 h-9 rounded-full bg-cyber-cyan text-black flex items-center justify-center font-bold text-sm group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(0,240,255,0.6)] transition-all">↗</span>
-            </div>
           </div>
         </div>
 
       </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: WALLET // SISTEMA SOLDI EURODOLLARI SCAMBIABILI (€$)              -->
+    <!-- ========================================================================= -->
+    <section id="tab-wallet" class="app-tab hidden py-4 sm:py-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-cyber-green/25">
+        <div>
+          <div class="inline-flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-cyber-green animate-ping"></span>
+            <span class="text-cyber-green font-mono text-xs uppercase tracking-widest font-bold">
+              PORTAFOGLIO VIRTUALE // EURODOLLARI EDDIES
+            </span>
+          </div>
+          <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white">
+            SALDO CREDITI & MOVIMENTI
+          </h2>
+          <p class="text-slate-400 font-sans text-xs sm:text-sm">
+            Trasferisci denaro agli altri giocatori per contratti, armi o favori. Consulta l'estratto conto in tempo reale.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Balance Card -->
+        <div class="rounded-3xl bg-[#060912]/85 border border-cyber-green/50 p-6 backdrop-blur-xl flex flex-col justify-between shadow-[0_0_35px_rgba(0,255,102,0.25)]">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-white/10 font-mono text-xs text-slate-400">
+              <span>ESTRATTO CONTO DISPONIBILE</span>
+              <span class="text-cyber-green font-bold">ATTIVO</span>
+            </div>
+            
+            <span class="font-mono text-xs text-slate-400 block mb-1">SALDO CORRENTE:</span>
+            <div class="font-orbitron font-black text-4xl sm:text-5xl text-cyber-green drop-shadow-[0_0_20px_rgba(0,255,102,0.6)] mb-4">
+              €$ <span id="wallet-balance-display">1.500</span>
+            </div>
+            
+            <p class="font-mono text-[11px] text-slate-400">
+              Valuta ufficiale DIVE. I crediti sono scambiabili durante tutto l'evento.
+            </p>
+          </div>
+
+          <!-- Send Money Form -->
+          <div class="pt-6 border-t border-white/10 mt-6">
+            <h4 class="font-mono text-xs font-bold text-cyber-green uppercase mb-3">
+              TRASFERISCI EURODOLLARI:
+            </h4>
+            
+            <form id="transfer-money-form" class="space-y-3 font-mono text-xs">
+              <div>
+                <input type="text" id="transfer-recipient-input" placeholder="Callsign Destinatario (@Nome)..." class="w-full px-3.5 py-2.5 rounded-xl bg-black/70 border border-white/15 focus:border-cyber-green text-white text-xs outline-none" required>
+              </div>
+              <div class="flex gap-2">
+                <input type="number" id="transfer-amount-input" min="10" max="10000" step="10" placeholder="Importo €$..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-black/70 border border-white/15 focus:border-cyber-green text-white text-xs outline-none" required>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyber-green text-black font-bold uppercase hover:bg-white transition-colors">
+                  INVIA
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Transaction History (Resoconto Movimenti) -->
+        <div class="lg:col-span-2 rounded-3xl bg-[#060912]/85 border border-white/15 p-6 backdrop-blur-xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-white/10 font-mono text-xs text-slate-400">
+              <span>RESOCONTO MOVIMENTI // ENTRATE E USCITE</span>
+              <span class="text-cyber-cyan">DATASHARD PAYLOG</span>
+            </div>
+
+            <!-- List of Transactions -->
+            <div id="transaction-history-list" class="space-y-2.5 max-h-80 overflow-y-auto pr-1 font-mono text-xs">
+              <!-- Inserted dynamically via JS -->
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 mt-4 flex items-center justify-between font-mono text-[10px] text-slate-500">
+            <span>REGISTRO PROTOCOLLO SICURO</span>
+            <span>TRANSAZIONI IRREVERSIBILI</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: SCHEDA PERSONAGGIO, FAMA, SALUTE & SEDIA RIPPERDOC                  -->
+    <!-- ========================================================================= -->
+    <section id="tab-profile" class="app-tab hidden py-4 sm:py-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-cyber-orange/25">
+        <div>
+          <div class="inline-flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-cyber-orange animate-ping"></span>
+            <span class="text-cyber-orange font-mono text-xs uppercase tracking-widest font-bold">
+              ID CARRIER // SCHEDA RUNNER & BIO-MONITOR
+            </span>
+          </div>
+          <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white">
+            CARTA D'IDENTITÀ & SEDIA RIPPERDOC
+          </h2>
+          <p class="text-slate-400 font-sans text-xs sm:text-sm">
+            Monitora il tuo stato vitale, consulta il tuo cromo e rivolgiti alla sedia del Ripperdoc per curare traumi.
+          </p>
+        </div>
+
+        <!-- Ripperdoc Action Button -->
+        <button id="open-ripperdoc-btn" class="px-5 py-2.5 rounded-xl border border-cyber-magenta bg-cyber-magenta/20 text-cyber-magenta hover:bg-cyber-magenta hover:text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all">
+          <span>🩺</span>
+          <span>SEDIA DEL RIPPERDOC</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Personal ID & Street Cred (Fama) Card -->
+        <div class="rounded-3xl bg-[#060912]/85 border border-cyber-orange/50 p-6 backdrop-blur-xl space-y-6">
+          
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-cyber-orange bg-black shadow-[0_0_15px_rgba(255,102,0,0.4)]">
+              <img src="assets/images/runner-post.jpg" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h3 id="card-callsign" class="font-orbitron font-bold text-xl text-white">@V_Solo</h3>
+              <span id="card-role" class="font-mono text-xs text-cyber-orange block">MERCENARIO // NETRUNNER</span>
+              <span class="font-mono text-[10px] text-slate-400">DISTRETTO CIMINIERE</span>
+            </div>
+          </div>
+
+          <!-- Street Cred / Fama (Fixed for the night as per doc) -->
+          <div class="p-3.5 rounded-2xl bg-black/60 border border-white/10 font-mono space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-400">LIVELLO DI FAMA:</span>
+              <span class="text-cyber-orange font-bold text-sm">★★★☆☆ (FAMA 3)</span>
+            </div>
+            <p class="text-[10px] text-slate-500 font-sans">
+              *Il livello di fama è fisso per tutta la durata dell'evento e definisce la tua influenza tra le corporazioni.
+            </p>
+          </div>
+
+          <!-- Health & Bio-Monitor -->
+          <div class="p-4 rounded-2xl bg-black/60 border border-cyber-green/40 font-mono space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-cyber-green font-bold">MONITOR BIOMETRICO:</span>
+              <span id="player-hp-text" class="text-cyber-green font-bold text-sm">100% NOMINALE</span>
+            </div>
+
+            <!-- Health Bar -->
+            <div class="w-full h-3 rounded-full bg-white/10 overflow-hidden">
+              <div id="player-hp-bar" class="h-full bg-cyber-green transition-all duration-500 w-full"></div>
+            </div>
+
+            <!-- Traumi Accumulati -->
+            <div class="space-y-1 pt-2 border-t border-white/10">
+              <span class="text-[10px] text-slate-400 block font-bold uppercase">TRAUMI ACCUMULABILI (SE VAI GIÙ):</span>
+              <div id="traumas-list" class="space-y-1 text-[11px] font-sans">
+                <span class="text-slate-500 italic block">Nessun danno critico rilevato. Sistemi ottimali.</span>
+              </div>
+            </div>
+
+            <!-- Take Damage Button for LARP Combat -->
+            <div class="pt-2 flex gap-2">
+              <button id="take-damage-btn" class="flex-1 py-1.5 rounded-lg border border-cyber-red/50 bg-cyber-red/10 text-cyber-red text-[10px] font-bold uppercase hover:bg-cyber-red hover:text-black transition-colors">
+                -25% DANNO / TRAUMA
+              </button>
+              <button id="reset-hp-btn" class="px-3 py-1.5 rounded-lg border border-cyber-green/50 bg-cyber-green/10 text-cyber-green text-[10px] font-bold uppercase hover:bg-cyber-green hover:text-black transition-colors">
+                STIM
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Cyberware Inventory & Explanations (Cromo che hai addosso) -->
+        <div class="lg:col-span-2 rounded-3xl bg-[#060912]/85 border border-white/15 p-6 backdrop-blur-xl space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10 font-mono text-xs">
+            <span class="text-cyber-cyan font-bold uppercase">🦾 IL CROMO CHE HAI ADDOSSO // IMPIANTI ATTIVI</span>
+            <span class="text-slate-400">4 IMPIANTI INSTALLATI</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+            
+            <!-- Impianto 1: Ottiche Kiroshi -->
+            <div class="p-4 rounded-2xl bg-black/60 border border-cyber-cyan/35 space-y-2 hover:border-cyber-cyan transition-colors">
+              <div class="flex items-center justify-between">
+                <span class="text-white font-bold">OTTICHE KIROSHI MK.2</span>
+                <span class="text-[9px] px-2 py-0.5 rounded bg-cyber-cyan/15 text-cyber-cyan font-bold">OTTICA</span>
+              </div>
+              <p class="font-sans text-[11px] text-slate-300 leading-snug">
+                Permette di visualizzare le informazioni nascoste sui bersagli e scansionare QR code ad alta risoluzione.
+              </p>
+              <button class="use-cyberware-btn w-full py-1.5 rounded-lg bg-cyber-cyan/20 text-cyber-cyan hover:bg-cyber-cyan hover:text-black transition-colors font-bold text-[10px] uppercase" data-name="Ottiche Kiroshi">
+                ATTIVA SCANSIONE AVANZATA
+              </button>
+            </div>
+
+            <!-- Impianto 2: Cyberdeck Paraline -->
+            <div class="p-4 rounded-2xl bg-black/60 border border-cyber-magenta/35 space-y-2 hover:border-cyber-magenta transition-colors">
+              <div class="flex items-center justify-between">
+                <span class="text-white font-bold">CYBERDECK PARALINE</span>
+                <span class="text-[9px] px-2 py-0.5 rounded bg-cyber-magenta/15 text-cyber-magenta font-bold">HACKING</span>
+              </div>
+              <p class="font-sans text-[11px] text-slate-300 leading-snug">
+                Interfaccia neurale per eseguire Quickhacks Combat (*Fermo, Al buio, Buttala*) e violare terminali blu.
+              </p>
+              <button class="nav-tab-trigger w-full py-1.5 rounded-lg bg-cyber-magenta/20 text-cyber-magenta hover:bg-cyber-magenta hover:text-white transition-colors font-bold text-[10px] uppercase" data-tab="cyberdeck">
+                APRI MODULO HACKING
+              </button>
+            </div>
+
+            <!-- Impianto 3: Subdermal Armor -->
+            <div class="p-4 rounded-2xl bg-black/60 border border-cyber-orange/35 space-y-2 hover:border-cyber-orange transition-colors">
+              <div class="flex items-center justify-between">
+                <span class="text-white font-bold">ARMATURA SUBDERMICA</span>
+                <span class="text-[9px] px-2 py-0.5 rounded bg-cyber-orange/15 text-cyber-orange font-bold">DIFESA</span>
+              </div>
+              <p class="font-sans text-[11px] text-slate-300 leading-snug">
+                Placcatura interna in nanotubi di carbonio. Riduce la probabilità di shock critico se colpiti da proiettili.
+              </p>
+              <span class="text-[10px] text-slate-500 block italic">Passivo: Sempre operativo</span>
+            </div>
+
+            <!-- Impianto 4: Ghost Media Spoofer -->
+            <div class="p-4 rounded-2xl bg-black/60 border border-white/20 space-y-2 hover:border-white transition-colors">
+              <div class="flex items-center justify-between">
+                <span class="text-white font-bold">MEDIA GHOST PROTOCOL</span>
+                <span class="text-[9px] px-2 py-0.5 rounded bg-white/10 text-white font-bold">MEDIA</span>
+              </div>
+              <p class="font-sans text-[11px] text-slate-300 leading-snug">
+                Permette di trasmettere notizie e leak anonimi sul feed senza rivelare il proprio callsign alle corporazioni.
+              </p>
+              <button class="nav-tab-trigger w-full py-1.5 rounded-lg bg-white/15 text-white hover:bg-white hover:text-black transition-colors font-bold text-[10px] uppercase" data-tab="net">
+                PUBBLICA LEAK ANONIMO
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </section>
 
   </main>
 
-  <!-- FOOTER SECTION -->
-  <footer id="footer" class="relative z-10 border-t border-cyber-cyan/20 bg-[#04060A]/90 backdrop-blur-xl py-8 sm:py-10 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
-      <div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
-        <img src="assets/images/dive-logo.png" alt="DIVE" class="h-6 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,102,0,0.5)]">
-        <span class="hidden sm:inline text-slate-600">|</span>
-        <span class="font-sans text-xs sm:text-sm text-slate-400">
-          Eventi di gioco di ruolo. Altre realtà.
-        </span>
-      </div>
-
-      <div class="flex items-center gap-4 sm:gap-6 font-mono text-xs text-slate-400">
-        <span>DIVE © 2026</span>
-        <a href="#accesso" class="text-cyber-orange hover:text-white transition-colors flex items-center gap-1 cyber-btn-sound">
-          <span>Prima di entrare</span>
-          <span>↗</span>
-        </a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- MOBILE FLOATING CYBER-DOCK (Native App Navigation) -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#060912]/90 backdrop-blur-2xl border-t border-cyber-cyan/30 px-3 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-5px_25px_rgba(0,0,0,0.8)]">
-    <div class="flex items-center justify-around font-mono text-[10px] tracking-wider">
+  <!-- ========================================================================= -->
+  <!-- MODAL: QUICKHACK 5-SECONDS COMBAT OVERRIDE OVERLAY                         -->
+  <!-- ========================================================================= -->
+  <div id="quickhack-combat-overlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl hidden flex-col items-center justify-center p-6 text-center transition-all duration-300">
+    <div class="max-w-md w-full p-8 rounded-3xl border-4 border-cyber-red bg-[#0d0406] shadow-[0_0_80px_rgba(255,17,51,0.8)] space-y-6">
       
-      <!-- Tab 00: Home -->
-      <a href="#hero" class="mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2.5 text-cyber-orange">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-        </svg>
-        <span class="font-bold">HOME</span>
-        <span class="w-1 h-1 rounded-full bg-cyber-orange"></span>
-      </a>
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyber-red/20 border border-cyber-red text-cyber-red font-mono text-xs uppercase font-bold tracking-widest animate-pulse">
+        ⚠️ QUICKHACK COMBAT ATTIVO ⚠️
+      </div>
 
-      <!-- Tab 01: The Net Social & News -->
-      <a href="#social-net" class="mobile-dock-item flex flex-col items-center gap-1 py-1 px-2.5 text-slate-400 hover:text-cyber-orange transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-        </svg>
-        <span>NET NEWS</span>
-        <span class="w-1 h-1 rounded-full bg-transparent"></span>
-      </a>
+      <div>
+        <span class="font-mono text-xs text-slate-400 block mb-1">COMANDO DI OVERRIDE RILASCIATO:</span>
+        <h2 id="qh-combat-command" class="font-orbitron font-black text-5xl sm:text-6xl text-white tracking-widest text-cyber-red drop-shadow-[0_0_30px_rgba(255,17,51,0.9)]">
+          FERMO!
+        </h2>
+      </div>
 
-      <!-- Quick Action: CARICA POST / FOTO (Central Raised Pill) -->
-      <button id="mobile-quick-post-btn" class="flex flex-col items-center -mt-5">
-        <div class="w-12 h-12 rounded-full bg-cyber-orange text-black flex items-center justify-center font-bold text-xl shadow-[0_0_20px_rgba(255,102,0,0.7)] active:scale-95 transition-transform">
-          +
+      <div class="p-4 rounded-2xl bg-black/60 border border-white/15 text-sm font-sans text-slate-200">
+        <p id="qh-combat-description"></p>
+      </div>
+
+      <!-- 5-Second Countdown Graphic -->
+      <div class="space-y-2">
+        <div class="font-orbitron font-bold text-4xl text-cyber-red">
+          <span id="qh-seconds-timer">5.0</span>s
         </div>
-        <span class="text-[9px] font-bold text-cyber-orange mt-1">POSTA</span>
+        <div class="w-full h-3 rounded-full bg-white/10 overflow-hidden">
+          <div id="qh-timer-bar" class="h-full bg-cyber-red w-full transition-all duration-100 ease-linear"></div>
+        </div>
+      </div>
+
+      <button id="close-quickhack-overlay-btn" class="w-full py-3 rounded-2xl bg-white/10 text-slate-300 font-mono text-xs uppercase hover:bg-white/20 transition-colors">
+        ANNULLA // CHIUDI
       </button>
 
-      <!-- Tab 02: Eventi -->
-      <a href="#accesso" class="mobile-dock-item flex flex-col items-center gap-1 py-1 px-2.5 text-slate-400 hover:text-cyber-cyan transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-        </svg>
-        <span>EVENTI</span>
-        <span class="w-1 h-1 rounded-full bg-transparent"></span>
-      </a>
+    </div>
+  </div>
 
-      <!-- Tab 03: Premesse -->
-      <a href="#footer" class="mobile-dock-item flex flex-col items-center gap-1 py-1 px-2.5 text-slate-400 hover:text-cyber-cyan transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-        </svg>
-        <span>PREMESSE</span>
+  <!-- ========================================================================= -->
+  <!-- MODAL: SEDIA DEL RIPPERDOC (CURA SALUTE & TRAUMI)                          -->
+  <!-- ========================================================================= -->
+  <div id="ripperdoc-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl hidden flex-col items-center justify-center p-4 sm:p-6 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="relative max-w-lg w-full bg-[#080D18] border-2 border-cyber-magenta rounded-3xl p-6 sm:p-8 shadow-[0_0_60px_rgba(224,36,195,0.4)]">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-5">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🩺</span>
+          <span class="font-mono text-xs text-cyber-magenta font-bold uppercase tracking-wider">
+            CLINICA RIPPERDOC // STAZIONE DI CURA
+          </span>
+        </div>
+        <button id="close-ripperdoc-btn" class="w-8 h-8 rounded-full bg-white/10 text-white hover:bg-cyber-magenta flex items-center justify-center font-bold text-sm">✕</button>
+      </div>
+
+      <div class="space-y-4 font-mono text-xs">
+        <p class="text-slate-300 font-sans text-sm">
+          Ti trovi sulla sedia chirurgica del Ripperdoc. Qui puoi suturare ferite, resettare i malus accumulati durante gli scontri e riparare il cromo danneggiato.
+        </p>
+
+        <div class="p-4 rounded-2xl bg-black/70 border border-white/15 space-y-2">
+          <span class="text-slate-400 block font-bold">INTERVENTI DISPONIBILI:</span>
+          <ul class="text-[11px] text-slate-300 space-y-1 list-disc pl-4 font-sans">
+            <li>Ripristino completo Punti Vita (HP a 100%)</li>
+            <li>Eliminazione traumi e shock neurali da svenimento</li>
+            <li>Calibrazione e sblocco impianti cybernetici</li>
+          </ul>
+        </div>
+
+        <button id="execute-heal-btn" class="w-full py-4 rounded-2xl bg-cyber-magenta text-white font-mono font-bold text-xs uppercase tracking-widest shadow-[0_0_30px_rgba(224,36,195,0.6)] hover:bg-white hover:text-black transition-all">
+          PROCEDI CON LA RIGENERAZIONE TOTALE (COSTO: €$ 0)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CAMBIO CALLSIGN / PROFILO RUNNER                                    -->
+  <!-- ========================================================================= -->
+  <div id="profile-edit-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl hidden flex-col items-center justify-center p-4 sm:p-6 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="relative max-w-sm w-full bg-[#080D18] border border-cyber-orange rounded-3xl p-6 shadow-[0_0_40px_rgba(255,102,0,0.4)]">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <span class="font-mono text-xs text-cyber-orange font-bold uppercase">CONFIGURA CALLSIGN RUNNER</span>
+        <button id="close-profile-modal-btn" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center text-xs">✕</button>
+      </div>
+
+      <form id="profile-edit-form" class="space-y-4 font-mono text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">Il tuo Callsign (@Nome):</label>
+          <input type="text" id="input-new-callsign" placeholder="@V_Solo" class="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/20 text-white font-mono text-xs outline-none focus:border-cyber-orange" required>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 mb-1">Ruolo / Archetipo:</label>
+          <select id="input-new-role" class="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/20 text-white font-mono text-xs outline-none focus:border-cyber-orange">
+            <option value="MERCENARIO // SOLO">MERCENARIO // SOLO</option>
+            <option value="NETRUNNER // HACKER">NETRUNNER // HACKER</option>
+            <option value="MEDIA // REPORTER">MEDIA // REPORTER</option>
+            <option value="CORPO // AGENTE">CORPO // AGENTE</option>
+            <option value="TECHIE // RIPPERDOC">TECHIE // RIPPERDOC</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-cyber-orange text-black font-bold uppercase hover:bg-white transition-colors">
+          SALVA IDENTITÀ
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE FLOATING CYBER-DOCK (COMPANION APP NAVIGATION)                      -->
+  <!-- ========================================================================= -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#060912]/95 backdrop-blur-2xl border-t border-cyber-cyan/30 px-2 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-5px_25px_rgba(0,0,0,0.85)]">
+    <div class="flex items-center justify-around font-mono text-[9px] tracking-wider">
+      
+      <!-- Home -->
+      <button class="nav-tab-trigger mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2 text-cyber-orange" data-tab="home">
+        <span class="text-base">🏠</span>
+        <span class="font-bold">HOME</span>
+        <span class="w-1 h-1 rounded-full bg-cyber-orange"></span>
+      </button>
+
+      <!-- The Net Social -->
+      <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 text-slate-400 hover:text-cyber-orange" data-tab="net">
+        <span class="text-base">📰</span>
+        <span>NET</span>
         <span class="w-1 h-1 rounded-full bg-transparent"></span>
-      </a>
+      </button>
+
+      <!-- Chat Comm -->
+      <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 text-slate-400 hover:text-cyber-cyan" data-tab="comm">
+        <span class="text-base">💬</span>
+        <span>COMM</span>
+        <span class="w-1 h-1 rounded-full bg-transparent"></span>
+      </button>
+
+      <!-- Center Action: Scanner QR / Hacking -->
+      <button class="nav-tab-trigger mobile-dock-item -mt-4 flex flex-col items-center" data-tab="cyberdeck">
+        <div class="w-12 h-12 rounded-full bg-cyber-orange text-black flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(255,102,0,0.7)] active:scale-95 transition-transform">
+          ⚡
+        </div>
+        <span class="text-[8px] font-bold text-cyber-orange mt-0.5">HACK</span>
+      </button>
+
+      <!-- Wallet -->
+      <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 text-slate-400 hover:text-cyber-green" data-tab="wallet">
+        <span class="text-base">💶</span>
+        <span>WALLET</span>
+        <span class="w-1 h-1 rounded-full bg-transparent"></span>
+      </button>
+
+      <!-- Profile -->
+      <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 text-slate-400 hover:text-cyber-magenta" data-tab="profile">
+        <span class="text-base">🪪</span>
+        <span>ID</span>
+        <span class="w-1 h-1 rounded-full bg-transparent"></span>
+      </button>
 
     </div>
   </nav>
-
-  <!-- MODAL: PUBBLICA NOTIZIA O FOTO RUNNER -->
-  <div id="publish-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl hidden flex-col items-center justify-center p-4 sm:p-6 transition-opacity duration-300 opacity-0 pointer-events-none">
-    
-    <div class="relative max-w-lg w-full bg-[#080D18] border border-cyber-orange/60 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(255,102,0,0.35)] max-h-[90dvh] overflow-y-auto">
-      
-      <!-- Modal Top Bar -->
-      <div class="flex items-center justify-between mb-5 pb-3 border-b border-white/10">
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-cyber-orange animate-ping"></span>
-          <span class="font-mono text-xs text-cyber-orange uppercase tracking-wider font-bold">TERMINALE DI PUBBLICAZIONE // THE NET</span>
-        </div>
-        <button id="close-publish-modal-btn" class="w-8 h-8 rounded-full bg-white/10 text-white hover:bg-cyber-orange hover:text-black flex items-center justify-center font-bold text-sm transition-colors">
-          ✕
-        </button>
-      </div>
-
-      <!-- Tab Switcher: Post Notizia vs Post Foto -->
-      <div class="grid grid-cols-2 gap-2 mb-5 p-1 rounded-2xl bg-black/60 border border-white/10 font-mono text-xs">
-        <button id="switch-tab-photo" type="button" class="py-2 rounded-xl bg-cyber-orange text-black font-bold uppercase tracking-wider transition-colors">
-          📷 POSTA FOTO
-        </button>
-        <button id="switch-tab-news" type="button" class="py-2 rounded-xl text-slate-400 hover:text-white font-bold uppercase tracking-wider transition-colors">
-          📰 SCRIVI NOTIZIA
-        </button>
-      </div>
-
-      <!-- Publish Form -->
-      <form id="publish-item-form" class="space-y-4">
-        <input type="hidden" id="publish-type" value="photos">
-
-        <!-- Photo Upload Box (visible when type is photos) -->
-        <div id="form-photo-container">
-          <div class="relative border-2 border-dashed border-cyber-orange/40 rounded-2xl p-5 text-center hover:border-cyber-orange transition-colors cursor-pointer bg-white/5 group">
-            <input type="file" id="photo-file-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-            <div id="upload-preview-wrap" class="hidden flex-col items-center">
-              <img id="upload-preview-img" src="" alt="Anteprima Scatto" class="w-full max-h-48 object-cover rounded-xl border border-cyber-orange/50 mb-2">
-              <span class="text-cyber-orange font-mono text-[11px] font-bold">✓ FOTO SELEZIONATA (Clicca per cambiare)</span>
-            </div>
-            <div id="upload-placeholder" class="flex flex-col items-center gap-2">
-              <div class="w-10 h-10 rounded-2xl bg-cyber-orange/15 border border-cyber-orange/40 flex items-center justify-center text-cyber-orange text-xl group-hover:scale-110 transition-transform">
-                📷
-              </div>
-              <p class="font-mono text-xs text-slate-200 font-bold">
-                SCATTA O SCEGLI DALLA GALLERIA
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- News Title Input (visible when type is news) -->
-        <div id="form-news-title-container" class="hidden">
-          <label class="block font-mono text-[11px] text-cyber-cyan uppercase tracking-wider mb-1 font-bold">
-            Titolo Notizia / Bollettino:
-          </label>
-          <input type="text" id="news-title-input" placeholder="es. [ALERT] Nuova Fazione Rilevata alle Ciminiere..." class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/15 focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan text-white font-mono text-xs outline-none">
-        </div>
-
-        <!-- Author Callsign Input -->
-        <div>
-          <label class="block font-mono text-[11px] text-cyber-orange uppercase tracking-wider mb-1 font-bold">
-            Callsign Runner o Canale:
-          </label>
-          <input type="text" id="post-author-input" placeholder="es. @V_Solo o @DIVE_Reporter" class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/15 focus:border-cyber-orange focus:ring-1 focus:ring-cyber-orange text-white font-mono text-xs outline-none" required>
-        </div>
-
-        <!-- Content / Caption Input -->
-        <div>
-          <label class="block font-mono text-[11px] text-slate-300 uppercase tracking-wider mb-1 font-bold">
-            Contenuto Notizia o Didascalia:
-          </label>
-          <textarea id="post-content-input" rows="3" placeholder="Scrivi il testo della notizia, il messaggio per i runner o la didascalia..." class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/15 focus:border-cyber-orange focus:ring-1 focus:ring-cyber-orange text-white font-sans text-xs outline-none resize-none" required></textarea>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" class="w-full py-3.5 rounded-2xl bg-cyber-orange text-black font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(255,102,0,0.5)] hover:shadow-[0_0_40px_rgba(255,102,0,0.8)] active:scale-98 transition-all">
-          <span>TRASMETTI NEL NET // PUBBLICA</span>
-          <span>⚡</span>
-        </button>
-
-      </form>
-
-    </div>
-
-  </div>
 
   <!-- Scripts -->
   <script src="assets/js/main.js"></script>
