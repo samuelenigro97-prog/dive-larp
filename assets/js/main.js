@@ -115,9 +115,67 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let player = getPlayerState();
+  let activeSheetRunner = null;
+
+  function getSheetUrl(secretId) {
+    const cleanId = String(secretId || '#V-7842').replace(/^#/, '');
+    const base = window.location.origin + window.location.pathname;
+    return `${base}?pg=${encodeURIComponent(cleanId)}`;
+  }
+
+  function findRunnerByPgParam(pgParam) {
+    if (!pgParam) return null;
+    const normalized = ('#' + pgParam.replace(/^#/, '')).toUpperCase();
+    if ((player.secretId || '#V-7842').toUpperCase() === normalized) {
+      return null; // È la propria scheda
+    }
+    const found = ROSTER_SEED.find(r => r.secretId.toUpperCase() === normalized);
+    if (!found) return null;
+    return {
+      callsign: found.callsign,
+      role: found.role,
+      secretId: found.secretId,
+      hp: found.hp,
+      psych: found.psych,
+      iceActive: found.ice,
+      traumas: []
+    };
+  }
+
+  function renderRosterSwitcher() {
+    const switcher = document.getElementById('pg-roster-switcher');
+    if (!switcher) return;
+    const allRunners = [
+      { callsign: player.callsign, secretId: player.secretId || '#V-7842', isSelf: true },
+      ...ROSTER_SEED.filter(r => (r.secretId || '').toUpperCase() !== (player.secretId || '#V-7842').toUpperCase())
+        .map(r => ({ callsign: r.callsign, secretId: r.secretId, isSelf: false }))
+    ];
+    const currentId = ((activeSheetRunner ? activeSheetRunner.secretId : player.secretId) || '#V-7842').toUpperCase();
+
+    switcher.innerHTML = allRunners.map(r => {
+      const isSelected = r.secretId.toUpperCase() === currentId;
+      return `
+        <button type="button" data-pg-id="${r.secretId}" class="pg-switch-btn px-3 py-1.5 rounded-sm border whitespace-nowrap transition-colors ${isSelected ? 'border-dive-orange bg-dive-orange/15 text-dive-orange font-bold' : 'border-white/10 bg-[#080B12] text-slate-400 hover:text-white'}">
+          ${r.isSelf ? '[MIA] ' : ''}${r.callsign} (${r.secretId})
+        </button>
+      `;
+    }).join('');
+
+    switcher.querySelectorAll('.pg-switch-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pgId = btn.getAttribute('data-pg-id');
+        activeSheetRunner = findRunnerByPgParam(pgId);
+        syncPlayerUI();
+        playCyberSound(500, 'triangle', 0.05);
+      });
+    });
+  }
 
   function syncPlayerUI() {
-    // Header
+    const sheetData = activeSheetRunner || player;
+    const isViewingOther = Boolean(activeSheetRunner);
+
+    // Header (sempre del player loggato)
     const headerCallsign = document.getElementById('header-player-callsign');
     const headerHp = document.getElementById('header-hp');
     const headerBalance = document.getElementById('header-wallet-balance');
@@ -132,7 +190,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const walletBalanceDisplay = document.getElementById('wallet-balance-display');
     if (walletBalanceDisplay) walletBalanceDisplay.textContent = player.wallet.toLocaleString();
 
-    // Profile Card
+    // Banner lettura scheda altrui & controlli medici
+    const otherBanner = document.getElementById('viewing-other-pg-banner');
+    const otherName = document.getElementById('viewing-other-pg-name');
+    const medControls = document.getElementById('player-medical-controls');
+    if (otherBanner) {
+      if (isViewingOther) {
+        otherBanner.classList.remove('hidden');
+        if (otherName) otherName.textContent = `${sheetData.callsign} (${sheetData.secretId})`;
+      } else {
+        otherBanner.classList.add('hidden');
+      }
+    }
+    if (medControls) {
+      if (isViewingOther) medControls.classList.add('hidden');
+      else medControls.classList.remove('hidden');
+    }
+
+    // Profile Card (Scheda Verticale attiva)
     const cardCallsign = document.getElementById('card-callsign');
     const cardRole = document.getElementById('card-role');
     const cardSecretId = document.getElementById('card-secret-id');
@@ -143,23 +218,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerPsychBar = document.getElementById('player-psych-bar');
     const playerPsychDesc = document.getElementById('player-psych-desc');
 
-    if (cardCallsign) cardCallsign.textContent = player.callsign;
-    if (cardRole) cardRole.textContent = player.role;
-    if (cardSecretId) cardSecretId.textContent = player.secretId || '#V-7842';
-    if (playerHpText) playerHpText.textContent = `${player.hp}% ${player.hp > 75 ? 'NOMINALE' : (player.hp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
+    if (cardCallsign) cardCallsign.textContent = sheetData.callsign;
+    if (cardRole) cardRole.textContent = sheetData.role;
+    if (cardSecretId) cardSecretId.textContent = sheetData.secretId || '#V-7842';
+    if (playerHpText) playerHpText.textContent = `${sheetData.hp}% ${sheetData.hp > 75 ? 'NOMINALE' : (sheetData.hp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
     if (playerHpBar) {
-      playerHpBar.style.width = `${player.hp}%`;
-      playerHpBar.className = `h-full transition-all duration-500 ${player.hp > 50 ? 'bg-dive-green' : (player.hp > 25 ? 'bg-dive-orange' : 'bg-dive-red')}`;
+      playerHpBar.style.width = `${sheetData.hp}%`;
+      playerHpBar.className = `h-full transition-all duration-500 ${sheetData.hp > 50 ? 'bg-dive-green' : (sheetData.hp > 25 ? 'bg-dive-orange' : 'bg-dive-red')}`;
     }
 
+    const iceOn = isViewingOther ? sheetData.iceActive : player.iceActive;
     if (playerIceStatus) {
-      playerIceStatus.textContent = player.iceActive ? 'ATTIVO (1 HIT)' : 'DISATTIVATO / BREACHED';
-      playerIceStatus.className = player.iceActive ? 'text-dive-green font-bold text-xs mt-0.5' : 'text-dive-red font-bold text-xs mt-0.5';
+      playerIceStatus.textContent = iceOn ? 'ICE ATTIVO (1 HIT)' : 'ICE BREACHED';
+      playerIceStatus.className = iceOn
+        ? 'px-2 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold'
+        : 'px-2 py-0.5 bg-black border border-dive-red/40 text-dive-red font-bold';
     }
 
     // Cyberpsychosis
     if (playerPsychText && playerPsychBar && playerPsychDesc) {
-      const p = player.psych || 0;
+      const p = sheetData.psych || 0;
       playerPsychBar.style.width = `${Math.min(100, p)}%`;
       if (p < 25) {
         playerPsychText.textContent = `${p}% STABILE`;
@@ -187,10 +265,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Traumas
     const traumasList = document.getElementById('traumas-list');
     if (traumasList) {
-      if (!player.traumas || player.traumas.length === 0) {
+      if (!sheetData.traumas || sheetData.traumas.length === 0) {
         traumasList.innerHTML = `<span class="text-slate-500 italic block">Nessun danno critico rilevato.</span>`;
       } else {
-        traumasList.innerHTML = player.traumas.map(t => `
+        traumasList.innerHTML = sheetData.traumas.map(t => `
           <div class="px-2.5 py-1 rounded-sm bg-dive-red/10 border border-dive-red/30 text-dive-red font-mono text-[10px] flex items-center justify-between">
             <span>[!] ${t.name}</span>
             <span class="text-[9px] text-slate-400">${t.desc}</span>
@@ -202,67 +280,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal QR details
     const modalQrCallsign = document.getElementById('modal-qr-callsign');
     const modalQrSecretId = document.getElementById('modal-qr-secret-id');
-    if (modalQrCallsign) modalQrCallsign.textContent = player.callsign;
-    if (modalQrSecretId) modalQrSecretId.textContent = player.secretId || '#V-7842';
+    if (modalQrCallsign) modalQrCallsign.textContent = sheetData.callsign;
+    if (modalQrSecretId) modalQrSecretId.textContent = sheetData.secretId || '#V-7842';
 
     renderTransactions();
-    renderPersonalQR();
+    renderPersonalQR(sheetData);
+    renderRosterSwitcher();
   }
 
   // --------------------------------------------------------------------------
-  // 3. Offline Vector QR Code Generator (Zero internet needed)
+  // 3. Offline Real ISO QR Code Generator (Links directly to ?pg=<secretId>)
   // --------------------------------------------------------------------------
-  function renderPersonalQR() {
-    const container = document.getElementById('my-qr-svg-container');
-    if (!container) return;
+  function renderPersonalQR(targetRunner = player) {
+    const sheetUrl = getSheetUrl(targetRunner.secretId || '#V-7842');
+    const cleanId = String(targetRunner.secretId || '#V-7842').replace(/^#/, '');
 
-    // Generate procedural QR-like SVG matrix encoded with player secret ID & callsign
-    const payload = `PLAYER:${player.callsign}:${player.secretId}`;
-    let hash = 0;
-    for (let i = 0; i < payload.length; i++) {
-      hash = ((hash << 5) - hash) + payload.charCodeAt(i);
-      hash |= 0;
+    const urlLabel = document.getElementById('sheet-qr-url-label');
+    if (urlLabel) urlLabel.textContent = `?pg=${cleanId}`;
+
+    let qrSvgHtml = '';
+    if (typeof window.qrcode === 'function') {
+      const qr = window.qrcode(0, 'M');
+      qr.addData(sheetUrl);
+      qr.make();
+      qrSvgHtml = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+    } else {
+      qrSvgHtml = `<div class="font-mono text-[10px] text-black text-center p-2">QR ${cleanId}</div>`;
     }
 
-    const size = 15;
-    let rects = '';
-    
-    // Position detection corner patterns (Finder patterns)
-    const finderSize = 4;
-    function addFinder(startX, startY) {
-      for (let y = 0; y < finderSize; y++) {
-        for (let x = 0; x < finderSize; x++) {
-          if (x === 0 || x === finderSize - 1 || y === 0 || y === finderSize - 1 || (x >= 1 && x <= 2 && y >= 1 && y <= 2)) {
-            rects += `<rect x="${(startX + x) * 10}" y="${(startY + y) * 10}" width="10" height="10" fill="#04060A"/>`;
-          }
-        }
+    const sheetQrContainer = document.getElementById('sheet-qr-container');
+    if (sheetQrContainer) {
+      sheetQrContainer.innerHTML = qrSvgHtml;
+      const svg = sheetQrContainer.querySelector('svg');
+      if (svg) {
+        svg.setAttribute('class', 'w-full h-full block');
       }
     }
 
-    addFinder(0, 0);
-    addFinder(size - finderSize, 0);
-    addFinder(0, size - finderSize);
-
-    // Pseudorandom internal data points based on player payload
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        // Skip finder areas
-        if ((x < finderSize && y < finderSize) || (x >= size - finderSize && y < finderSize) || (x < finderSize && y >= size - finderSize)) {
-          continue;
-        }
-        const cellHash = Math.abs(Math.sin((x * 13 + y * 7 + hash)) * 10000) % 1;
-        if (cellHash > 0.45) {
-          rects += `<rect x="${x * 10}" y="${y * 10}" width="10" height="10" fill="#04060A"/>`;
-        }
+    const modalQrContainer = document.getElementById('my-qr-svg-container');
+    if (modalQrContainer) {
+      modalQrContainer.innerHTML = qrSvgHtml;
+      const svg = modalQrContainer.querySelector('svg');
+      if (svg) {
+        svg.setAttribute('class', 'w-full h-full block');
       }
     }
-
-    container.innerHTML = `
-      <svg viewBox="0 0 ${size * 10} ${size * 10}" class="w-full h-full object-contain">
-        <rect width="${size * 10}" height="${size * 10}" fill="#FFFFFF"/>
-        ${rects}
-      </svg>
-    `;
   }
 
   // --------------------------------------------------------------------------
@@ -430,12 +492,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scanPlayerActions) scanPlayerActions.classList.add('hidden');
     playCyberSound(750, 'square', 0.1);
 
-    // Player QR scan detection (e.g. PLAYER:@Name:#Code or starts with #V-, #K-, #R-)
-    if (code.startsWith('PLAYER:') || code.startsWith('#') || code.startsWith('@')) {
+    // Player QR scan detection (supports ?pg= URL, PLAYER:@Name:#Code, #V-, @Name)
+    let pgParamFromUrl = null;
+    try {
+      if (raw.includes('pg=')) {
+        const parsed = new URL(raw, window.location.origin);
+        pgParamFromUrl = parsed.searchParams.get('pg');
+      }
+    } catch {}
+
+    if (pgParamFromUrl || code.startsWith('PLAYER:') || code.startsWith('#') || code.startsWith('@')) {
       let callsign = '@Runner';
       let secretId = '#NX-0000';
 
-      if (code.startsWith('PLAYER:')) {
+      if (pgParamFromUrl) {
+        const cleanCode = ('#' + pgParamFromUrl.replace(/^#/, '')).toUpperCase();
+        const match = ROSTER_SEED.find(r => r.secretId.toUpperCase() === cleanCode);
+        callsign = match ? match.callsign : ((player.secretId || '#V-7842').toUpperCase() === cleanCode ? player.callsign : '@Target_Runner');
+        secretId = cleanCode;
+      } else if (code.startsWith('PLAYER:')) {
         const parts = raw.split(':');
         callsign = parts[1] || '@Runner';
         secretId = parts[2] || '#NX-0000';
@@ -1464,9 +1539,45 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  // Sheet QR copy & return buttons
+  const copySheetLinkBtn = document.getElementById('copy-sheet-link-btn');
+  if (copySheetLinkBtn) {
+    copySheetLinkBtn.addEventListener('click', async () => {
+      const target = activeSheetRunner || player;
+      const url = getSheetUrl(target.secretId || '#V-7842');
+      try {
+        await navigator.clipboard.writeText(url);
+        const orig = copySheetLinkBtn.textContent;
+        copySheetLinkBtn.textContent = 'LINK COPIATO!';
+        setTimeout(() => { copySheetLinkBtn.textContent = orig; }, 1600);
+      } catch {
+        prompt('Copia link diretto scheda PG:', url);
+      }
+    });
+  }
+
+  const backToMySheetBtn = document.getElementById('back-to-my-sheet-btn');
+  if (backToMySheetBtn) {
+    backToMySheetBtn.addEventListener('click', () => {
+      activeSheetRunner = null;
+      syncPlayerUI();
+      playCyberSound(550, 'sine', 0.08);
+    });
+  }
+
+  // Deep-link via QR (?pg=V-7842)
+  const initialPg = new URLSearchParams(window.location.search).get('pg');
+  if (initialPg) {
+    activeSheetRunner = findRunnerByPgParam(initialPg);
+  }
+
   // Initialize
   syncPlayerUI();
   renderChat();
   renderSocialFeed();
   renderAdminRoster();
+
+  if (initialPg) {
+    switchTab('profile');
+  }
 });
