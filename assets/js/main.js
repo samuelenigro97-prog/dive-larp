@@ -333,33 +333,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabTriggers = document.querySelectorAll('.nav-tab-trigger');
   const appTabs = document.querySelectorAll('.app-tab');
 
-  const desktopGameNav = document.getElementById('desktop-game-nav');
-  const mobileGameDock = document.getElementById('mobile-game-dock');
+  const INGAME_SECTION_ANCHORS = {
+    cyberdeck: 'sec-deck',
+    wallet: 'sec-wallet',
+    comm: 'sec-chat',
+    profile: 'sec-scheda'
+  };
 
   function switchTab(tabId) {
-    const isHome = tabId === 'home';
-
-    if (desktopGameNav) {
-      if (isHome) {
-        desktopGameNav.classList.add('hidden');
-        desktopGameNav.classList.remove('md:flex');
-      } else {
-        desktopGameNav.classList.add('hidden', 'md:flex');
-      }
-    }
-
-    if (mobileGameDock) {
-      if (isHome) {
-        mobileGameDock.classList.add('hidden');
-        mobileGameDock.classList.remove('md:hidden');
-      } else {
-        mobileGameDock.classList.remove('hidden');
-        mobileGameDock.classList.add('md:hidden');
-      }
-    }
+    const scrollTargetId = (tabId !== 'profile' && INGAME_SECTION_ANCHORS[tabId]) ? INGAME_SECTION_ANCHORS[tabId] : null;
+    const effectiveTab = INGAME_SECTION_ANCHORS[tabId] ? 'profile' : tabId;
 
     appTabs.forEach(tab => {
-      if (tab.id === `tab-${tabId}`) {
+      if (tab.id === `tab-${effectiveTab}`) {
         tab.classList.remove('hidden');
         tab.classList.add('active');
       } else {
@@ -370,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Desktop Nav
     document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
-      if (btn.getAttribute('data-tab') === tabId) {
+      if (btn.getAttribute('data-tab') === effectiveTab) {
         btn.classList.add('text-dive-orange', 'font-bold', 'border-dive-orange');
         btn.classList.remove('text-slate-400', 'font-normal', 'border-transparent');
       } else {
@@ -381,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mobile Dock
     document.querySelectorAll('.mobile-dock-item').forEach(btn => {
-      if (btn.getAttribute('data-tab') === tabId) {
+      if (btn.getAttribute('data-tab') === effectiveTab) {
         btn.classList.add('text-dive-orange', 'active');
         btn.classList.remove('text-slate-400');
       } else {
@@ -390,7 +376,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (scrollTargetId) {
+      const targetEl = document.getElementById(scrollTargetId);
+      if (targetEl) {
+        setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     playCyberSound(450, 'triangle', 0.05);
   }
 
