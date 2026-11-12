@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // --------------------------------------------------------------------------
-  // 1. Audio Synthesizer (Zero external dependencies)
+  // 1. Cyberpunk Web Audio Synthesizer (Zero external dependencies)
   // --------------------------------------------------------------------------
   let audioCtx = null;
   let sfxEnabled = true;
@@ -23,26 +23,99 @@ document.addEventListener('DOMContentLoaded', () => {
     return audioCtx;
   }
 
+  function synthTone(ctx, { freqStart, freqEnd, type = 'sawtooth', duration = 0.12, gainPeak = 0.08, delay = 0, filterFreq = 2200, filterQ = 4, detune = 0 }) {
+    const t0 = ctx.currentTime + delay;
+    const t1 = t0 + duration;
+
+    const osc = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+
+    osc.type = type;
+    osc.detune.setValueAtTime(detune, t0);
+    osc.frequency.setValueAtTime(Math.max(40, freqStart), t0);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(40, freqEnd ?? freqStart), t1);
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(filterFreq, t0);
+    filter.frequency.exponentialRampToValueAtTime(Math.max(180, filterFreq * 0.35), t1);
+    filter.Q.setValueAtTime(filterQ, t0);
+
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(gainPeak, t0 + Math.min(0.015, duration * 0.2));
+    gain.gain.exponentialRampToValueAtTime(0.0001, t1);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(t0);
+    osc.stop(t1 + 0.01);
+  }
+
+  function playCyberFx(preset = 'ui') {
+    if (!sfxEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      switch (preset) {
+        case 'ui':
+          synthTone(ctx, { freqStart: 1200, freqEnd: 520, type: 'triangle', duration: 0.045, gainPeak: 0.06, filterFreq: 2800, filterQ: 3 });
+          synthTone(ctx, { freqStart: 240, freqEnd: 160, type: 'sine', duration: 0.04, gainPeak: 0.04, filterFreq: 900 });
+          break;
+        case 'scan':
+          synthTone(ctx, { freqStart: 920, freqEnd: 1380, type: 'sine', duration: 0.07, gainPeak: 0.07, filterFreq: 3200 });
+          synthTone(ctx, { freqStart: 1380, freqEnd: 1840, type: 'triangle', duration: 0.09, gainPeak: 0.06, delay: 0.075, filterFreq: 3600 });
+          break;
+        case 'quickhack':
+          // Netrunner breach sweep: dual detuned saw + sub pulse
+          synthTone(ctx, { freqStart: 280, freqEnd: 1420, type: 'sawtooth', duration: 0.14, gainPeak: 0.075, filterFreq: 3400, filterQ: 8, detune: -12 });
+          synthTone(ctx, { freqStart: 280, freqEnd: 1420, type: 'sawtooth', duration: 0.14, gainPeak: 0.065, filterFreq: 3400, filterQ: 8, detune: 12 });
+          synthTone(ctx, { freqStart: 1420, freqEnd: 460, type: 'square', duration: 0.18, gainPeak: 0.05, delay: 0.12, filterFreq: 2200, filterQ: 6 });
+          break;
+        case 'quickhack-end':
+          synthTone(ctx, { freqStart: 540, freqEnd: 110, type: 'sawtooth', duration: 0.22, gainPeak: 0.07, filterFreq: 1600, filterQ: 5 });
+          break;
+        case 'ram':
+          synthTone(ctx, { freqStart: 320, freqEnd: 640, type: 'triangle', duration: 0.08, gainPeak: 0.065, filterFreq: 2400 });
+          synthTone(ctx, { freqStart: 640, freqEnd: 1180, type: 'sine', duration: 0.12, gainPeak: 0.07, delay: 0.07, filterFreq: 3200 });
+          break;
+        case 'success':
+          synthTone(ctx, { freqStart: 523, freqEnd: 523, type: 'triangle', duration: 0.08, gainPeak: 0.065, filterFreq: 2600 });
+          synthTone(ctx, { freqStart: 659, freqEnd: 659, type: 'triangle', duration: 0.08, gainPeak: 0.065, delay: 0.065, filterFreq: 3000 });
+          synthTone(ctx, { freqStart: 1046, freqEnd: 1046, type: 'sine', duration: 0.16, gainPeak: 0.07, delay: 0.13, filterFreq: 3600 });
+          break;
+        case 'denied':
+          synthTone(ctx, { freqStart: 175, freqEnd: 110, type: 'sawtooth', duration: 0.11, gainPeak: 0.08, filterFreq: 900, filterQ: 6, detune: -15 });
+          synthTone(ctx, { freqStart: 155, freqEnd: 95, type: 'square', duration: 0.15, gainPeak: 0.07, delay: 0.1, filterFreq: 800, filterQ: 5, detune: 15 });
+          break;
+        case 'alert':
+          synthTone(ctx, { freqStart: 780, freqEnd: 520, type: 'sawtooth', duration: 0.16, gainPeak: 0.075, filterFreq: 2200, filterQ: 7 });
+          synthTone(ctx, { freqStart: 780, freqEnd: 520, type: 'sawtooth', duration: 0.18, gainPeak: 0.075, delay: 0.18, filterFreq: 2200, filterQ: 7 });
+          break;
+        default:
+          synthTone(ctx, { freqStart: 700, freqEnd: 420, type: 'triangle', duration: 0.06, gainPeak: 0.06 });
+      }
+    } catch {
+      // silent
+    }
+  }
+
   function playCyberSound(frequency = 440, type = 'sine', duration = 0.08) {
     if (!sfxEnabled) return;
     try {
       const ctx = getAudioContext();
       if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = type;
-      osc.frequency.setValueAtTime(frequency, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(frequency * 0.5, ctx.currentTime + duration);
-
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start();
-      osc.stop(ctx.currentTime + duration);
+      // Map legacy calls to richer filtered synth tones
+      if (frequency <= 260) {
+        synthTone(ctx, { freqStart: frequency, freqEnd: frequency * 0.6, type: 'sawtooth', duration: Math.max(duration, 0.14), gainPeak: 0.07, filterFreq: 950, filterQ: 6, detune: -10 });
+        synthTone(ctx, { freqStart: frequency * 0.98, freqEnd: frequency * 0.58, type: 'square', duration: Math.max(duration, 0.14), gainPeak: 0.045, filterFreq: 900, detune: 10 });
+      } else if (duration <= 0.06) {
+        synthTone(ctx, { freqStart: frequency * 1.4, freqEnd: frequency * 0.75, type: 'triangle', duration: 0.045, gainPeak: 0.055, filterFreq: 2600, filterQ: 3 });
+      } else {
+        synthTone(ctx, { freqStart: frequency, freqEnd: frequency * 1.22, type: type === 'sine' ? 'triangle' : type, duration, gainPeak: 0.065, filterFreq: 2800, filterQ: 4 });
+      }
     } catch {
       // silent
     }
@@ -53,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sfxEnabled = !sfxEnabled;
       sfxToggle.classList.toggle('text-dive-orange', sfxEnabled);
       sfxToggle.classList.toggle('text-slate-500', !sfxEnabled);
-      if (sfxEnabled) playCyberSound(660, 'square', 0.1);
+      if (sfxEnabled) playCyberFx('ram');
     });
   }
 
@@ -530,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ramAlertEl) ramAlertEl.classList.add('hidden');
       savePlayerState(player);
       renderRamUI();
-      playCyberSound(780, 'sine', 0.1);
+      playCyberFx('ram');
     });
   }
 
@@ -540,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function launchQuickhackCombat(commandName, description, ramCost = 0) {
     if (!qhOverlay) return;
     if ((player.ram ?? 8) < ramCost) {
-      playCyberSound(160, 'sawtooth', 0.18);
+      playCyberFx('denied');
       showRamAlert(`RAM insufficiente per OVERRIDE ${commandName} (servono ${ramCost} RAM, disponibili ${player.ram}).`);
       return;
     }
@@ -564,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
     qhSecondsTimer.textContent = timeLeft.toFixed(1);
     qhTimerBar.style.width = '100%';
 
-    playCyberSound(950, 'sawtooth', 0.15);
+    playCyberFx('quickhack');
 
     const stepMs = 100;
     qhInterval = setInterval(() => {
@@ -573,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(qhInterval);
         qhSecondsTimer.textContent = '0.0';
         qhTimerBar.style.width = '0%';
-        playCyberSound(300, 'square', 0.2);
+        playCyberFx('quickhack-end');
         setTimeout(() => closeQuickhackOverlay(), 800);
       } else {
         qhSecondsTimer.textContent = timeLeft.toFixed(1);
@@ -626,7 +699,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     scanResultCard.classList.remove('hidden');
     if (scanPlayerActions) scanPlayerActions.classList.add('hidden');
-    playCyberSound(750, 'square', 0.1);
+    playCyberFx('scan');
 
     // Player QR scan detection (supports ?pg= URL, PLAYER:@Name:#Code, #V-, @Name)
     let pgParamFromUrl = null;
