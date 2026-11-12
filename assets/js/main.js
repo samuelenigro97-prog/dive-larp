@@ -798,23 +798,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function stopScannerCamera() {
+    try {
+      if (html5QrScanner && html5QrScanner.isScanning) {
+        html5QrScanner.stop().catch(() => {});
+      }
+    } catch {
+      // silent
+    }
+    const video = document.querySelector('#qr-reader video');
+    if (video && video.srcObject) {
+      video.srcObject.getTracks().forEach(track => track.stop());
+      video.srcObject = null;
+    }
+    if (cameraPlaceholder) cameraPlaceholder.classList.remove('hidden');
+  }
+
+  window.addEventListener('beforeunload', stopScannerCamera);
+  window.addEventListener('pagehide', stopScannerCamera);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopScannerCamera();
+  });
+
   if (startCameraBtn) {
     startCameraBtn.addEventListener('click', () => {
       if (typeof Html5Qrcode !== 'undefined') {
         if (cameraPlaceholder) cameraPlaceholder.classList.add('hidden');
-        html5QrScanner = new Html5Qrcode("qr-reader");
+        if (!html5QrScanner) html5QrScanner = new Html5Qrcode("qr-reader");
         html5QrScanner.start(
           { facingMode: "environment" },
           { fps: 10, qrbox: { width: 220, height: 220 } },
           (decodedText) => {
             resolveCode(decodedText);
-            html5QrScanner.stop();
-            if (cameraPlaceholder) cameraPlaceholder.classList.remove('hidden');
+            stopScannerCamera();
           },
           () => {}
         ).catch(() => {
           alert('Fotocamera non disponibile. Inserisci il codice a mano nel campo sottostante.');
-          if (cameraPlaceholder) cameraPlaceholder.classList.remove('hidden');
+          stopScannerCamera();
         });
       } else {
         alert('Scanner fotocamera non supportato. Inserisci il codice a mano.');
