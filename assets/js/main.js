@@ -1,5 +1,5 @@
 // ==========================================================================
-// DIVE Cyberpunk Web App - Social Feed & Interactive Logic
+// DIVE Cyberpunk Web App - The Net Social & News Engine with Live Comments
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,42 +34,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 3. Explore Image Modal
-  const modalTrigger = document.getElementById('modal-explore-trigger');
-  const imageModal = document.getElementById('image-modal');
-  const modalCloseBtn = document.getElementById('modal-close-btn');
-
-  function openImageModal() {
-    if (!imageModal) return;
-    imageModal.classList.remove('hidden', 'pointer-events-none');
-    setTimeout(() => {
-      imageModal.classList.add('opacity-100');
-    }, 10);
-    playCyberSound(580, 'sine', 0.12);
-  }
-
-  function closeImageModal() {
-    if (!imageModal) return;
-    imageModal.classList.remove('opacity-100');
-    setTimeout(() => {
-      imageModal.classList.add('hidden', 'pointer-events-none');
-    }, 300);
-    playCyberSound(290, 'sine', 0.08);
-  }
-
-  if (modalTrigger) modalTrigger.addEventListener('click', openImageModal);
-  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeImageModal);
-  if (imageModal) {
-    imageModal.addEventListener('click', (e) => {
-      if (e.target === imageModal) closeImageModal();
-    });
-  }
-
-  // 4. Social Feed Upload Modal & Storage
+  // 3. Publish Modal Logic (News vs Photo Tab Switcher)
   const openUploadModalBtn = document.getElementById('open-upload-modal-btn');
-  const uploadModal = document.getElementById('upload-modal');
-  const closeUploadModalBtn = document.getElementById('close-upload-modal-btn');
-  const uploadForm = document.getElementById('upload-memory-form');
+  const openPublishNewsBtn = document.getElementById('open-publish-news-btn');
+  const mobileQuickPostBtn = document.getElementById('mobile-quick-post-btn');
+  const publishModal = document.getElementById('publish-modal');
+  const closePublishModalBtn = document.getElementById('close-publish-modal-btn');
+  const switchTabPhoto = document.getElementById('switch-tab-photo');
+  const switchTabNews = document.getElementById('switch-tab-news');
+  const publishTypeInput = document.getElementById('publish-type');
+  const formPhotoContainer = document.getElementById('form-photo-container');
+  const formNewsTitleContainer = document.getElementById('form-news-title-container');
+  const publishForm = document.getElementById('publish-item-form');
   const photoFileInput = document.getElementById('photo-file-input');
   const uploadPreviewWrap = document.getElementById('upload-preview-wrap');
   const uploadPreviewImg = document.getElementById('upload-preview-img');
@@ -79,21 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentImageDataUrl = '';
 
-  function openUploadModal() {
-    if (!uploadModal) return;
-    uploadModal.classList.remove('hidden', 'pointer-events-none');
+  function openPublishModal(defaultMode = 'photos') {
+    if (!publishModal) return;
+    setPublishMode(defaultMode);
+    publishModal.classList.remove('hidden', 'pointer-events-none');
     setTimeout(() => {
-      uploadModal.classList.add('opacity-100');
+      publishModal.classList.add('opacity-100');
     }, 10);
     playCyberSound(620, 'square', 0.09);
   }
 
-  function closeUploadModal() {
-    if (!uploadModal) return;
-    uploadModal.classList.remove('opacity-100');
+  function closePublishModal() {
+    if (!publishModal) return;
+    publishModal.classList.remove('opacity-100');
     setTimeout(() => {
-      uploadModal.classList.add('hidden', 'pointer-events-none');
-      uploadForm.reset();
+      publishModal.classList.add('hidden', 'pointer-events-none');
+      publishForm.reset();
       currentImageDataUrl = '';
       if (uploadPreviewWrap && uploadPlaceholder) {
         uploadPreviewWrap.classList.add('hidden');
@@ -103,22 +80,42 @@ document.addEventListener('DOMContentLoaded', () => {
     playCyberSound(310, 'sine', 0.08);
   }
 
-  if (openUploadModalBtn) openUploadModalBtn.addEventListener('click', openUploadModal);
-  if (closeUploadModalBtn) closeUploadModalBtn.addEventListener('click', closeUploadModal);
-  if (uploadModal) {
-    uploadModal.addEventListener('click', (e) => {
-      if (e.target === uploadModal) closeUploadModal();
+  function setPublishMode(mode) {
+    if (!publishTypeInput) return;
+    publishTypeInput.value = mode;
+    if (mode === 'photos') {
+      switchTabPhoto.className = 'py-2 rounded-xl bg-cyber-orange text-black font-bold uppercase tracking-wider transition-colors';
+      switchTabNews.className = 'py-2 rounded-xl text-slate-400 hover:text-white font-bold uppercase tracking-wider transition-colors';
+      formPhotoContainer.classList.remove('hidden');
+      formNewsTitleContainer.classList.add('hidden');
+    } else {
+      switchTabNews.className = 'py-2 rounded-xl bg-cyber-cyan text-black font-bold uppercase tracking-wider transition-colors';
+      switchTabPhoto.className = 'py-2 rounded-xl text-slate-400 hover:text-white font-bold uppercase tracking-wider transition-colors';
+      formPhotoContainer.classList.add('hidden');
+      formNewsTitleContainer.classList.remove('hidden');
+    }
+  }
+
+  if (openUploadModalBtn) openUploadModalBtn.addEventListener('click', () => openPublishModal('photos'));
+  if (openPublishNewsBtn) openPublishNewsBtn.addEventListener('click', () => openPublishModal('news'));
+  if (mobileQuickPostBtn) mobileQuickPostBtn.addEventListener('click', () => openPublishModal('photos'));
+  if (closePublishModalBtn) closePublishModalBtn.addEventListener('click', closePublishModal);
+  if (switchTabPhoto) switchTabPhoto.addEventListener('click', () => setPublishMode('photos'));
+  if (switchTabNews) switchTabNews.addEventListener('click', () => setPublishMode('news'));
+
+  if (publishModal) {
+    publishModal.addEventListener('click', (e) => {
+      if (e.target === publishModal) closePublishModal();
     });
   }
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (uploadModal && !uploadModal.classList.contains('hidden')) closeUploadModal();
-      if (imageModal && !imageModal.classList.contains('hidden')) closeImageModal();
+    if (e.key === 'Escape' && publishModal && !publishModal.classList.contains('hidden')) {
+      closePublishModal();
     }
   });
 
-  // Handle Photo File Selection & Client-Side Preview
+  // Handle Photo Preview
   if (photoFileInput) {
     photoFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -138,80 +135,136 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Load and Render User Uploaded Memories from LocalStorage
-  function loadStoredMemories() {
+  // 4. LocalStorage Data Management for Posts & Comments
+  function getStoredPosts() {
     try {
-      const stored = localStorage.getItem('dive_user_memories');
-      const memories = stored ? JSON.parse(stored) : [];
-      return memories;
+      const stored = localStorage.getItem('dive_cyber_posts');
+      return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
     }
   }
 
-  function saveStoredMemories(memories) {
+  function saveStoredPosts(posts) {
     try {
-      localStorage.setItem('dive_user_memories', JSON.stringify(memories));
+      localStorage.setItem('dive_cyber_posts', JSON.stringify(posts));
     } catch (err) {
-      console.warn('Storage limit reached', err);
+      console.warn('Storage limit', err);
     }
   }
 
-  function renderMemories() {
+  function getStoredComments() {
+    try {
+      const stored = localStorage.getItem('dive_cyber_comments');
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveStoredComments(comments) {
+    try {
+      localStorage.setItem('dive_cyber_comments', JSON.stringify(comments));
+    } catch (err) {
+      console.warn('Storage error', err);
+    }
+  }
+
+  // Render Dynamic Posts and Hydrate Existing Ones
+  function renderAllPosts() {
     if (!feedGrid) return;
-    const memories = loadStoredMemories();
-    const existingCards = feedGrid.querySelectorAll('.user-uploaded-card');
-    existingCards.forEach(c => c.remove());
+    const userPosts = getStoredPosts();
+    feedGrid.querySelectorAll('.user-generated-post').forEach(el => el.remove());
 
-    memories.forEach((mem, index) => {
+    userPosts.forEach(post => {
       const card = document.createElement('article');
-      card.className = 'user-uploaded-card feed-card group rounded-3xl bg-[#070B14]/90 border border-cyber-orange/60 p-4 sm:p-5 flex flex-col justify-between backdrop-blur-xl hover:border-cyber-orange hover:shadow-[0_0_35px_rgba(255,102,0,0.45)] transition-all duration-300';
-      card.setAttribute('data-category', mem.category || 'in-game');
+      card.className = `user-generated-post feed-card group rounded-3xl bg-[#070B14]/90 border ${post.type === 'news' ? 'border-cyber-cyan/50 hover:shadow-[0_0_35px_rgba(0,240,255,0.35)]' : 'border-cyber-orange/50 hover:shadow-[0_0_35px_rgba(255,102,0,0.35)]'} p-5 flex flex-col justify-between backdrop-blur-xl transition-all duration-300`;
+      card.setAttribute('data-id', post.id);
+      card.setAttribute('data-type', post.type);
 
-      const avatarInitials = mem.author ? mem.author.replace('@', '').slice(0, 2).toUpperCase() : 'RN';
+      const avatarLetter = post.author ? post.author.replace('@', '').slice(0, 2).toUpperCase() : 'RN';
+      const badgeColor = post.type === 'news' ? 'bg-cyber-cyan/20 border-cyber-cyan/40 text-cyber-cyan' : 'bg-cyber-orange/15 border-cyber-orange/30 text-cyber-orange';
+      const accentText = post.type === 'news' ? 'text-cyber-cyan' : 'text-cyber-orange';
+
+      let mediaHtml = '';
+      if (post.type === 'photos' && post.image) {
+        mediaHtml = `
+          <div class="relative w-full aspect-square rounded-2xl overflow-hidden mb-3.5 bg-black border border-white/10 group-hover:border-cyber-orange/30 transition-colors">
+            <img src="${post.image}" alt="${post.caption || 'Foto Runner'}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/10 font-mono text-[9px] text-cyber-orange">
+              DATASPACE_LOG_${post.id.slice(-4)}.RAW
+            </div>
+          </div>
+        `;
+      }
+
+      let titleHtml = '';
+      if (post.type === 'news' && post.title) {
+        titleHtml = `
+          <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-cyber-cyan transition-colors mb-2">
+            ${post.title}
+          </h3>
+        `;
+      }
 
       card.innerHTML = `
-        <div class="flex items-center justify-between mb-3.5">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full border border-cyber-orange bg-cyber-orange/20 flex items-center justify-center font-mono font-bold text-xs text-cyber-orange">
-              ${avatarInitials}
+        <div>
+          <div class="flex items-center justify-between mb-3.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full border border-cyber-orange bg-cyber-orange/20 flex items-center justify-center font-mono font-bold text-xs text-cyber-orange">
+                ${avatarLetter}
+              </div>
+              <div>
+                <span class="font-mono text-xs font-bold text-white block">${post.author}</span>
+                <span class="font-mono text-[10px] text-slate-400">${post.timestamp}</span>
+              </div>
             </div>
-            <div>
-              <span class="font-mono text-xs font-bold text-white block">${mem.author}</span>
-              <span class="font-mono text-[10px] text-slate-400">${mem.timestamp}</span>
+            <span class="px-2.5 py-0.5 rounded-full ${badgeColor} font-mono text-[9px] tracking-wider uppercase font-bold border">
+              ${post.type === 'news' ? '📰 NOTIZIA' : '📸 FOTO'}
+            </span>
+          </div>
+
+          ${mediaHtml}
+
+          <div class="space-y-1.5 mb-4">
+            ${titleHtml}
+            <p class="text-sm font-sans text-slate-200 leading-snug">
+              “${post.content || post.caption || ''}”
+            </p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-[10px] ${accentText}">
+              <span>#divelarp</span>
+              <span>#the_net</span>
+              <span>#live_update</span>
             </div>
           </div>
-          <span class="px-2.5 py-0.5 rounded-full bg-cyber-orange/15 border border-cyber-orange/40 text-cyber-orange font-mono text-[9px] tracking-wider uppercase font-semibold">
-            ${mem.category.toUpperCase()}
-          </span>
         </div>
 
-        <div class="relative w-full aspect-square rounded-2xl overflow-hidden mb-3.5 bg-black border border-white/10 group-hover:border-cyber-orange/40 transition-colors">
-          <img src="${mem.image}" alt="${mem.caption}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
-          <div class="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/10 font-mono text-[9px] text-cyber-orange">
-            USER_MEM_${index + 1}.RAW // NEURAL UPLOAD
+        <div>
+          <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
+            <button class="like-btn flex items-center gap-1.5 hover:${accentText} transition-colors" data-likes="${post.likes || 1}">
+              <span class="heart-icon">❤️</span>
+              <span class="like-count font-bold">${post.likes || 1}</span>
+            </button>
+            
+            <button class="toggle-comments-btn ${accentText} hover:text-white transition-colors flex items-center gap-1 text-[11px] font-bold">
+              <span>💬</span>
+              <span class="comments-counter">0 Commenti</span>
+              <span class="toggle-arrow text-[10px]">▼</span>
+            </button>
           </div>
-        </div>
 
-        <div class="space-y-1.5 mb-4">
-          <p class="text-sm font-sans text-slate-200 leading-snug">
-            “${mem.caption}”
-          </p>
-          <div class="flex flex-wrap gap-1.5 font-mono text-[10px] text-cyber-orange">
-            <span>#divelarp</span>
-            <span>#runner_memory</span>
-            <span>#dataspace</span>
-          </div>
-        </div>
+          <div class="comments-thread-container hidden mt-4 pt-3 border-t border-white/10 space-y-3">
+            <div class="comments-list space-y-2 max-h-48 overflow-y-auto pr-1">
+              <p class="no-comments-msg text-[11px] text-slate-500 font-mono italic">Nessun commento ancora. Scrivi la prima risposta!</p>
+            </div>
 
-        <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
-          <button class="like-btn flex items-center gap-1.5 hover:text-cyber-orange transition-colors" data-likes="${mem.likes || 1}">
-            <span class="heart-icon">❤️</span>
-            <span class="like-count font-bold">${mem.likes || 1}</span>
-          </button>
-          <div class="flex items-center gap-3">
-            <span class="text-slate-500 text-[11px]">⚡ SINCRONIZZATO</span>
-            <span class="text-cyber-orange font-bold text-[10px]">MEMORIA REALE</span>
+            <form class="add-comment-form flex items-center gap-2 pt-2">
+              <input type="text" placeholder="Callsign..." class="comment-author-input w-24 px-2.5 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-orange text-white font-mono text-[10px] outline-none" required>
+              <input type="text" placeholder="Rispondi..." class="comment-text-input flex-1 px-3 py-1.5 rounded-lg bg-black/80 border border-white/15 focus:border-cyber-orange text-white font-sans text-xs outline-none" required>
+              <button type="submit" class="px-3 py-1.5 rounded-lg bg-cyber-orange text-black font-mono font-bold text-[10px] uppercase hover:bg-white transition-colors">
+                Invia
+              </button>
+            </form>
           </div>
         </div>
       `;
@@ -219,79 +272,156 @@ document.addEventListener('DOMContentLoaded', () => {
       feedGrid.insertBefore(card, feedGrid.firstChild);
     });
 
-    // Update count
+    // Update total count
     const totalCards = feedGrid.querySelectorAll('.feed-card').length;
     if (feedCountEl) feedCountEl.textContent = totalCards;
-    attachLikeEvents();
+
+    bindInteractivePostEvents();
   }
 
-  // Handle Form Submission
-  if (uploadForm) {
-    uploadForm.addEventListener('submit', (e) => {
+  // Handle Form Submission (Publish News or Photo)
+  if (publishForm) {
+    publishForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (!currentImageDataUrl) {
-        alert('Seleziona o scatta una foto per procedere.');
+      const mode = publishTypeInput.value;
+      const authorInput = document.getElementById('post-author-input');
+      const contentInput = document.getElementById('post-content-input');
+      const newsTitleInput = document.getElementById('news-title-input');
+
+      let author = authorInput.value.trim();
+      if (!author.startsWith('@')) author = '@' + author;
+
+      if (mode === 'photos' && !currentImageDataUrl) {
+        alert('Seleziona una foto per pubblicare il post.');
         return;
       }
 
-      const handleInput = document.getElementById('runner-handle-input');
-      const categorySelect = document.getElementById('category-select');
-      const captionInput = document.getElementById('caption-input');
-
-      let author = handleInput.value.trim();
-      if (!author.startsWith('@')) author = '@' + author;
-
-      const newMemory = {
-        id: 'mem_' + Date.now(),
+      const newPost = {
+        id: 'post_' + Date.now(),
+        type: mode,
         author: author,
-        category: categorySelect.value,
-        caption: captionInput.value.trim(),
-        image: currentImageDataUrl,
+        title: mode === 'news' ? newsTitleInput.value.trim() : '',
+        content: contentInput.value.trim(),
+        image: mode === 'photos' ? currentImageDataUrl : null,
         timestamp: 'Poco fa',
         likes: 1
       };
 
-      const memories = loadStoredMemories();
-      memories.unshift(newMemory);
-      saveStoredMemories(memories);
+      const posts = getStoredPosts();
+      posts.unshift(newPost);
+      saveStoredPosts(posts);
 
-      renderMemories();
-      closeUploadModal();
+      renderAllPosts();
+      closePublishModal();
       playCyberSound(880, 'square', 0.15);
 
-      // Scroll smoothly to feed
-      const gallerySec = document.getElementById('gallery');
-      if (gallerySec) gallerySec.scrollIntoView({ behavior: 'smooth' });
+      const netSec = document.getElementById('social-net');
+      if (netSec) netSec.scrollIntoView({ behavior: 'smooth' });
     });
   }
 
-  // 5. Category Filtering
-  const filterBtns = document.querySelectorAll('.feed-filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => {
-        b.classList.remove('active', 'border-cyber-orange', 'bg-cyber-orange/20', 'text-cyber-orange', 'font-bold');
-        b.classList.add('border-white/10', 'bg-white/5', 'text-slate-400');
-      });
-      btn.classList.add('active', 'border-cyber-orange', 'bg-cyber-orange/20', 'text-cyber-orange', 'font-bold');
-      btn.classList.remove('border-white/10', 'bg-white/5', 'text-slate-400');
+  // Bind Comment Threads and Like Buttons to All Posts
+  function bindInteractivePostEvents() {
+    const commentsStorage = getStoredComments();
 
-      const filter = btn.getAttribute('data-filter');
-      const cards = feedGrid.querySelectorAll('.feed-card');
-      cards.forEach(card => {
-        const cat = card.getAttribute('data-category');
-        if (filter === 'all' || cat === filter) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
+    document.querySelectorAll('.feed-card').forEach(card => {
+      const postId = card.getAttribute('data-id') || 'post_default';
+      const toggleBtn = card.querySelector('.toggle-comments-btn');
+      const threadContainer = card.querySelector('.comments-thread-container');
+      const commentsList = card.querySelector('.comments-list');
+      const counterSpan = card.querySelector('.comments-counter');
+      const arrowSpan = card.querySelector('.toggle-arrow');
+      const commentForm = card.querySelector('.add-comment-form');
+
+      // Hydrate stored comments for this post
+      if (commentsStorage[postId] && commentsStorage[postId].length > 0) {
+        const stored = commentsStorage[postId];
+        if (commentsList) {
+          commentsList.querySelectorAll('.no-comments-msg').forEach(el => el.remove());
+          stored.forEach(c => {
+            const commentEl = document.createElement('div');
+            commentEl.className = 'p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs';
+            commentEl.innerHTML = `
+              <div class="flex items-center justify-between font-mono text-[10px] text-cyber-cyan mb-1">
+                <span class="font-bold">${c.author}</span>
+                <span class="text-slate-500">${c.time}</span>
+              </div>
+              <p class="text-slate-200">${c.text}</p>
+            `;
+            commentsList.appendChild(commentEl);
+          });
         }
-      });
-      playCyberSound(500, 'sine', 0.05);
-    });
-  });
+        if (counterSpan) {
+          const totalComments = commentsList ? commentsList.children.length : stored.length;
+          counterSpan.textContent = `${totalComments} Commenti`;
+        }
+      }
 
-  // 6. Like Button Reactions
-  function attachLikeEvents() {
+      // Toggle Comments visibility
+      if (toggleBtn && threadContainer) {
+        toggleBtn.onclick = () => {
+          const isHidden = threadContainer.classList.contains('hidden');
+          if (isHidden) {
+            threadContainer.classList.remove('hidden');
+            if (arrowSpan) arrowSpan.textContent = '▲';
+            playCyberSound(500, 'triangle', 0.05);
+          } else {
+            threadContainer.classList.add('hidden');
+            if (arrowSpan) arrowSpan.textContent = '▼';
+            playCyberSound(400, 'sine', 0.05);
+          }
+        };
+      }
+
+      // Submit Comment
+      if (commentForm && commentsList) {
+        commentForm.onsubmit = (e) => {
+          e.preventDefault();
+          const authorIn = commentForm.querySelector('.comment-author-input');
+          const textIn = commentForm.querySelector('.comment-text-input');
+
+          let author = authorIn.value.trim();
+          if (!author.startsWith('@')) author = '@' + author;
+          const text = textIn.value.trim();
+
+          const newComment = {
+            author: author,
+            text: text,
+            time: 'Poco fa'
+          };
+
+          // Save to storage
+          const allComments = getStoredComments();
+          if (!allComments[postId]) allComments[postId] = [];
+          allComments[postId].push(newComment);
+          saveStoredComments(allComments);
+
+          // Append to DOM
+          commentsList.querySelectorAll('.no-comments-msg').forEach(el => el.remove());
+          const commentEl = document.createElement('div');
+          commentEl.className = 'p-2.5 rounded-xl bg-black/50 border border-white/10 font-sans text-xs animate-fadeIn';
+          commentEl.innerHTML = `
+            <div class="flex items-center justify-between font-mono text-[10px] text-cyber-orange mb-1">
+              <span class="font-bold">${newComment.author}</span>
+              <span class="text-slate-500">${newComment.time}</span>
+            </div>
+            <p class="text-slate-200">${newComment.text}</p>
+          `;
+          commentsList.appendChild(commentEl);
+          textIn.value = '';
+
+          // Update Counter
+          if (counterSpan) {
+            const total = commentsList.children.length;
+            counterSpan.textContent = `${total} Commenti`;
+          }
+
+          playCyberSound(700, 'square', 0.08);
+        };
+      }
+    });
+
+    // Like buttons
     document.querySelectorAll('.like-btn').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
@@ -309,9 +439,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  renderMemories();
+  // 5. Category Filtering (All / News / Photos / Discussions)
+  const filterBtns = document.querySelectorAll('.feed-filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => {
+        b.classList.remove('active', 'border-cyber-orange', 'bg-cyber-orange/20', 'text-cyber-orange', 'font-bold');
+        b.classList.add('border-white/10', 'bg-white/5', 'text-slate-400');
+      });
+      btn.classList.add('active', 'border-cyber-orange', 'bg-cyber-orange/20', 'text-cyber-orange', 'font-bold');
+      btn.classList.remove('border-white/10', 'bg-white/5', 'text-slate-400');
 
-  // 7. Web Audio API Cyber SFX Synthesizer
+      const filter = btn.getAttribute('data-filter');
+      const cards = feedGrid.querySelectorAll('.feed-card');
+      cards.forEach(card => {
+        const type = card.getAttribute('data-type');
+        if (filter === 'all') {
+          card.classList.remove('hidden');
+        } else if (filter === 'news' && type === 'news') {
+          card.classList.remove('hidden');
+        } else if (filter === 'photos' && type === 'photos') {
+          card.classList.remove('hidden');
+        } else if (filter === 'discussions') {
+          card.classList.remove('hidden'); // shows all with comments
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+      playCyberSound(500, 'sine', 0.05);
+    });
+  });
+
+  renderAllPosts();
+
+  // 6. Web Audio API Cyber SFX Synthesizer
   let audioCtx = null;
   let sfxEnabled = false;
   const sfxToggle = document.getElementById('sfx-toggle');
@@ -351,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
       osc.start();
       osc.stop(ctx.currentTime + duration);
     } catch {
-      // Audio fallback
+      // silent
     }
   }
 
@@ -379,13 +540,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sfxToggle) sfxToggle.addEventListener('click', toggleAudio);
   if (sfxMobileToggle) sfxMobileToggle.addEventListener('click', toggleAudio);
 
-  // Attach hover/click sounds
+  // Hover sounds
   document.querySelectorAll('.cyber-btn-sound, a, button').forEach(el => {
     el.addEventListener('mouseenter', () => playCyberSound(880, 'sine', 0.03));
     el.addEventListener('click', () => playCyberSound(520, 'triangle', 0.08));
   });
 
-  // 8. Dynamic Telemetry Coordinates
+  // 7. Dynamic Telemetry Coordinates
   const coordEl = document.getElementById('telemetry-coord');
   if (coordEl) {
     setInterval(() => {
