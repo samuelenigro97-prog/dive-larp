@@ -6,12 +6,34 @@
   --bg-obsidian: #04060A;
   --bg-carbon: #080B12;
   --bg-slot: #0C111C;
-  --border-tech: rgba(255, 255, 255, 0.1);
-  --border-cyan: rgba(0, 240, 255, 0.35);
-  --border-orange: rgba(255, 102, 0, 0.45);
-  --dive-orange: #FF6600;
-  --dive-cyan: #00F0FF;
+  --border-tech: rgba(184, 41, 255, 0.22);
+  --border-cyan: rgba(0, 212, 255, 0.4);
+  --border-orange: rgba(255, 107, 0, 0.5);
+  --dive-orange: #FF6B00;
+  --dive-purple: #B829FF;
+  --dive-cyan: #00D4FF;
   --dive-red: #FF2A4B;
+}
+
+.neon-orange {
+  text-shadow: 0 0 12px rgba(255, 107, 0, 0.55), 0 0 28px rgba(255, 107, 0, 0.25);
+}
+
+.neon-purple {
+  text-shadow: 0 0 12px rgba(184, 41, 255, 0.55), 0 0 28px rgba(184, 41, 255, 0.25);
+}
+
+.neon-cyan {
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.55), 0 0 28px rgba(0, 212, 255, 0.22);
+}
+
+.cyberware-slot-purple {
+  border-color: rgba(184, 41, 255, 0.32);
+}
+
+.cyberware-slot-purple:hover {
+  border-color: var(--dive-purple);
+  background: linear-gradient(135deg, rgba(184, 41, 255, 0.1) 0%, rgba(7, 10, 18, 0.98) 100%);
 }
 
 /* Subtle CRT Scanlines */
