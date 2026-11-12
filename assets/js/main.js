@@ -1,11 +1,12 @@
 // ==========================================================================
-// DIVE Cyberpunk LARP - Clean Engine & Companion Systems
+// DIVE Cyberpunk LARP - Complete Engine & Mechanics
+// Based on LARP Design Call & Rulebook
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
 
   // --------------------------------------------------------------------------
-  // 1. Audio SFX Synthesizer
+  // 1. Audio Synthesizer (Zero external dependencies)
   // --------------------------------------------------------------------------
   let audioCtx = null;
   let sfxEnabled = true;
@@ -57,35 +58,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 2. Player Persistent State & Profile
+  // 2. Player State & Roster Simulation
   // --------------------------------------------------------------------------
   const DEFAULT_PLAYER = {
     callsign: '@V_Solo',
     role: 'MERCENARIO // SOLO',
+    secretId: '#V-7842',
     hp: 100,
+    psych: 10,
     fama: 3,
     wallet: 1500,
+    iceActive: true,
     traumas: [],
     transactions: [
       { id: 'tx_1', type: 'in', desc: 'Ingaggio iniziale corporativo', amount: 1500, time: 'Inizio Evento' }
     ],
     chatMessages: {
-      general: [
-        { author: '@DIVE_Control', text: 'Benvenuti nel Settore 04 Ciminiere. Mantenere le armi in sicura.', time: '19:00', role: 'CORPO' },
-        { author: '@Runner_Insolito', text: 'Frequenza aperta. Chi cerca squadra mi contatti al molo.', time: '19:05', role: 'SOLO' }
-      ],
-      squad: [
-        { author: '@Kuro_04', text: 'Obiettivo localizzato al secondo piano del padiglione.', time: '19:10', role: 'SOLO' }
-      ],
       fixer: [
-        { author: '@The_Fixer_Board', text: '[TAGLIA] 500 €$ per chi recupera il datashard della Militech.', time: '19:12', role: 'FIXER' }
+        { author: '@The_Fixer', text: '[TAGLIA] Cerco qualcuno per estrarre il datashard dal terminale blu al piano inferiore. Paga: 400 €$.', time: '19:00' },
+        { author: '@The_Fixer', text: 'Chi ha bisogno di codici bersaglio per intrusioni, mi trova all\'angolo bar.', time: '19:15' }
+      ],
+      corp: [
+        { author: '@DIVE_Control', text: 'Benvenuti nel Settore 04 Ciminiere. Vietato estrarre armi nei privé.', time: '19:00' }
+      ],
+      direct: [
+        { author: '@Kuro_04', text: 'Choom, hai visto chi c\'è al tavolo dei mercenari? Sembra della Militech.', time: '19:10' }
       ]
     }
   };
 
+  const ROSTER_SEED = [
+    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', hp: 100, psych: 10, wallet: 1500, ice: true },
+    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', hp: 100, psych: 25, wallet: 850, ice: false },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', hp: 75, psych: 45, wallet: 320, ice: true },
+    { callsign: '@CyberRex', role: 'CORPO // AGENTE', secretId: '#C-0012', hp: 100, psych: 0, wallet: 5400, ice: true },
+    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', hp: 100, psych: 15, wallet: 1200, ice: false }
+  ];
+
   function getPlayerState() {
     try {
-      const stored = localStorage.getItem('dive_player_state');
+      const stored = localStorage.getItem('dive_player_state_v2');
       return stored ? { ...DEFAULT_PLAYER, ...JSON.parse(stored) } : DEFAULT_PLAYER;
     } catch {
       return DEFAULT_PLAYER;
@@ -94,8 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function savePlayerState(state) {
     try {
-      localStorage.setItem('dive_player_state', JSON.stringify(state));
+      localStorage.setItem('dive_player_state_v2', JSON.stringify(state));
       syncPlayerUI();
+      renderAdminRoster();
     } catch (e) {
       console.warn('Storage error', e);
     }
@@ -104,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let player = getPlayerState();
 
   function syncPlayerUI() {
-    // Header Callout
+    // Header
     const headerCallsign = document.getElementById('header-player-callsign');
     const headerHp = document.getElementById('header-hp');
     const headerBalance = document.getElementById('header-wallet-balance');
@@ -115,28 +128,67 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (headerBalance) headerBalance.textContent = player.wallet.toLocaleString();
 
-    // Wallet
+    // Wallet display
     const walletBalanceDisplay = document.getElementById('wallet-balance-display');
     if (walletBalanceDisplay) walletBalanceDisplay.textContent = player.wallet.toLocaleString();
 
     // Profile Card
     const cardCallsign = document.getElementById('card-callsign');
     const cardRole = document.getElementById('card-role');
+    const cardSecretId = document.getElementById('card-secret-id');
     const playerHpText = document.getElementById('player-hp-text');
     const playerHpBar = document.getElementById('player-hp-bar');
+    const playerIceStatus = document.getElementById('player-ice-status');
+    const playerPsychText = document.getElementById('player-psych-text');
+    const playerPsychBar = document.getElementById('player-psych-bar');
+    const playerPsychDesc = document.getElementById('player-psych-desc');
+
     if (cardCallsign) cardCallsign.textContent = player.callsign;
     if (cardRole) cardRole.textContent = player.role;
+    if (cardSecretId) cardSecretId.textContent = player.secretId || '#V-7842';
     if (playerHpText) playerHpText.textContent = `${player.hp}% ${player.hp > 75 ? 'NOMINALE' : (player.hp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
     if (playerHpBar) {
       playerHpBar.style.width = `${player.hp}%`;
       playerHpBar.className = `h-full transition-all duration-500 ${player.hp > 50 ? 'bg-dive-green' : (player.hp > 25 ? 'bg-dive-orange' : 'bg-dive-red')}`;
     }
 
+    if (playerIceStatus) {
+      playerIceStatus.textContent = player.iceActive ? 'ATTIVO (1 HIT)' : 'DISATTIVATO / BREACHED';
+      playerIceStatus.className = player.iceActive ? 'text-dive-green font-bold text-xs mt-0.5' : 'text-dive-red font-bold text-xs mt-0.5';
+    }
+
+    // Cyberpsychosis
+    if (playerPsychText && playerPsychBar && playerPsychDesc) {
+      const p = player.psych || 0;
+      playerPsychBar.style.width = `${Math.min(100, p)}%`;
+      if (p < 25) {
+        playerPsychText.textContent = `${p}% STABILE`;
+        playerPsychText.className = 'text-dive-cyan font-bold';
+        playerPsychBar.className = 'h-full bg-dive-cyan transition-all duration-500';
+        playerPsychDesc.textContent = 'Attività sinaptica regolare. Nessun segnale di alienazione corporea.';
+      } else if (p < 60) {
+        playerPsychText.textContent = `${p}% AGITAZIONE`;
+        playerPsychText.className = 'text-dive-orange font-bold';
+        playerPsychBar.className = 'h-full bg-dive-orange transition-all duration-500';
+        playerPsychDesc.textContent = 'Sovraccarico neurale lieve: battito accelerato e tremolio cibernetico.';
+      } else if (p < 85) {
+        playerPsychText.textContent = `${p}% DISSOCIAZIONE`;
+        playerPsychText.className = 'text-dive-red font-bold';
+        playerPsychBar.className = 'h-full bg-dive-red transition-all duration-500';
+        playerPsychDesc.textContent = 'Allucinazioni uditive e distacco dalla realtà: recita paranoia con i compagni!';
+      } else {
+        playerPsychText.textContent = `${p}% CYBERPSICOSI!`;
+        playerPsychText.className = 'text-dive-purple font-black animate-pulse';
+        playerPsychBar.className = 'h-full bg-dive-purple animate-pulse transition-all duration-500';
+        playerPsychDesc.textContent = '⚠️ CYBERPSICOSI CONCLAMATA: Perdita totale di controllo. Necessario intervento Ripperdoc immediato!';
+      }
+    }
+
     // Traumas
     const traumasList = document.getElementById('traumas-list');
     if (traumasList) {
       if (!player.traumas || player.traumas.length === 0) {
-        traumasList.innerHTML = `<span class="text-slate-500 italic block">Nessun danno critico rilevato. Sistemi ottimali.</span>`;
+        traumasList.innerHTML = `<span class="text-slate-500 italic block">Nessun danno critico rilevato.</span>`;
       } else {
         traumasList.innerHTML = player.traumas.map(t => `
           <div class="px-2.5 py-1 rounded-lg bg-dive-red/10 border border-dive-red/30 text-dive-red font-mono text-[10px] flex items-center justify-between">
@@ -147,11 +199,74 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Modal QR details
+    const modalQrCallsign = document.getElementById('modal-qr-callsign');
+    const modalQrSecretId = document.getElementById('modal-qr-secret-id');
+    if (modalQrCallsign) modalQrCallsign.textContent = player.callsign;
+    if (modalQrSecretId) modalQrSecretId.textContent = player.secretId || '#V-7842';
+
     renderTransactions();
+    renderPersonalQR();
   }
 
   // --------------------------------------------------------------------------
-  // 3. Single Page Tab Navigation
+  // 3. Offline Vector QR Code Generator (Zero internet needed)
+  // --------------------------------------------------------------------------
+  function renderPersonalQR() {
+    const container = document.getElementById('my-qr-svg-container');
+    if (!container) return;
+
+    // Generate procedural QR-like SVG matrix encoded with player secret ID & callsign
+    const payload = `PLAYER:${player.callsign}:${player.secretId}`;
+    let hash = 0;
+    for (let i = 0; i < payload.length; i++) {
+      hash = ((hash << 5) - hash) + payload.charCodeAt(i);
+      hash |= 0;
+    }
+
+    const size = 15;
+    let rects = '';
+    
+    // Position detection corner patterns (Finder patterns)
+    const finderSize = 4;
+    function addFinder(startX, startY) {
+      for (let y = 0; y < finderSize; y++) {
+        for (let x = 0; x < finderSize; x++) {
+          if (x === 0 || x === finderSize - 1 || y === 0 || y === finderSize - 1 || (x >= 1 && x <= 2 && y >= 1 && y <= 2)) {
+            rects += `<rect x="${(startX + x) * 10}" y="${(startY + y) * 10}" width="10" height="10" fill="#04060A"/>`;
+          }
+        }
+      }
+    }
+
+    addFinder(0, 0);
+    addFinder(size - finderSize, 0);
+    addFinder(0, size - finderSize);
+
+    // Pseudorandom internal data points based on player payload
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        // Skip finder areas
+        if ((x < finderSize && y < finderSize) || (x >= size - finderSize && y < finderSize) || (x < finderSize && y >= size - finderSize)) {
+          continue;
+        }
+        const cellHash = Math.abs(Math.sin((x * 13 + y * 7 + hash)) * 10000) % 1;
+        if (cellHash > 0.45) {
+          rects += `<rect x="${x * 10}" y="${y * 10}" width="10" height="10" fill="#04060A"/>`;
+        }
+      }
+    }
+
+    container.innerHTML = `
+      <svg viewBox="0 0 ${size * 10} ${size * 10}" class="w-full h-full object-contain">
+        <rect width="${size * 10}" height="${size * 10}" fill="#FFFFFF"/>
+        ${rects}
+      </svg>
+    `;
+  }
+
+  // --------------------------------------------------------------------------
+  // 4. Tab Navigation System
   // --------------------------------------------------------------------------
   const tabTriggers = document.querySelectorAll('.nav-tab-trigger');
   const appTabs = document.querySelectorAll('.app-tab');
@@ -167,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Update Desktop Nav Text
+    // Desktop Nav
     document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
       if (btn.getAttribute('data-tab') === tabId) {
         btn.classList.add('text-dive-orange', 'font-bold');
@@ -178,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Update Mobile Dock Items
+    // Mobile Dock
     document.querySelectorAll('.mobile-dock-item').forEach(btn => {
       if (btn.getAttribute('data-tab') === tabId) {
         btn.classList.add('text-dive-orange', 'active');
@@ -204,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --------------------------------------------------------------------------
-  // 4. Quickhack 5-Seconds Combat Overlay
+  // 5. Quickhack 5-Seconds Combat Overlay
   // --------------------------------------------------------------------------
   const qhOverlay = document.getElementById('quickhack-combat-overlay');
   const qhCommandEl = document.getElementById('qh-combat-command');
@@ -219,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!qhOverlay) return;
     if (qhInterval) clearInterval(qhInterval);
 
-    qhCommandEl.textContent = commandName;
+    qhCommandEl.textContent = `OVERRIDE ${commandName}`;
     qhDescEl.textContent = description;
     qhOverlay.classList.remove('hidden');
     qhOverlay.classList.add('flex');
@@ -238,9 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
         qhSecondsTimer.textContent = '0.0';
         qhTimerBar.style.width = '0%';
         playCyberSound(300, 'square', 0.2);
-        setTimeout(() => {
-          closeQuickhackOverlay();
-        }, 800);
+        setTimeout(() => closeQuickhackOverlay(), 800);
       } else {
         qhSecondsTimer.textContent = timeLeft.toFixed(1);
         const pct = (timeLeft / 5.0) * 100;
@@ -268,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeQhBtn) closeQhBtn.addEventListener('click', closeQuickhackOverlay);
 
   // --------------------------------------------------------------------------
-  // 5. QR Code Optical Scanner & Manual Code Resolver
+  // 6. QR Code Scanner & Manual Resolver (Scans Scenes & Players)
   // --------------------------------------------------------------------------
   const startCameraBtn = document.getElementById('start-camera-scan-btn');
   const cameraPlaceholder = document.getElementById('camera-placeholder');
@@ -277,21 +390,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const scanResultCard = document.getElementById('scan-result-card');
   const scanBadge = document.getElementById('scan-badge');
   const scanOutputText = document.getElementById('scan-output-text');
+  const scanPlayerActions = document.getElementById('scan-player-actions');
+  const scanPayBtn = document.getElementById('scan-action-pay-btn');
+  const scanHackBtn = document.getElementById('scan-action-hack-btn');
 
   let html5QrScanner = null;
+  let detectedPlayer = null;
 
   function resolveCode(codeStr) {
-    const code = codeStr.trim().toUpperCase();
+    const raw = codeStr.trim();
+    const code = raw.toUpperCase();
     if (!scanResultCard || !scanBadge || !scanOutputText) return;
 
     scanResultCard.classList.remove('hidden');
+    if (scanPlayerActions) scanPlayerActions.classList.add('hidden');
     playCyberSound(750, 'square', 0.1);
 
-    if (code.includes('GREEN') || code.startsWith('RIPPER') || code.startsWith('CYB-G')) {
+    // Player QR scan detection (e.g. PLAYER:@Name:#Code or starts with #V-, #K-, #R-)
+    if (code.startsWith('PLAYER:') || code.startsWith('#') || code.startsWith('@')) {
+      let callsign = '@Runner';
+      let secretId = '#NX-0000';
+
+      if (code.startsWith('PLAYER:')) {
+        const parts = raw.split(':');
+        callsign = parts[1] || '@Runner';
+        secretId = parts[2] || '#NX-0000';
+      } else if (code.startsWith('#')) {
+        const match = ROSTER_SEED.find(r => r.secretId.toUpperCase() === code);
+        callsign = match ? match.callsign : '@Target_Runner';
+        secretId = code;
+      } else {
+        callsign = raw;
+        secretId = '#X-' + Math.floor(1000 + Math.random() * 9000);
+      }
+
+      detectedPlayer = { callsign, secretId };
+
+      scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
+      scanBadge.textContent = '🪪 PROFILO RUNNER RILEVATO';
+      scanOutputText.textContent = `[TARGET ACQUISITO] Rilevato Cyberdeck di ${callsign} (ID: ${secretId}). Scegli se trasferire EuroDollari o avviare l'intrusione clandestina.`;
+      
+      if (scanPlayerActions) scanPlayerActions.classList.remove('hidden');
+
+    } else if (code.includes('GREEN') || code.startsWith('RIPPER') || code.startsWith('CYB-G')) {
       scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-green/20 text-dive-green border border-dive-green/40';
       scanBadge.textContent = '🟢 IMPIANTO VERDE';
-      scanOutputText.textContent = `[ACCESSO CONCESSO] Rilevato impianto Ripperdoc compatibile: "Stabilizzatore Neurale Mk.3". Salute +25% e rimozione traumi.`;
-      
+      scanOutputText.textContent = `[ACCESSO CONCESSO] Rilevato cromo di scena compatibile: "Stabilizzatore Neurale Mk.3". Salute +25% e rimozione traumi.`;
       player.hp = Math.min(100, player.hp + 25);
       player.traumas = [];
       savePlayerState(player);
@@ -299,9 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (code.includes('BLUE') || code.startsWith('TERM') || code.startsWith('CYB-B')) {
       const lootedEddies = Math.floor(Math.random() * 200) + 100;
       scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-cyan/20 text-dive-cyan border border-dive-cyan/40';
-      scanBadge.textContent = '🔵 DISPOSITIVO BLU';
-      scanOutputText.textContent = `[HACKING RIUSCITO] Terminale forzato! Dati scaricati e accreditati +€$ ${lootedEddies} nel tuo Wallet.`;
-      
+      scanBadge.textContent = '🔵 TERMINALE BLU';
+      scanOutputText.textContent = `[HACKING RIUSCITO] Terminale di sicurezza violato! Scaricati file riservati e accreditati +€$ ${lootedEddies} nel tuo Wallet.`;
       player.wallet += lootedEddies;
       player.transactions.unshift({
         id: 'tx_' + Date.now(),
@@ -315,14 +458,32 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (code.includes('RED') || code.startsWith('SAFE') || code.startsWith('CYB-R')) {
       scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-red/20 text-dive-red border border-dive-red/40';
       scanBadge.textContent = '🔴 CASSAFORTE / ICE';
-      scanOutputText.textContent = `[ALLARME SICUREZZA] Dispositivo protetto da contromisure ICE! Quickhack "AL BUIO!" consigliato.`;
+      scanOutputText.textContent = `[ALLARME SICUREZZA] Dispositivo protetto da ICE corporativo! Richiesto comando vocale "OVERRIDE AL BUIO!" per disinnescare.`;
       launchQuickhackCombat('AL BUIO!', 'Neutralizza il sensore rosso entro 5 secondi prima che scatti l\'allarme sonoro!');
 
     } else {
       scanBadge.className = 'px-2 py-0.5 rounded text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
       scanBadge.textContent = 'DATASHARD GENERICO';
-      scanOutputText.textContent = `Codice [${code}] decifrato: Log salvato nel datashard di sistema.`;
+      scanOutputText.textContent = `Codice [${code}] decifrato: Log archiviato nel dataspace locale.`;
     }
+  }
+
+  if (scanPayBtn) {
+    scanPayBtn.addEventListener('click', () => {
+      if (!detectedPlayer) return;
+      switchTab('wallet');
+      const recInput = document.getElementById('transfer-recipient-input');
+      if (recInput) recInput.value = detectedPlayer.callsign;
+    });
+  }
+
+  if (scanHackBtn) {
+    scanHackBtn.addEventListener('click', () => {
+      if (!detectedPlayer) return;
+      const targetInput = document.getElementById('hack-target-callsign');
+      if (targetInput) targetInput.value = detectedPlayer.secretId;
+      targetInput.scrollIntoView({ behavior: 'smooth' });
+    });
   }
 
   if (manualQrForm && manualCodeInput) {
@@ -358,55 +519,80 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 6. Off-Fight Hacking / Siphon Minigame
+  // 7. Off-Fight Hacking / Sifone con Meccanica ICE (Firewall Defense)
   // --------------------------------------------------------------------------
   const hackForm = document.getElementById('hack-target-form');
   const hackTargetCallsign = document.getElementById('hack-target-callsign');
   const hackWrap = document.getElementById('hack-progress-bar-wrap');
   const hackPct = document.getElementById('hack-percentage');
   const hackFill = document.getElementById('hack-fill-bar');
+  const hackStatusLabel = document.getElementById('hack-status-label');
+
+  let hackCooldown = false;
 
   if (hackForm) {
     hackForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const target = hackTargetCallsign.value.trim();
+      if (hackCooldown) {
+        alert('ICE Breaker in surriscaldamento! Attendi qualche secondo prima di ritentare.');
+        return;
+      }
+
+      const target = hackTargetCallsign.value.trim().toUpperCase();
       if (!target) return;
 
       if (hackWrap) hackWrap.classList.remove('hidden');
+      if (hackStatusLabel) hackStatusLabel.textContent = 'PROBING ICE FIREWALL...';
       let pct = 0;
       playCyberSound(500, 'sawtooth', 0.1);
 
       const iv = setInterval(() => {
-        pct += 20;
+        pct += 25;
         if (hackPct) hackPct.textContent = `${pct}%`;
         if (hackFill) hackFill.style.width = `${pct}%`;
 
         if (pct >= 100) {
           clearInterval(iv);
-          const siphonAmount = Math.floor(Math.random() * 150) + 50;
-          player.wallet += siphonAmount;
-          player.transactions.unshift({
-            id: 'tx_' + Date.now(),
-            type: 'in',
-            desc: `Sifone Crediti da ${target}`,
-            amount: siphonAmount,
-            time: 'Adesso'
-          });
-          savePlayerState(player);
-          playCyberSound(880, 'sine', 0.2);
-          alert(`[VIOLAZIONE RIUSCITA]\nICE di ${target} violato! Sottratti e trasferiti €$ ${siphonAmount} nel tuo wallet.`);
-          hackTargetCallsign.value = '';
+          
+          // Check target ICE defense: targets with ICE block the 1st intrusion!
+          const targetInRoster = ROSTER_SEED.find(r => r.secretId.toUpperCase() === target || r.callsign.toUpperCase() === target);
+          const hasIce = targetInRoster ? targetInRoster.ice : true;
+
+          if (hasIce && !target.includes('BYPASS')) {
+            // ICE defense blocks the hack!
+            if (targetInRoster) targetInRoster.ice = false; // Breaks ICE for second try
+            playCyberSound(220, 'square', 0.3);
+            alert(`[ICE ATTIVO RILEVATO!]\nIl firewall di ${target} ha respinto l'intrusione e tracciato il segnale!\nL'ICE ora è danneggiato: riprova o ottieni il codice bypass dal Fixer.`);
+            hackCooldown = true;
+            setTimeout(() => { hackCooldown = false; }, 8000);
+          } else {
+            // Intrusion Successful
+            const siphonAmount = Math.floor(Math.random() * 150) + 75;
+            player.wallet += siphonAmount;
+            player.transactions.unshift({
+              id: 'tx_' + Date.now(),
+              type: 'in',
+              desc: `Sifone Crediti da ${target}`,
+              amount: siphonAmount,
+              time: 'Adesso'
+            });
+            savePlayerState(player);
+            playCyberSound(880, 'sine', 0.2);
+            alert(`[HACK COMPLETATO]\nICE Breaker riuscito su ${target}! Drenati e accreditati €$ ${siphonAmount} nel tuo wallet.`);
+            hackTargetCallsign.value = '';
+          }
+
           setTimeout(() => {
             if (hackWrap) hackWrap.classList.add('hidden');
             if (hackFill) hackFill.style.width = '0%';
           }, 1000);
         }
-      }, 300);
+      }, 250);
     });
   }
 
   // --------------------------------------------------------------------------
-  // 7. Wallet Transfer & Transaction History
+  // 8. Wallet Transfers
   // --------------------------------------------------------------------------
   const transferForm = document.getElementById('transfer-money-form');
   const transferRecipient = document.getElementById('transfer-recipient-input');
@@ -465,23 +651,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 8. Health & Ripperdoc System
+  // 9. Health, Droga di Scena & Ripperdoc
   // --------------------------------------------------------------------------
   const takeDamageBtn = document.getElementById('take-damage-btn');
   const resetHpBtn = document.getElementById('reset-hp-btn');
+  const takeDrugBtn = document.getElementById('take-drug-btn');
   const openRipperdocBtn = document.getElementById('open-ripperdoc-btn');
   const ripperdocModal = document.getElementById('ripperdoc-modal');
   const closeRipperdocBtn = document.getElementById('close-ripperdoc-btn');
   const executeHealBtn = document.getElementById('execute-heal-btn');
 
+  if (takeDrugBtn) {
+    takeDrugBtn.addEventListener('click', () => {
+      player.psych = Math.min(100, (player.psych || 0) + 15);
+      player.hp = Math.min(100, player.hp + 25);
+      savePlayerState(player);
+      playCyberSound(350, 'sawtooth', 0.25);
+      alert('[SINTETICO ASSUNTO]\nInalazione completata: scarica di adrenalina (+25% HP stimolante temporaneo) ma la mente vacilla (+15% Cyberpsicosi!).');
+    });
+  }
+
   if (takeDamageBtn) {
     takeDamageBtn.addEventListener('click', () => {
       player.hp = Math.max(0, player.hp - 25);
       if (player.hp <= 50 && player.traumas.length === 0) {
-        player.traumas.push({ name: 'Ferita da Arma da Fuoco', desc: 'Mobilità ridotta al braccio secondario.' });
+        player.traumas.push({ name: 'Ferita da Proiettile', desc: 'Arto secondario fuori uso.' });
       }
       if (player.hp <= 0 && player.traumas.length < 2) {
-        player.traumas.push({ name: 'Shock Neurale Critico', desc: 'Necessario riavvio cibernetico sulla Sedia del Ripperdoc.' });
+        player.traumas.push({ name: 'Shock Neurale Critico', desc: 'Flatline! Richiesto intervento Ripperdoc.' });
       }
       savePlayerState(player);
       playCyberSound(200, 'sawtooth', 0.15);
@@ -513,10 +710,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (executeHealBtn) {
     executeHealBtn.addEventListener('click', () => {
       player.hp = 100;
+      player.psych = Math.max(0, (player.psych || 0) - 20);
       player.traumas = [];
       savePlayerState(player);
       playCyberSound(880, 'sine', 0.2);
-      alert('[INTERVENTO COMPLETATO]\nPunti salute ripristinati al 100% e traumi azzerati con successo sulla sedia del Ripperdoc.');
+      alert('[INTERVENTO COMPLETATO]\nPunti salute a 100%, traumi suturati e carico di cyberpsicosi stabilizzato.');
       if (ripperdocModal) {
         ripperdocModal.classList.remove('opacity-100');
         setTimeout(() => ripperdocModal.classList.add('hidden', 'pointer-events-none'), 300);
@@ -525,8 +723,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 9. Profile Callsign Modal
+  // 10. Personal QR Fullscreen Modal
   // --------------------------------------------------------------------------
+  const openMyQrBtn = document.getElementById('open-my-qr-btn');
+  const myQrModal = document.getElementById('my-qr-modal');
+  const closeMyQrBtn = document.getElementById('close-my-qr-btn');
+
+  if (openMyQrBtn && myQrModal) {
+    openMyQrBtn.addEventListener('click', () => {
+      myQrModal.classList.remove('hidden', 'pointer-events-none');
+      setTimeout(() => myQrModal.classList.add('opacity-100'), 10);
+    });
+  }
+
+  if (closeMyQrBtn && myQrModal) {
+    closeMyQrBtn.addEventListener('click', () => {
+      myQrModal.classList.remove('opacity-100');
+      setTimeout(() => myQrModal.classList.add('hidden', 'pointer-events-none'), 300);
+    });
+  }
+
+  // Profile Callsign & Role Switcher
   const openProfileBtn = document.getElementById('open-profile-btn');
   const profileEditModal = document.getElementById('profile-edit-modal');
   const closeProfileModalBtn = document.getElementById('close-profile-modal-btn');
@@ -566,19 +783,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 10. In-Game Radio Chat
+  // 11. Radio Chat (Fixer Contracts, Corp Broadcasts, Direct DMs 1-a-1)
   // --------------------------------------------------------------------------
-  let currentChatChannel = 'general';
+  let currentChatChannel = 'fixer';
   const chatMessagesContainer = document.getElementById('chat-messages-container');
   const chatSendForm = document.getElementById('chat-send-form');
   const chatTextInput = document.getElementById('chat-text-input');
   const currentChannelLabel = document.getElementById('current-channel-label');
+  const dmRecipientWrap = document.getElementById('dm-recipient-wrap');
+  const dmRecipientSelect = document.getElementById('dm-recipient-select');
   const chatChannelBtns = document.querySelectorAll('.chat-channel-btn');
 
   function renderChat() {
     if (!chatMessagesContainer) return;
     const msgs = player.chatMessages[currentChatChannel] || [];
-    
+
     chatMessagesContainer.innerHTML = msgs.map(msg => {
       const isMe = msg.author === player.callsign;
       return `
@@ -600,17 +819,23 @@ document.addEventListener('DOMContentLoaded', () => {
   chatChannelBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       chatChannelBtns.forEach(b => {
-        b.className = 'chat-channel-btn px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white';
+        b.className = 'chat-channel-btn px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap';
       });
-      btn.className = 'chat-channel-btn active px-3 py-1.5 rounded-lg border border-dive-cyan/40 bg-dive-cyan/15 text-dive-cyan font-semibold';
+      btn.className = 'chat-channel-btn active px-3 py-1.5 rounded-lg border border-dive-cyan/40 bg-dive-cyan/15 text-dive-cyan font-semibold whitespace-nowrap';
       currentChatChannel = btn.getAttribute('data-channel');
-      
-      const channelLabels = {
-        general: '# FREQUENZA PUBBLICA CIMINIERE',
-        squad: '# SQUADRA CORPO // CANALE PRIVATO',
-        fixer: '# TAGLIE & CONTRATTI FIXER'
-      };
-      if (currentChannelLabel) currentChannelLabel.textContent = channelLabels[currentChatChannel] || '# RADIO';
+
+      if (currentChatChannel === 'direct') {
+        if (dmRecipientWrap) dmRecipientWrap.classList.remove('hidden');
+        if (currentChannelLabel) currentChannelLabel.textContent = '# DM DIRETTO PRIVATO';
+      } else {
+        if (dmRecipientWrap) dmRecipientWrap.classList.add('hidden');
+        const channelLabels = {
+          fixer: '# CONTRATTI & TAGLIE FIXER',
+          corp: '# DISPACCI UFFICIALI CORP & MASTER'
+        };
+        if (currentChannelLabel) currentChannelLabel.textContent = channelLabels[currentChatChannel] || '# RADIO';
+      }
+
       renderChat();
       playCyberSound(480, 'sine', 0.05);
     });
@@ -624,13 +849,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const recipient = (currentChatChannel === 'direct' && dmRecipientSelect) ? ` -> ${dmRecipientSelect.value}` : '';
 
       if (!player.chatMessages[currentChatChannel]) player.chatMessages[currentChatChannel] = [];
       player.chatMessages[currentChatChannel].push({
-        author: player.callsign,
+        author: player.callsign + recipient,
         text: text,
-        time: timeStr,
-        role: player.role
+        time: timeStr
       });
       savePlayerState(player);
       chatTextInput.value = '';
@@ -640,7 +865,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 11. Social Net Feed (Instagram-Style Minimalist UI)
+  // 12. Social Net Feed (Instagram Style with Media Implants Special Powers)
   // --------------------------------------------------------------------------
   const feedGrid = document.getElementById('social-feed-grid');
   const feedCountEl = document.getElementById('feed-count');
@@ -652,6 +877,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'dive.larp',
       location: 'Ciminiere Catania',
       isVerified: true,
+      isPinned: true,
       title: '[COMUNICATO] Movimenti nel Settore Ciminiere',
       content: 'I sensori confermano attività non autorizzate nell\'area industriale. Fixer e corporazioni stanno arruolando netrunner e mercenari.',
       image: null,
@@ -668,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
       author: 'dive.larp',
       location: 'Ciminiere Catania',
       isVerified: true,
+      isPinned: false,
       title: '',
       content: '“Hey Choom, ho avuto notizia di un Runner insolito, porta con sé del cromo particolare, roba che non si vede tutti i giorni…”',
       image: 'assets/images/runner-post.jpg',
@@ -682,7 +909,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getSocialPosts() {
     try {
-      const stored = localStorage.getItem('dive_social_feed_posts_clean_v1');
+      const stored = localStorage.getItem('dive_social_feed_posts_v3');
       return stored ? JSON.parse(stored) : INITIAL_POSTS;
     } catch {
       return INITIAL_POSTS;
@@ -691,7 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function saveSocialPosts(posts) {
     try {
-      localStorage.setItem('dive_social_feed_posts_clean_v1', JSON.stringify(posts));
+      localStorage.setItem('dive_social_feed_posts_v3', JSON.stringify(posts));
       renderSocialFeed();
     } catch (e) {
       console.warn(e);
@@ -701,16 +928,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderSocialFeed() {
     if (!feedGrid) return;
     const posts = getSocialPosts();
+    const isMediaOrAdmin = player.role.includes('MEDIA') || player.role.includes('ADMIN');
 
-    feedGrid.innerHTML = posts.map(post => {
+    // Sort pinned posts on top
+    const sortedPosts = [...posts].sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+
+    feedGrid.innerHTML = sortedPosts.map(post => {
       const isNews = post.type === 'news';
       const isAnon = post.isAnonymous;
 
       return `
-        <article class="cyber-panel p-1.5 transition-all" data-id="${post.id}" data-type="${post.type}" data-anon="${isAnon ? 'true' : 'false'}">
+        <article class="cyber-panel p-1.5 transition-all ${post.isPinned ? 'border-dive-orange/50' : ''}" data-id="${post.id}" data-type="${post.type}" data-anon="${isAnon ? 'true' : 'false'}">
           <div class="cyber-panel-inner p-4 sm:p-5 space-y-4">
             
-            <!-- User Header (Clean Instagram-like structure) -->
+            <!-- User Header -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center font-mono font-bold text-xs text-dive-orange">
@@ -719,15 +950,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                   <div class="flex items-center gap-1 font-mono text-xs font-bold text-white">
                     <span>${isAnon ? 'Ghost Net (Anonimo)' : post.author}</span>
-                    ${post.isVerified ? '<span class="text-dive-cyan text-[10px]" title="Verificato">✓</span>' : ''}
+                    ${post.isVerified ? '<span class="text-dive-cyan text-[10px]" title="Verificato Media/Corp">✓</span>' : ''}
+                    ${post.isPinned ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-dive-orange/20 text-dive-orange font-mono">PINNED</span>' : ''}
                   </div>
                   <div class="font-mono text-[10px] text-slate-500">${post.location || 'Settore 04'} • ${post.timestamp}</div>
                 </div>
               </div>
 
-              <span class="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/5 text-[9px] font-mono uppercase text-slate-400">
-                ${isAnon ? 'LEAK' : (isNews ? 'NOTIZIA' : 'FOTO')}
-              </span>
+              <!-- Media Powers: Pin and Delete -->
+              <div class="flex items-center gap-2">
+                ${isMediaOrAdmin ? `
+                  <button class="media-pin-btn text-[10px] text-slate-400 hover:text-dive-orange" data-id="${post.id}" title="Pinna in alto">
+                    📌
+                  </button>
+                  <button class="media-delete-btn text-[10px] text-slate-400 hover:text-dive-red" data-id="${post.id}" title="Cancella post">
+                    🗑️
+                  </button>
+                ` : ''}
+                <span class="px-2 py-0.5 rounded-full bg-white/5 border border-white/5 text-[9px] font-mono uppercase text-slate-400">
+                  ${isAnon ? 'LEAK' : (isNews ? 'NOTIZIA' : 'FOTO')}
+                </span>
+              </div>
             </div>
 
             <!-- Image (if available) -->
@@ -831,6 +1074,31 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
+    // Media Pin/Unpin
+    document.querySelectorAll('.media-pin-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        const p = posts.find(x => x.id === id);
+        if (p) {
+          p.isPinned = !p.isPinned;
+          saveSocialPosts(posts);
+          playCyberSound(650, 'sine', 0.1);
+        }
+      };
+    });
+
+    // Media Delete Post
+    document.querySelectorAll('.media-delete-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Vuoi rimuovere definitivamente questo post dal feed?')) {
+          const updated = posts.filter(x => x.id !== id);
+          saveSocialPosts(updated);
+          playCyberSound(300, 'square', 0.1);
+        }
+      };
+    });
+
     // Submit Comment
     document.querySelectorAll('.social-add-comment-form').forEach(form => {
       form.onsubmit = (e) => {
@@ -863,7 +1131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         b.className = 'feed-filter-btn px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap transition-colors';
       });
       btn.className = 'feed-filter-btn active px-3.5 py-1.5 rounded-full border border-dive-orange bg-dive-orange/15 text-dive-orange font-semibold whitespace-nowrap transition-colors';
-      
+
       const filter = btn.getAttribute('data-filter');
       document.querySelectorAll('#social-feed-grid article').forEach(card => {
         const type = card.getAttribute('data-type');
@@ -918,7 +1186,8 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'photos',
         author: player.callsign,
         location: 'Settore 04 Ciminiere',
-        isVerified: false,
+        isVerified: player.role.includes('MEDIA'),
+        isPinned: false,
         title: '',
         content: caption,
         image: file ? URL.createObjectURL(file) : 'assets/images/runner-post.jpg',
@@ -977,7 +1246,8 @@ document.addEventListener('DOMContentLoaded', () => {
         author: isAnon ? 'Ghost Net' : player.callsign,
         isAnonymous: isAnon,
         location: 'Settore 04',
-        isVerified: false,
+        isVerified: player.role.includes('MEDIA') && !isAnon,
+        isPinned: false,
         title: title,
         content: content,
         image: null,
@@ -999,8 +1269,149 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initialize UI
+  // --------------------------------------------------------------------------
+  // 13. Admin / Regia Master System (God Mode // PIN: 2077)
+  // --------------------------------------------------------------------------
+  const openAdminPinBtn = document.getElementById('open-admin-pin-btn');
+  const adminPinModal = document.getElementById('admin-pin-modal');
+  const closeAdminPinBtn = document.getElementById('close-admin-pin-btn');
+  const adminPinForm = document.getElementById('admin-pin-form');
+  const adminPinInput = document.getElementById('admin-pin-input');
+  const exitAdminBtn = document.getElementById('exit-admin-btn');
+  const adminBroadcastForm = document.getElementById('admin-broadcast-form');
+  const adminBroadcastInput = document.getElementById('admin-broadcast-input');
+  const globalBroadcastBanner = document.getElementById('global-broadcast-banner');
+  const globalBroadcastText = document.getElementById('global-broadcast-text');
+  const closeBroadcastBtn = document.getElementById('close-broadcast-btn');
+  const adminRosterTbody = document.getElementById('admin-roster-tbody');
+
+  // Quick mod buttons in admin
+  const adminAddPsych = document.getElementById('admin-add-psych');
+  const adminRemPsych = document.getElementById('admin-rem-psych');
+  const adminAddMoney = document.getElementById('admin-add-money');
+  const adminToggleIce = document.getElementById('admin-toggle-ice');
+
+  if (openAdminPinBtn && adminPinModal) {
+    openAdminPinBtn.addEventListener('click', () => {
+      adminPinModal.classList.remove('hidden', 'pointer-events-none');
+      setTimeout(() => adminPinModal.classList.add('opacity-100'), 10);
+      if (adminPinInput) adminPinInput.focus();
+    });
+  }
+
+  if (closeAdminPinBtn && adminPinModal) {
+    closeAdminPinBtn.addEventListener('click', () => {
+      adminPinModal.classList.remove('opacity-100');
+      setTimeout(() => adminPinModal.classList.add('hidden', 'pointer-events-none'), 300);
+    });
+  }
+
+  if (adminPinForm) {
+    adminPinForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (adminPinInput.value === '2077') {
+        adminPinModal.classList.remove('opacity-100');
+        setTimeout(() => adminPinModal.classList.add('hidden', 'pointer-events-none'), 300);
+        switchTab('admin');
+        playCyberSound(880, 'square', 0.2);
+        renderAdminRoster();
+      } else {
+        alert('PIN REGIA ERRATO! Accesso negato.');
+        adminPinInput.value = '';
+      }
+    });
+  }
+
+  if (exitAdminBtn) {
+    exitAdminBtn.addEventListener('click', () => {
+      switchTab('home');
+    });
+  }
+
+  if (adminBroadcastForm) {
+    adminBroadcastForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const msg = adminBroadcastInput.value.trim();
+      if (!msg) return;
+
+      if (globalBroadcastBanner && globalBroadcastText) {
+        globalBroadcastText.textContent = msg;
+        globalBroadcastBanner.classList.remove('hidden');
+        playCyberSound(950, 'sawtooth', 0.4);
+      }
+      adminBroadcastInput.value = '';
+      alert('[BROADCAST INVIATO]\nAvviso d\'emergenza trasmesso a tutti i runner sul campo.');
+    });
+  }
+
+  if (closeBroadcastBtn && globalBroadcastBanner) {
+    closeBroadcastBtn.addEventListener('click', () => {
+      globalBroadcastBanner.classList.add('hidden');
+    });
+  }
+
+  if (adminAddPsych) {
+    adminAddPsych.addEventListener('click', () => {
+      player.psych = Math.min(100, (player.psych || 0) + 15);
+      savePlayerState(player);
+      playCyberSound(300, 'sawtooth', 0.1);
+    });
+  }
+
+  if (adminRemPsych) {
+    adminRemPsych.addEventListener('click', () => {
+      player.psych = Math.max(0, (player.psych || 0) - 15);
+      savePlayerState(player);
+      playCyberSound(600, 'sine', 0.1);
+    });
+  }
+
+  if (adminAddMoney) {
+    adminAddMoney.addEventListener('click', () => {
+      player.wallet += 200;
+      player.transactions.unshift({
+        id: 'tx_' + Date.now(),
+        type: 'in',
+        desc: 'Accredito speciale Regia / Media Sponsor',
+        amount: 200,
+        time: 'Adesso'
+      });
+      savePlayerState(player);
+      playCyberSound(880, 'sine', 0.1);
+    });
+  }
+
+  if (adminToggleIce) {
+    adminToggleIce.addEventListener('click', () => {
+      player.iceActive = !player.iceActive;
+      savePlayerState(player);
+      playCyberSound(player.iceActive ? 750 : 250, 'square', 0.1);
+    });
+  }
+
+  function renderAdminRoster() {
+    if (!adminRosterTbody) return;
+    const roster = [
+      { callsign: player.callsign, role: player.role, secretId: player.secretId, hp: player.hp, psych: player.psych, wallet: player.wallet, ice: player.iceActive },
+      ...ROSTER_SEED.filter(r => r.callsign !== player.callsign)
+    ];
+
+    adminRosterTbody.innerHTML = roster.map(r => `
+      <tr class="hover:bg-white/5 transition-colors">
+        <td class="py-2.5 font-bold text-white">${r.callsign}</td>
+        <td class="py-2.5 text-slate-400 text-[11px]">${r.role}</td>
+        <td class="py-2.5 text-dive-cyan font-bold">${r.secretId}</td>
+        <td class="py-2.5 ${r.hp > 50 ? 'text-dive-green' : 'text-dive-red'}">${r.hp}%</td>
+        <td class="py-2.5 ${r.psych > 60 ? 'text-dive-red' : 'text-dive-cyan'}">${r.psych}%</td>
+        <td class="py-2.5 text-dive-green">€$ ${r.wallet.toLocaleString()}</td>
+        <td class="py-2.5 text-right font-bold ${r.ice ? 'text-dive-green' : 'text-slate-500'}">${r.ice ? 'ON' : 'OFF'}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Initialize
   syncPlayerUI();
   renderChat();
   renderSocialFeed();
+  renderAdminRoster();
 });
