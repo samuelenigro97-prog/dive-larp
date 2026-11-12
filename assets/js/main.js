@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playerHpText) playerHpText.textContent = `${sheetData.hp}% ${sheetData.hp > 75 ? 'NOMINALE' : (sheetData.hp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
     if (playerHpBar) {
       playerHpBar.style.width = `${sheetData.hp}%`;
-      playerHpBar.className = `h-full transition-all duration-500 ${sheetData.hp > 50 ? 'bg-dive-green' : (sheetData.hp > 25 ? 'bg-dive-orange' : 'bg-dive-red')}`;
+      playerHpBar.className = 'h-full bg-dive-green transition-all duration-500';
     }
 
     const iceOn = isViewingOther ? sheetData.iceActive : player.iceActive;
@@ -341,25 +341,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playerPsychText && playerPsychBar && playerPsychDesc) {
       const p = sheetData.psych || 0;
       playerPsychBar.style.width = `${Math.min(100, p)}%`;
+      playerPsychText.className = p >= 85 ? 'text-dive-red font-black animate-pulse' : 'text-dive-red font-bold';
+      playerPsychBar.className = p >= 85
+        ? 'h-full bg-dive-red animate-pulse transition-all duration-500'
+        : 'h-full bg-dive-red transition-all duration-500';
       if (p < 25) {
         playerPsychText.textContent = `${p}% STABILE`;
-        playerPsychText.className = 'text-dive-cyan font-bold';
-        playerPsychBar.className = 'h-full bg-dive-cyan transition-all duration-500';
         playerPsychDesc.textContent = 'Attività sinaptica regolare. Nessun segnale di alienazione corporea.';
       } else if (p < 60) {
         playerPsychText.textContent = `${p}% AGITAZIONE`;
-        playerPsychText.className = 'text-dive-orange font-bold';
-        playerPsychBar.className = 'h-full bg-dive-orange transition-all duration-500';
         playerPsychDesc.textContent = 'Sovraccarico neurale lieve: battito accelerato e tremolio cibernetico.';
       } else if (p < 85) {
         playerPsychText.textContent = `${p}% DISSOCIAZIONE`;
-        playerPsychText.className = 'text-dive-red font-bold';
-        playerPsychBar.className = 'h-full bg-dive-red transition-all duration-500';
         playerPsychDesc.textContent = 'Allucinazioni uditive e distacco dalla realtà: recita paranoia con i compagni!';
       } else {
         playerPsychText.textContent = `${p}% CYBERPSICOSI!`;
-        playerPsychText.className = 'text-dive-purple font-black animate-pulse';
-        playerPsychBar.className = 'h-full bg-dive-purple animate-pulse transition-all duration-500';
         playerPsychDesc.textContent = '[CRITICO] CYBERPSICOSI CONCLAMATA: Perdita totale di controllo. Necessario intervento Ripperdoc immediato!';
       }
     }
