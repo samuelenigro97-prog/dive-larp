@@ -1172,11 +1172,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function compressImageToDataURL(file, maxDim = 900, quality = 0.72) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Lettura file fallita'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Decodifica immagine fallita'));
+        img.onload = () => {
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   if (uploadPhotoForm) {
-    uploadPhotoForm.addEventListener('submit', (e) => {
+    uploadPhotoForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const file = photoFileInput.files[0];
       const caption = photoCaptionInput.value.trim();
+
+      let imageSrc = 'assets/images/runner-post.jpg';
+      if (file) {
+        try {
+          imageSrc = await compressImageToDataURL(file);
+        } catch (err) {
+          console.warn('[UPLOAD] Compressione fallita, uso fallback:', err);
+        }
+      }
 
       const posts = getSocialPosts();
       const newPost = {
@@ -1188,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isPinned: false,
         title: '',
         content: caption,
-        image: file ? URL.createObjectURL(file) : 'assets/images/runner-post.jpg',
+        image: imageSrc,
         timestamp: 'Adesso',
         likes: 1,
         dislikes: 0,
