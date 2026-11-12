@@ -70,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
     psych: 10,
     fama: 3,
     wallet: 1500,
+    ram: 8,
+    ramMax: 8,
     iceActive: true,
     traumas: [],
     transactions: [
@@ -435,10 +437,122 @@ document.addEventListener('DOMContentLoaded', () => {
   const qhTimerBar = document.getElementById('qh-timer-bar');
   const closeQhBtn = document.getElementById('close-quickhack-overlay-btn');
 
-  let qhInterval = null;
+  const ramCurrentEl = document.getElementById('ram-current');
+  const ramMaxEl = document.getElementById('ram-max');
+  const ramStatusEl = document.getElementById('ram-status-text');
+  const ramCellsEl = document.getElementById('ram-cells');
+  const ramResetBtn = document.getElementById('ram-reset-btn');
+  const ramAlertEl = document.getElementById('quickhack-ram-alert');
+  const RAM_REGEN_SECONDS = 10;
 
-  function launchQuickhackCombat(commandName, description) {
+  let qhInterval = null;
+  let ramRegenCountdown = RAM_REGEN_SECONDS;
+  let ramRegenInterval = null;
+
+  function renderRamUI() {
+    const max = Number(player.ramMax) || 8;
+    const current = Math.max(0, Math.min(max, Number(player.ram ?? max)));
+    player.ram = current;
+    player.ramMax = max;
+
+    if (ramCurrentEl) ramCurrentEl.textContent = current;
+    if (ramMaxEl) ramMaxEl.textContent = max;
+
+    if (ramStatusEl) {
+      if (current >= max) {
+        ramStatusEl.textContent = 'PRONTO';
+        ramStatusEl.className = 'text-[10px] text-dive-green';
+      } else {
+        ramStatusEl.textContent = `+1 RAM tra ${ramRegenCountdown}s`;
+        ramStatusEl.className = 'text-[10px] text-dive-orange';
+      }
+    }
+
+    if (ramCellsEl) {
+      ramCellsEl.innerHTML = '';
+      for (let i = 0; i < max; i++) {
+        const cell = document.createElement('div');
+        const active = i < current;
+        cell.className = active
+          ? 'h-2.5 rounded-sm bg-dive-cyan border border-dive-cyan shadow-[0_0_8px_rgba(0,229,255,0.45)] transition-all'
+          : 'h-2.5 rounded-sm bg-white/5 border border-white/10 transition-all';
+        ramCellsEl.appendChild(cell);
+      }
+    }
+
+    document.querySelectorAll('.quickhack-trigger-btn').forEach(btn => {
+      const cost = Number(btn.getAttribute('data-ram') || 0);
+      const affordable = current >= cost;
+      btn.classList.toggle('opacity-50', !affordable);
+      btn.setAttribute('aria-disabled', affordable ? 'false' : 'true');
+    });
+  }
+
+  function showRamAlert(msg) {
+    if (!ramAlertEl) return;
+    ramAlertEl.textContent = msg;
+    ramAlertEl.classList.remove('hidden');
+    clearTimeout(showRamAlert._t);
+    showRamAlert._t = setTimeout(() => ramAlertEl.classList.add('hidden'), 3000);
+  }
+
+  function ensureRamRegenRunning() {
+    if (ramRegenInterval || player.ram >= (player.ramMax || 8)) return;
+    ramRegenCountdown = RAM_REGEN_SECONDS;
+    ramRegenInterval = setInterval(() => {
+      if (player.ram >= (player.ramMax || 8)) {
+        clearInterval(ramRegenInterval);
+        ramRegenInterval = null;
+        renderRamUI();
+        return;
+      }
+      ramRegenCountdown -= 1;
+      if (ramRegenCountdown <= 0) {
+        player.ram = Math.min(player.ramMax || 8, (player.ram || 0) + 1);
+        ramRegenCountdown = RAM_REGEN_SECONDS;
+        savePlayerState(player);
+        if (player.ram >= (player.ramMax || 8)) {
+          clearInterval(ramRegenInterval);
+          ramRegenInterval = null;
+        }
+      }
+      renderRamUI();
+    }, 1000);
+  }
+
+  if (ramResetBtn) {
+    ramResetBtn.addEventListener('click', () => {
+      player.ram = player.ramMax || 8;
+      if (ramRegenInterval) {
+        clearInterval(ramRegenInterval);
+        ramRegenInterval = null;
+      }
+      if (ramAlertEl) ramAlertEl.classList.add('hidden');
+      savePlayerState(player);
+      renderRamUI();
+      playCyberSound(780, 'sine', 0.1);
+    });
+  }
+
+  renderRamUI();
+  ensureRamRegenRunning();
+
+  function launchQuickhackCombat(commandName, description, ramCost = 0) {
     if (!qhOverlay) return;
+    if ((player.ram ?? 8) < ramCost) {
+      playCyberSound(160, 'sawtooth', 0.18);
+      showRamAlert(`RAM insufficiente per OVERRIDE ${commandName} (servono ${ramCost} RAM, disponibili ${player.ram}).`);
+      return;
+    }
+
+    if (ramCost > 0) {
+      player.ram = Math.max(0, (player.ram ?? 8) - ramCost);
+      if (ramAlertEl) ramAlertEl.classList.add('hidden');
+      savePlayerState(player);
+      renderRamUI();
+      ensureRamRegenRunning();
+    }
+
     if (qhInterval) clearInterval(qhInterval);
 
     qhCommandEl.textContent = `OVERRIDE ${commandName}`;
@@ -481,7 +595,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       const hack = btn.getAttribute('data-hack');
       const desc = btn.getAttribute('data-desc');
-      launchQuickhackCombat(hack, desc);
+      const ramCost = Number(btn.getAttribute('data-ram') || 0);
+      launchQuickhackCombat(hack, desc, ramCost);
     });
   });
 
