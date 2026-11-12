@@ -33,13 +33,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.16.1">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.17.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.16.1">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.17.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -58,7 +58,7 @@
       <a href="#tab-home" class="nav-tab-trigger flex items-center gap-2.5 sm:gap-3" data-tab="home">
         <img src="assets/images/dive-logo.png" alt="DIVE" class="h-6 sm:h-7 w-auto object-contain">
         <span class="hidden sm:inline font-mono text-[10px] tracking-[0.25em] text-slate-400 uppercase font-semibold">CYBERPUNK EXPERIENCE</span>
-        <span id="app-version-badge" class="font-mono text-[10px] tracking-wider text-dive-cyan bg-dive-cyan/10 border border-dive-cyan/30 px-1.5 py-0.5 rounded-sm">v0.16.1</span>
+        <span id="app-version-badge" class="font-mono text-[10px] tracking-wider text-dive-cyan bg-dive-cyan/10 border border-dive-cyan/30 px-1.5 py-0.5 rounded-sm">v0.17.0</span>
       </a>
 
       <!-- Desktop Navigation Tabs (Hidden on Home Landing) -->
@@ -689,20 +689,41 @@
             Nel combattimento dal vivo pronuncia a voce la chiamata <strong class="text-white font-mono">OVERRIDE [COMANDO]!</strong>. L'effetto dura tassativamente 5 secondi.
           </p>
 
+          <!-- RAM CYBERDECK MONITOR -->
+          <div class="p-3.5 rounded-sm bg-black/70 border border-dive-cyan/30 space-y-2.5 font-mono">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-dive-cyan font-bold">RAM CYBERDECK</span>
+                <span id="ram-status-text" class="text-[10px] text-slate-400">PRONTO</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-white font-bold"><span id="ram-current">8</span> / <span id="ram-max">8</span> UNITÀ</span>
+                <button id="ram-reset-btn" type="button" title="Ripristina RAM al massimo" class="px-2 py-0.5 text-[10px] border border-white/15 bg-white/5 hover:border-dive-cyan hover:text-dive-cyan text-slate-300 rounded-sm transition-colors">
+                  RICARICA
+                </button>
+              </div>
+            </div>
+            <div id="ram-cells" class="grid grid-cols-8 gap-1.5"></div>
+            <p id="quickhack-ram-alert" class="hidden text-[11px] text-dive-red font-semibold"></p>
+          </div>
+
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono">
-            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-red p-3.5 text-center group" data-hack="FERMO!" data-desc="Blocco cibernetico delle articolazioni! Il bersaglio non può muoversi per 5 secondi!">
+            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-red p-3.5 text-center group" data-hack="FERMO!" data-ram="3" data-desc="Blocco cibernetico delle articolazioni! Il bersaglio non può muoversi per 5 secondi!">
               <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-red">OVERRIDE FERMO!</span>
               <span class="text-[9px] text-slate-400 mt-1 block">Blocco 5s</span>
+              <span class="inline-block mt-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">3 RAM</span>
             </button>
 
-            <button class="quickhack-trigger-btn cyberware-slot p-3.5 text-center group" data-hack="AL BUIO!" data-desc="Sovraccarico ottico Kiroshi! Il bersaglio deve chiudere gli occhi o voltarsi per 5 secondi!">
+            <button class="quickhack-trigger-btn cyberware-slot p-3.5 text-center group" data-hack="AL BUIO!" data-ram="2" data-desc="Sovraccarico ottico Kiroshi! Il bersaglio deve chiudere gli occhi o voltarsi per 5 secondi!">
               <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-cyan">OVERRIDE AL BUIO!</span>
               <span class="text-[9px] text-slate-400 mt-1 block">Ottiche off 5s</span>
+              <span class="inline-block mt-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">2 RAM</span>
             </button>
 
-            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-orange p-3.5 text-center group" data-hack="BUTTALA!" data-desc="Spasmo neurale all'arto armato! Il bersaglio deve rilasciare o deporre l'arma di scena immediatamente!">
+            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-orange p-3.5 text-center group" data-hack="BUTTALA!" data-ram="4" data-desc="Spasmo neurale all'arto armato! Il bersaglio deve rilasciare o deporre l'arma di scena immediatamente!">
               <span class="font-orbitron font-bold text-xs block text-white group-hover:text-dive-orange">OVERRIDE BUTTALA!</span>
               <span class="text-[9px] text-slate-400 mt-1 block">Rilascio arma</span>
+              <span class="inline-block mt-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">4 RAM</span>
             </button>
           </div>
 
@@ -1091,6 +1112,6 @@
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/main.js?v=0.16.1"></script>
+  <script src="assets/js/main.js?v=0.17.0"></script>
 </body>
 </html>
