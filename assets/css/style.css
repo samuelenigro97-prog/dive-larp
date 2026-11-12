@@ -1,0 +1,87 @@
+/* ==========================================================================
+   DIVE Cyberpunk Roleplay - Custom Styling & Micro-Interactions
+   ========================================================================== */
+
+/* Scanlines Effect */
+.scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.35) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Subtle Pulsing Cyber Glow */
+@keyframes cyberGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(212, 255, 0, 0.6));
+  }
+}
+
+.cyber-glow {
+  animation: cyberGlow 4s ease-in-out infinite;
+}
+
+/* Marquee Scrolling for Mobile Ticker */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee-container {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+}
+
+.marquee-content {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  min-width: 100%;
+  animation: marquee 22s linear infinite;
+}
+
+.marquee-container:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+/* Cyber Chamfered Card Styling */
+.cyber-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cyber-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05070B;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c2738;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4ff00;
+}
