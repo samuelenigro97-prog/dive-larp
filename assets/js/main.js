@@ -64,6 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     callsign: '@V_Solo',
     role: 'MERCENARIO // SOLO',
     secretId: '#V-7842',
+    avatar: 'assets/images/avatars/pg-1.jpg',
+    themeColor: 'orange',
     hp: 100,
     psych: 10,
     fama: 3,
@@ -88,11 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const ROSTER_SEED = [
-    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', hp: 100, psych: 10, wallet: 1500, ice: true },
-    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', hp: 100, psych: 25, wallet: 850, ice: false },
-    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', hp: 75, psych: 45, wallet: 320, ice: true },
-    { callsign: '@CyberRex', role: 'CORPO // AGENTE', secretId: '#C-0012', hp: 100, psych: 0, wallet: 5400, ice: true },
-    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', hp: 100, psych: 15, wallet: 1200, ice: false }
+    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, wallet: 1500, ice: true },
+    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, wallet: 850, ice: false },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 75, psych: 45, wallet: 320, ice: true },
+    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'red', hp: 100, psych: 0, wallet: 5400, ice: true },
+    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'cyan', hp: 100, psych: 15, wallet: 1200, ice: false }
   ];
 
   function getPlayerState() {
@@ -135,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
       callsign: found.callsign,
       role: found.role,
       secretId: found.secretId,
+      avatar: found.avatar || 'assets/images/avatars/pg-1.jpg',
+      themeColor: found.themeColor || 'orange',
       hp: found.hp,
       psych: found.psych,
       iceActive: found.ice,
@@ -208,9 +212,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Profile Card (Scheda Verticale attiva)
+    const cardAvatarFrame = document.getElementById('card-avatar-frame');
+    const cardAvatarImg = document.getElementById('card-avatar-img');
+    const cardAvatarTag = document.getElementById('card-avatar-tag');
     const cardCallsign = document.getElementById('card-callsign');
     const cardRole = document.getElementById('card-role');
     const cardSecretId = document.getElementById('card-secret-id');
+
+    const avatarTheme = {
+      orange: { border: 'border-dive-orange/60', text: 'text-dive-orange' },
+      cyan: { border: 'border-dive-cyan/60', text: 'text-dive-cyan' },
+      green: { border: 'border-dive-green/60', text: 'text-dive-green' },
+      red: { border: 'border-dive-red/60', text: 'text-dive-red' }
+    }[sheetData.themeColor || 'orange'] || { border: 'border-dive-orange/60', text: 'text-dive-orange' };
+
+    if (cardAvatarImg) {
+      cardAvatarImg.src = sheetData.avatar || 'assets/images/avatars/pg-1.jpg';
+      cardAvatarImg.alt = sheetData.callsign;
+    }
+    if (cardAvatarFrame) {
+      cardAvatarFrame.className = `cyber-panel relative w-24 h-28 sm:w-28 sm:h-32 overflow-hidden border ${avatarTheme.border} bg-black flex-shrink-0`;
+    }
+    if (cardAvatarTag) {
+      const roleShort = (sheetData.role || 'SOLO').split('//')[0].trim().slice(0, 8);
+      cardAvatarTag.textContent = roleShort;
+      cardAvatarTag.className = `${avatarTheme.text} font-bold`;
+    }
     const playerHpText = document.getElementById('player-hp-text');
     const playerHpBar = document.getElementById('player-hp-bar');
     const playerIceStatus = document.getElementById('player-ice-status');
