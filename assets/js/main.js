@@ -360,16 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabTriggers = document.querySelectorAll('.nav-tab-trigger');
   const appTabs = document.querySelectorAll('.app-tab');
 
-  const INGAME_SECTION_ANCHORS = {
-    cyberdeck: 'sec-deck',
-    wallet: 'sec-wallet',
-    comm: 'sec-chat',
-    profile: 'sec-scheda'
+  const SECTION_ROUTES = {
+    cyberdeck: { tab: 'profile', anchor: 'sec-deck' },
+    wallet: { tab: 'profile', anchor: 'sec-wallet' },
+    profile: { tab: 'profile', anchor: null },
+    comm: { tab: 'net', anchor: 'sec-chat' }
   };
 
   function switchTab(tabId) {
-    const scrollTargetId = (tabId !== 'profile' && INGAME_SECTION_ANCHORS[tabId]) ? INGAME_SECTION_ANCHORS[tabId] : null;
-    const effectiveTab = INGAME_SECTION_ANCHORS[tabId] ? 'profile' : tabId;
+    const route = SECTION_ROUTES[tabId];
+    const scrollTargetId = route ? route.anchor : null;
+    const effectiveTab = route ? route.tab : tabId;
 
     appTabs.forEach(tab => {
       if (tab.id === `tab-${effectiveTab}`) {
