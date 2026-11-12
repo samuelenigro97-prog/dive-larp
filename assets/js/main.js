@@ -3,41 +3,38 @@
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Mobile Menu Toggle
-  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const hamburgerIcon = document.getElementById('hamburger-icon');
-  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-
-  if (mobileMenuBtn && mobileMenu) {
-    mobileMenuBtn.addEventListener('click', () => {
-      const isHidden = mobileMenu.classList.contains('hidden');
-      if (isHidden) {
-        mobileMenu.classList.remove('hidden');
-        hamburgerIcon.innerHTML = `
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        `;
-        playCyberSound(440, 'triangle', 0.08);
-      } else {
-        mobileMenu.classList.add('hidden');
-        hamburgerIcon.innerHTML = `
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        `;
-        playCyberSound(330, 'triangle', 0.06);
-      }
-    });
-
-    mobileNavLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-        hamburgerIcon.innerHTML = `
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        `;
-      });
-    });
+  // 1. Live Mobile HUD Clock
+  const mobileClock = document.getElementById('mobile-live-clock');
+  function updateClock() {
+    if (!mobileClock) return;
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    mobileClock.textContent = `${h}:${m}:${s}`;
   }
+  updateClock();
+  setInterval(updateClock, 1000);
 
-  // 2. Explore Image Modal
+  // 2. Mobile Dock Active Tab Highlight
+  const dockItems = document.querySelectorAll('.mobile-dock-item');
+  dockItems.forEach(item => {
+    item.addEventListener('click', () => {
+      dockItems.forEach(i => {
+        i.classList.remove('text-cyber-cyan', 'active');
+        i.classList.add('text-slate-400');
+        const dot = i.querySelector('span:last-child');
+        if (dot) dot.classList.replace('bg-cyber-cyan', 'bg-transparent');
+      });
+      item.classList.add('text-cyber-cyan', 'active');
+      item.classList.remove('text-slate-400');
+      const dot = item.querySelector('span:last-child');
+      if (dot) dot.classList.replace('bg-transparent', 'bg-cyber-cyan');
+      playCyberSound(480, 'sine', 0.06);
+    });
+  });
+
+  // 3. Explore Image Modal
   const modalTrigger = document.getElementById('modal-explore-trigger');
   const imageModal = document.getElementById('image-modal');
   const modalCloseBtn = document.getElementById('modal-close-btn');
@@ -73,11 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 3. Web Audio API Cyber SFX Synthesizer
+  // 4. Web Audio API Cyber SFX Synthesizer
   let audioCtx = null;
   let sfxEnabled = false;
   const sfxToggle = document.getElementById('sfx-toggle');
   const sfxLabel = document.getElementById('sfx-label');
+  const sfxMobileToggle = document.getElementById('sfx-mobile-toggle');
+  const sfxMobileIcon = document.getElementById('sfx-mobile-icon');
 
   function getAudioContext() {
     if (!audioCtx) {
@@ -111,26 +110,28 @@ document.addEventListener('DOMContentLoaded', () => {
       osc.start();
       osc.stop(ctx.currentTime + duration);
     } catch {
-      // Audio fallback silent
+      // Audio fallback
     }
   }
 
-  if (sfxToggle && sfxLabel) {
-    sfxToggle.addEventListener('click', () => {
-      sfxEnabled = !sfxEnabled;
-      if (sfxEnabled) {
-        getAudioContext();
-        sfxLabel.textContent = 'SFX: ON';
-        sfxToggle.classList.add('border-cyber-lime', 'text-cyber-lime');
-        sfxToggle.classList.remove('border-cyber-cyan/30', 'text-cyber-cyan');
-        playCyberSound(660, 'square', 0.1);
-      } else {
-        sfxLabel.textContent = 'SFX: OFF';
-        sfxToggle.classList.remove('border-cyber-lime', 'text-cyber-lime');
-        sfxToggle.classList.add('border-cyber-cyan/30', 'text-cyber-cyan');
+  function toggleAudio() {
+    sfxEnabled = !sfxEnabled;
+    if (sfxEnabled) {
+      getAudioContext();
+      if (sfxLabel) sfxLabel.textContent = 'SFX: ON';
+      if (sfxToggle) {
+        sfxToggle.classList.add('border-cyber-cyan', 'text-cyber-cyan');
       }
-    });
+      if (sfxMobileIcon) sfxMobileIcon.textContent = '🔊';
+      playCyberSound(660, 'square', 0.1);
+    } else {
+      if (sfxLabel) sfxLabel.textContent = 'SFX: OFF';
+      if (sfxMobileIcon) sfxMobileIcon.textContent = '🔇';
+    }
   }
+
+  if (sfxToggle) sfxToggle.addEventListener('click', toggleAudio);
+  if (sfxMobileToggle) sfxMobileToggle.addEventListener('click', toggleAudio);
 
   // Attach click sound to interactive elements
   document.querySelectorAll('.cyber-btn-sound, a, button').forEach(el => {
@@ -138,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('click', () => playCyberSound(520, 'triangle', 0.08));
   });
 
-  // 4. Dynamic Telemetry Coordinates
+  // 5. Dynamic Telemetry Coordinates
   const coordEl = document.getElementById('telemetry-coord');
   if (coordEl) {
     setInterval(() => {
