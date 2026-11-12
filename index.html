@@ -107,7 +107,7 @@
     <!-- TAB 5: SCHEDA PERSONAGGIO VERTICALE & QR CODE (STILE DOSSIER / TAVOLO)    -->
     <!-- ========================================================================= -->
     <section id="tab-profile" class="app-tab hidden">
-      <div class="max-w-3xl mx-auto space-y-5">
+      <div class="max-w-5xl mx-auto space-y-6">
 
         <!-- Header Scheda Verticale -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
@@ -266,86 +266,104 @@
             <span class="text-slate-400">4 / 4 SLOT ATTIVI</span>
           </div>
 
-          <!-- Scansione Anatomica Verticale -->
-          <div class="flex flex-col items-center justify-center bg-[#04060A] border border-dive-red/25 p-4 rounded-sm">
-            <div class="relative w-44 sm:w-52 aspect-[3/4] overflow-hidden border border-dive-red/30">
-              <img src="assets/images/implants/cyberware-body.jpg" alt="Cyberware Anatomy Scan" class="w-full h-full object-cover">
-              <div class="absolute bottom-2 left-2 right-2 flex justify-between font-mono text-[9px] text-dive-red/90 bg-black/70 px-2 py-0.5">
-                <span>SCAN // 100%</span>
-                <span>BIO-LINK OK</span>
-              </div>
-            </div>
-          </div>
+          <!-- 2 Impianti a Sinistra + Corpo Centrale + 2 Impianti a Destra -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
 
-          <!-- Lista Verticale dei 4 Impianti -->
-          <div class="space-y-3">
+            <!-- Colonna Sinistra (Oculare + Tegumentario) -->
+            <div class="md:col-span-4 space-y-3">
 
-            <!-- Slot 1: Ottiche Kiroshi -->
-            <div class="cyberware-slot p-4 flex items-center gap-4">
-              <div class="w-16 h-16 sm:w-20 sm:h-20 bg-black border border-dive-cyan/30 flex-shrink-0 overflow-hidden">
-                <img src="assets/images/implants/implant-kiroshi.jpg" alt="Ottiche Kiroshi" class="w-full h-full object-cover">
-              </div>
-              <div class="flex-1 min-w-0 space-y-1">
+              <!-- Slot 1: Ottiche Kiroshi -->
+              <div class="cyberware-slot p-3.5 space-y-2">
                 <div class="flex items-center justify-between font-mono text-[10px]">
                   <span class="text-dive-cyan font-bold uppercase">SISTEMA OCULARE</span>
                   <span class="text-slate-500">TIER 2</span>
                 </div>
-                <h4 class="font-orbitron font-bold text-sm text-white">OTTICHE KIROSHI</h4>
-                <p class="font-sans text-xs text-slate-400 leading-snug">
-                  Scansione ottica QR di scena e riconoscimento istantaneo delle schede runner.
-                </p>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-cyan/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-kiroshi.jpg" alt="Ottiche Kiroshi" class="w-full h-full object-cover">
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="font-orbitron font-bold text-xs text-white">OTTICHE KIROSHI</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Scansione ottica QR di scena e schede runner.
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Slot 2: Armatura Subdermica -->
-            <div class="cyberware-slot cyberware-slot-orange p-4 flex items-center gap-4">
-              <div class="w-16 h-16 sm:w-20 sm:h-20 bg-black border border-dive-orange/30 flex-shrink-0 overflow-hidden">
-                <img src="assets/images/implants/implant-subdermal.jpg" alt="Armatura Subdermica" class="w-full h-full object-cover">
-              </div>
-              <div class="flex-1 min-w-0 space-y-1">
+              <!-- Slot 2: Armatura Subdermica -->
+              <div class="cyberware-slot cyberware-slot-orange p-3.5 space-y-2">
                 <div class="flex items-center justify-between font-mono text-[10px]">
-                  <span class="text-dive-orange font-bold uppercase">SISTEMA TEGUMENTARIO</span>
+                  <span class="text-dive-orange font-bold uppercase">TEGUMENTARIO</span>
                   <span class="text-slate-500">PASSIVO</span>
                 </div>
-                <h4 class="font-orbitron font-bold text-sm text-white">ARMATURA SUBDERMICA</h4>
-                <p class="font-sans text-xs text-slate-400 leading-snug">
-                  Nanotubi di carbonio protettivi contro danni fisici e traumi da combattimento.
-                </p>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-orange/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-subdermal.jpg" alt="Armatura Subdermica" class="w-full h-full object-cover">
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="font-orbitron font-bold text-xs text-white">ARMATURA SUBDERMICA</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Nanotubi di carbonio contro danni e traumi.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Colonna Centrale: Scansione Anatomica Corpo Intero -->
+            <div class="md:col-span-4 flex flex-col items-center justify-center py-1">
+              <div class="relative w-48 sm:w-56 aspect-[3/4] bg-[#04060A] border border-dive-red/30 overflow-hidden flex items-center justify-center">
+                <img src="assets/images/implants/cyberware-body.jpg" alt="Cyberware Anatomy Scan" class="w-full h-full object-contain">
+                <div class="absolute bottom-2 left-2 right-2 flex justify-between font-mono text-[9px] text-dive-red/90 bg-black/75 px-2 py-0.5">
+                  <span>SCAN // 100%</span>
+                  <span>BIO-LINK OK</span>
+                </div>
               </div>
             </div>
 
-            <!-- Slot 3: Cyberdeck Paraline -->
-            <div class="cyberware-slot p-4 flex items-center gap-4">
-              <div class="w-16 h-16 sm:w-20 sm:h-20 bg-black border border-dive-cyan/30 flex-shrink-0 overflow-hidden">
-                <img src="assets/images/implants/implant-cyberdeck.jpg" alt="Cyberdeck Paraline" class="w-full h-full object-cover">
-              </div>
-              <div class="flex-1 min-w-0 space-y-1">
+            <!-- Colonna Destra (Sistema Operativo + Sistema Nervoso) -->
+            <div class="md:col-span-4 space-y-3">
+
+              <!-- Slot 3: Cyberdeck Paraline -->
+              <div class="cyberware-slot p-3.5 space-y-2">
                 <div class="flex items-center justify-between font-mono text-[10px]">
                   <span class="text-dive-cyan font-bold uppercase">SISTEMA OPERATIVO</span>
                   <span class="text-slate-500">DECK OS</span>
                 </div>
-                <h4 class="font-orbitron font-bold text-sm text-white">CYBERDECK PARALINE</h4>
-                <p class="font-sans text-xs text-slate-400 leading-snug">
-                  Comandi rapidi di combattimento 5s (Override) e moduli di violazione ICE.
-                </p>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-cyan/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-cyberdeck.jpg" alt="Cyberdeck Paraline" class="w-full h-full object-cover">
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="font-orbitron font-bold text-xs text-white">CYBERDECK PARALINE</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Comandi rapidi 5s (Override) e violazione ICE.
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Slot 4: Media Ghost Protocol -->
-            <div class="cyberware-slot cyberware-slot-red p-4 flex items-center gap-4">
-              <div class="w-16 h-16 sm:w-20 sm:h-20 bg-black border border-dive-red/30 flex-shrink-0 overflow-hidden">
-                <img src="assets/images/implants/implant-ghost.jpg" alt="Media Ghost Protocol" class="w-full h-full object-cover">
-              </div>
-              <div class="flex-1 min-w-0 space-y-1">
+              <!-- Slot 4: Media Ghost Protocol -->
+              <div class="cyberware-slot cyberware-slot-red p-3.5 space-y-2">
                 <div class="flex items-center justify-between font-mono text-[10px]">
                   <span class="text-dive-red font-bold uppercase">SISTEMA NERVOSO</span>
                   <span class="text-slate-500">MEDIA</span>
                 </div>
-                <h4 class="font-orbitron font-bold text-sm text-white">GHOST PROTOCOL</h4>
-                <p class="font-sans text-xs text-slate-400 leading-snug">
-                  Trasmissione leak anonimi e permessi di moderazione sul feed The Net.
-                </p>
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black border border-dive-red/30 flex-shrink-0 overflow-hidden">
+                    <img src="assets/images/implants/implant-ghost.jpg" alt="Media Ghost Protocol" class="w-full h-full object-cover">
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="font-orbitron font-bold text-xs text-white">GHOST PROTOCOL</h4>
+                    <p class="font-sans text-[11px] text-slate-400 leading-snug mt-0.5">
+                      Leak anonimi e moderazione feed The Net.
+                    </p>
+                  </div>
+                </div>
               </div>
+
             </div>
 
           </div>
