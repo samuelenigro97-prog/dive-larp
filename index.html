@@ -31,7 +31,7 @@
             cyber: {
               black: '#04060A',
               dark: '#080C16',
-              surface: 'rgba(8, 14, 26, 0.75)',
+              surface: 'rgba(8, 14, 26, 0.78)',
               orange: '#FF6600',
               amber: '#FF7700',
               orangeGlow: 'rgba(255, 102, 0, 0.5)',
@@ -63,13 +63,13 @@
   <!-- Background Layer: Clean Cyberpunk City with Rain & Neon Lights -->
   <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
     <div id="city-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100" style="background-image: url('assets/images/city-bg.jpg');"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/55 via-[#04060A]/35 to-[#04060A]/75"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/60 via-[#04060A]/40 to-[#04060A]/80"></div>
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#04060A_95%)] opacity-70"></div>
     <div class="absolute inset-0 scanlines opacity-25"></div>
   </div>
 
   <!-- MOBILE TOP HUD TELEMETRY BAR (Visible on Mobile) -->
-  <div class="md:hidden sticky top-0 z-50 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/85 backdrop-blur-xl border-b border-cyber-cyan/20 px-4 py-2 flex items-center justify-between font-mono text-[10px] text-slate-400">
+  <div class="md:hidden sticky top-0 z-50 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/90 backdrop-blur-xl border-b border-cyber-cyan/20 px-4 py-2 flex items-center justify-between font-mono text-[10px] text-slate-400">
     <div class="flex items-center gap-2">
       <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-pulse"></span>
       <a href="#hero" class="flex items-center">
@@ -78,7 +78,7 @@
       <span class="text-cyber-cyan font-bold tracking-wider ml-1">// OS 2.6</span>
     </div>
     <div class="flex items-center gap-3">
-      <span id="mobile-live-clock" class="text-slate-300">19:00:54</span>
+      <span id="mobile-live-clock" class="text-slate-300">19:02:48</span>
       <span class="text-cyber-cyan/60">|</span>
       <span class="text-cyber-orange font-semibold tracking-wider">SYNC:100%</span>
       <button id="sfx-mobile-toggle" class="p-1 rounded text-cyber-cyan hover:text-white" title="Toggle Audio">
@@ -105,8 +105,8 @@
         <a href="#accesso" class="px-3 py-1 hover:text-cyber-cyan transition-colors flex items-center gap-1.5 cyber-btn-sound">
           <span class="text-[10px] text-slate-500">01</span> Eventi
         </a>
-        <a href="#ticker" class="px-3 py-1 hover:text-cyber-cyan transition-colors flex items-center gap-1.5 cyber-btn-sound">
-          <span class="text-[10px] text-slate-500">02</span> Gallery
+        <a href="#gallery" class="px-3 py-1 hover:text-cyber-orange transition-colors flex items-center gap-1.5 cyber-btn-sound">
+          <span class="text-[10px] text-cyber-orange">02</span> Feed Social
         </a>
         <a href="#footer" class="px-3 py-1 hover:text-cyber-cyan transition-colors flex items-center gap-1.5 cyber-btn-sound">
           <span class="text-[10px] text-slate-500">03</span> Premesse
@@ -147,7 +147,7 @@
   <main class="flex-grow z-10 flex flex-col justify-between">
 
     <!-- HERO SECTION (Mobile-First Ergonomic Layout with Official Logo) -->
-    <section id="hero" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-16 sm:pb-24 w-full flex flex-col justify-center min-h-[calc(100dvh-7rem)]">
+    <section id="hero" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-16 sm:pb-20 w-full flex flex-col justify-center min-h-[calc(100dvh-7rem)]">
       
       <!-- Central Cyber HUD Glass Container -->
       <div class="relative w-full max-w-3xl mx-auto backdrop-blur-xl bg-[#060912]/80 border border-cyber-cyan/35 rounded-3xl p-5 sm:p-10 shadow-[0_0_40px_rgba(0,0,0,0.7)]">
@@ -222,11 +222,11 @@
             </div>
           </a>
 
-          <!-- Secondary Action: Explore Background Modal -->
-          <button id="modal-explore-trigger" class="min-h-[48px] px-5 py-3 sm:py-4 rounded-2xl sm:rounded-full border border-cyber-cyan/30 bg-[#080C16]/80 text-slate-200 font-mono text-xs sm:text-sm tracking-wider uppercase hover:bg-cyber-cyan/15 hover:border-cyber-cyan hover:text-cyber-cyan active:scale-[0.97] transition-all flex items-center justify-center gap-2.5 backdrop-blur-md cyber-btn-sound">
-            <span class="text-base text-cyber-cyan">⤢</span>
-            <span>Esplora l'immagine</span>
-          </button>
+          <!-- Social Feed Shortcut -->
+          <a href="#gallery" class="min-h-[48px] px-5 py-3 sm:py-4 rounded-2xl sm:rounded-full border border-cyber-cyan/40 bg-[#080C16]/80 text-cyber-cyan font-mono text-xs sm:text-sm tracking-wider uppercase hover:bg-cyber-cyan/15 hover:border-cyber-cyan active:scale-[0.97] transition-all flex items-center justify-center gap-2.5 backdrop-blur-md cyber-btn-sound">
+            <span>📸</span>
+            <span>FEED FOTO RUNNER</span>
+          </a>
 
         </div>
 
@@ -235,7 +235,7 @@
       <!-- Bottom Hint (Mobile) -->
       <div class="mt-6 sm:hidden flex items-center justify-center gap-2 text-slate-400 font-mono text-[10px] tracking-widest">
         <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-ping"></span>
-        <span>SCORRI PER I PORTALI OPERATIVI</span>
+        <span>SCORRI PER IL SOCIAL FEED DEI RUNNER</span>
       </div>
 
     </section>
@@ -280,6 +280,162 @@
 
     </section>
 
+    <!-- SECTION 02: NEURAL FEED // SOCIAL COMMUNITY MEMORIES -->
+    <section id="gallery" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24 w-full">
+      
+      <!-- Section Header with Upload Trigger -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-cyber-cyan/25">
+        <div>
+          <div class="inline-flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-cyber-orange animate-ping"></span>
+            <span class="text-cyber-orange font-mono text-xs sm:text-sm tracking-[0.2em] uppercase font-bold drop-shadow-[0_0_8px_rgba(255,102,0,0.5)]">
+              02 / NEURAL ARCHIVE // MEMORIE CONDIVISE
+            </span>
+          </div>
+          <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white tracking-wide">
+            FEED FOTO RUNNER
+          </h2>
+          <p class="text-slate-400 font-sans text-xs sm:text-sm mt-1">
+            Carica i tuoi scatti in-game o dal vivo: le memorie dei runner restano impresse nel sistema.
+          </p>
+        </div>
+
+        <!-- Open Upload Modal Button -->
+        <button id="open-upload-modal-btn" class="self-start sm:self-auto px-5 py-3 rounded-2xl bg-cyber-orange text-black font-mono font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2.5 shadow-[0_0_20px_rgba(255,102,0,0.5)] hover:shadow-[0_0_35px_rgba(255,102,0,0.8)] active:scale-95 transition-all">
+          <span class="text-base font-black">+</span>
+          <span>CARICA MEMORIA // FOTO</span>
+        </button>
+      </div>
+
+      <!-- Feed Category Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 font-mono text-xs no-scrollbar">
+        <button class="feed-filter-btn active px-4 py-2 rounded-full border border-cyber-orange bg-cyber-orange/20 text-cyber-orange font-bold whitespace-nowrap transition-colors" data-filter="all">
+          TUTTE LE MEMORIE (<span id="feed-count">2</span>)
+        </button>
+        <button class="feed-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 whitespace-nowrap transition-colors" data-filter="in-game">
+          IN-GAME
+        </button>
+        <button class="feed-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 whitespace-nowrap transition-colors" data-filter="runners">
+          RUNNERS
+        </button>
+        <button class="feed-filter-btn px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 whitespace-nowrap transition-colors" data-filter="settore04">
+          SETTORE 04
+        </button>
+      </div>
+
+      <!-- Social Stream Cards Grid (Responsive 1-col on mobile, 2-3 cols on desktop) -->
+      <div id="social-feed-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Memory Card 1: Official Cyber Runner -->
+        <article class="feed-card group rounded-3xl bg-[#070B14]/85 border border-cyber-orange/40 p-4 sm:p-5 flex flex-col justify-between backdrop-blur-xl hover:border-cyber-orange hover:shadow-[0_0_30px_rgba(255,102,0,0.35)] transition-all duration-300" data-category="runners">
+          
+          <!-- Post Author Header -->
+          <div class="flex items-center justify-between mb-3.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full border border-cyber-orange bg-cyber-orange/20 flex items-center justify-center font-mono font-bold text-xs text-cyber-orange">
+                VR
+              </div>
+              <div>
+                <span class="font-mono text-xs font-bold text-white block">@Runner_Insolito</span>
+                <span class="font-mono text-[10px] text-slate-400">Ciminiere Catania • 29 mag</span>
+              </div>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-cyber-orange/15 border border-cyber-orange/30 text-cyber-orange font-mono text-[9px] tracking-wider uppercase font-semibold">
+              RUNNERS
+            </span>
+          </div>
+
+          <!-- Post Photo Container -->
+          <div class="relative w-full aspect-square rounded-2xl overflow-hidden mb-3.5 bg-black border border-white/10 group-hover:border-cyber-orange/30 transition-colors">
+            <img src="assets/images/runner-post.jpg" alt="Runner Cromo" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/10 font-mono text-[9px] text-cyber-cyan">
+              LOG_001.RAW // VISOR ON
+            </div>
+          </div>
+
+          <!-- Post Caption & Tags -->
+          <div class="space-y-1.5 mb-4">
+            <p class="text-sm font-sans text-slate-200 leading-snug">
+              “Hey Choom, ho avuto notizia di un Runner insolito, porta con sé del cromo particolare...”
+            </p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-[10px] text-cyber-cyan">
+              <span>#diveexperience</span>
+              <span>#enter_the_system</span>
+              <span>#ciminiere</span>
+            </div>
+          </div>
+
+          <!-- Post Interactive Actions -->
+          <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
+            <button class="like-btn flex items-center gap-1.5 hover:text-cyber-orange transition-colors" data-likes="42">
+              <span class="heart-icon">❤️</span>
+              <span class="like-count font-bold">42</span>
+            </button>
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-[11px]">⚡ OVERCLOCK</span>
+              <span class="text-cyber-cyan font-bold text-[10px]">VERIFICATO</span>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- Memory Card 2: Cyber Megacity Sector 04 -->
+        <article class="feed-card group rounded-3xl bg-[#070B14]/85 border border-cyber-cyan/35 p-4 sm:p-5 flex flex-col justify-between backdrop-blur-xl hover:border-cyber-cyan hover:shadow-[0_0_30px_rgba(0,240,255,0.3)] transition-all duration-300" data-category="settore04">
+          
+          <!-- Post Author Header -->
+          <div class="flex items-center justify-between mb-3.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full border border-cyber-cyan bg-cyber-cyan/20 flex items-center justify-center font-mono font-bold text-xs text-cyber-cyan">
+                SYS
+              </div>
+              <div>
+                <span class="font-mono text-xs font-bold text-white block">@DIVE_Control</span>
+                <span class="font-mono text-[10px] text-slate-400">Settore 04 • Live feed</span>
+              </div>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-cyber-cyan/15 border border-cyber-cyan/30 text-cyber-cyan font-mono text-[9px] tracking-wider uppercase font-semibold">
+              SETTORE 04
+            </span>
+          </div>
+
+          <!-- Post Photo Container -->
+          <div class="relative w-full aspect-square rounded-2xl overflow-hidden mb-3.5 bg-black border border-white/10 group-hover:border-cyber-cyan/30 transition-colors">
+            <img src="assets/images/city-bg.jpg" alt="Megacity Cyberpunk" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/10 font-mono text-[9px] text-cyber-cyan">
+              NEURAL_CAM_04 // NIGHT
+            </div>
+          </div>
+
+          <!-- Post Caption & Tags -->
+          <div class="space-y-1.5 mb-4">
+            <p class="text-sm font-sans text-slate-200 leading-snug">
+              Pioggia battente tra i grattacieli e asfalto illuminato dai neon. L'accesso al sistema è aperto.
+            </p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-[10px] text-cyber-cyan">
+              <span>#nightcity</span>
+              <span>#divelarp</span>
+              <span>#cyberpunk</span>
+            </div>
+          </div>
+
+          <!-- Post Interactive Actions -->
+          <div class="pt-3 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
+            <button class="like-btn flex items-center gap-1.5 hover:text-cyber-cyan transition-colors" data-likes="89">
+              <span class="heart-icon">❤️</span>
+              <span class="like-count font-bold">89</span>
+            </button>
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-[11px]">⚡ SEGNALE 100%</span>
+              <span class="text-cyber-cyan font-bold text-[10px]">LIVE</span>
+            </div>
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
     <!-- SECTION 01: SCEGLI IL TUO ACCESSO -->
     <section id="accesso" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24 w-full">
       
@@ -310,7 +466,6 @@
               <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-orange/20 border border-cyber-orange/40 text-cyber-orange font-mono text-[11px] font-bold tracking-widest uppercase">
                 01 / NUOVA STORIA ↗
               </span>
-              <!-- Calendar / Event Icon -->
               <div class="w-10 h-10 rounded-2xl bg-cyber-orange/15 border border-cyber-orange/35 flex items-center justify-center text-cyber-orange">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -346,7 +501,6 @@
               <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan font-mono text-[11px] font-bold tracking-widest uppercase">
                 02 / STRUMENTI DI GIOCO ↗
               </span>
-              <!-- Terminal Prompt Icon -->
               <div class="w-10 h-10 rounded-2xl bg-cyber-cyan/15 border border-cyber-cyan/35 flex items-center justify-center text-cyber-cyan font-mono font-bold text-lg">
                 &gt;_
               </div>
@@ -432,12 +586,12 @@
         <span class="text-[9px] font-bold text-cyber-orange mt-1">ENTRA</span>
       </a>
 
-      <!-- Tab 02: Gallery -->
-      <a href="#ticker" class="mobile-dock-item flex flex-col items-center gap-1 py-1 px-2.5 text-slate-400 hover:text-cyber-cyan transition-colors">
+      <!-- Tab 02: Social Feed / Gallery -->
+      <a href="#gallery" class="mobile-dock-item flex flex-col items-center gap-1 py-1 px-2.5 text-slate-400 hover:text-cyber-orange transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
         </svg>
-        <span>GALLERY</span>
+        <span>FEED</span>
         <span class="w-1 h-1 rounded-full bg-transparent"></span>
       </a>
 
@@ -452,6 +606,85 @@
 
     </div>
   </nav>
+
+  <!-- MODAL: CARICA NUOVA FOTO / MEMORIA CYBERPUNK -->
+  <div id="upload-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl hidden flex-col items-center justify-center p-4 sm:p-6 transition-opacity duration-300 opacity-0 pointer-events-none">
+    
+    <div class="relative max-w-lg w-full bg-[#080D18] border border-cyber-orange/60 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(255,102,0,0.35)] max-h-[90dvh] overflow-y-auto">
+      
+      <!-- Modal Top Bar -->
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-cyber-orange animate-ping"></span>
+          <span class="font-mono text-xs text-cyber-orange uppercase tracking-wider font-bold">TRASMISSIONE DATOS // MEMORIA</span>
+        </div>
+        <button id="close-upload-modal-btn" class="w-8 h-8 rounded-full bg-white/10 text-white hover:bg-cyber-orange hover:text-black flex items-center justify-center font-bold text-sm transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <!-- Upload Form -->
+      <form id="upload-memory-form" class="space-y-4">
+        
+        <!-- File / Camera Input Area -->
+        <div class="relative border-2 border-dashed border-cyber-orange/40 rounded-2xl p-6 text-center hover:border-cyber-orange transition-colors cursor-pointer bg-white/5 group">
+          <input type="file" id="photo-file-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10" required>
+          <div id="upload-preview-wrap" class="hidden flex-col items-center">
+            <img id="upload-preview-img" src="" alt="Anteprima Scatto" class="w-full max-h-48 object-cover rounded-xl border border-cyber-orange/50 mb-2">
+            <span class="text-cyber-orange font-mono text-[11px] font-bold">✓ FOTO SELEZIONATA (Clicca per cambiare)</span>
+          </div>
+          <div id="upload-placeholder" class="flex flex-col items-center gap-2">
+            <div class="w-12 h-12 rounded-2xl bg-cyber-orange/15 border border-cyber-orange/40 flex items-center justify-center text-cyber-orange text-2xl group-hover:scale-110 transition-transform">
+              📷
+            </div>
+            <p class="font-mono text-xs text-slate-200 font-bold">
+              SCATTA O CARICA DALLA GALLERIA
+            </p>
+            <p class="text-[10px] text-slate-400 font-mono">
+              Supporta JPG, PNG, WebP (Formato verticale o quadrato consigliato)
+            </p>
+          </div>
+        </div>
+
+        <!-- Runner Handle Input -->
+        <div>
+          <label class="block font-mono text-[11px] text-cyber-orange uppercase tracking-wider mb-1 font-bold">
+            Callsign Runner / Nome Personaggio:
+          </label>
+          <input type="text" id="runner-handle-input" placeholder="es. @Kuro_04" class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/15 focus:border-cyber-orange focus:ring-1 focus:ring-cyber-orange text-white font-mono text-xs outline-none" required>
+        </div>
+
+        <!-- Category Tag Selection -->
+        <div>
+          <label class="block font-mono text-[11px] text-cyber-cyan uppercase tracking-wider mb-1 font-bold">
+            Categoria Frammento:
+          </label>
+          <select id="category-select" class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/15 focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan text-slate-200 font-mono text-xs outline-none">
+            <option value="in-game">IN-GAME // SIMULAZIONE</option>
+            <option value="runners">RUNNERS // EQUIPE</option>
+            <option value="settore04">SETTORE 04 // AMBIENTAZIONE</option>
+          </select>
+        </div>
+
+        <!-- Caption Input -->
+        <div>
+          <label class="block font-mono text-[11px] text-slate-300 uppercase tracking-wider mb-1 font-bold">
+            Didascalia / Log Trasmissione:
+          </label>
+          <textarea id="caption-input" rows="2" placeholder="Descrivi il momento, frammento di lore o situazione..." class="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/15 focus:border-cyber-orange focus:ring-1 focus:ring-cyber-orange text-white font-sans text-xs outline-none resize-none" required></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full py-3.5 rounded-2xl bg-cyber-orange text-black font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(255,102,0,0.5)] hover:shadow-[0_0_40px_rgba(255,102,0,0.8)] active:scale-98 transition-all">
+          <span>SALVA NEL DATASPACE // INVIA</span>
+          <span>⚡</span>
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
 
   <!-- MODAL: ESPLORA L'IMMAGINE -->
   <div id="image-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl hidden flex-col items-center justify-center p-4 sm:p-8 transition-opacity duration-300 opacity-0 pointer-events-none">
