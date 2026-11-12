@@ -1,0 +1,18 @@
+{
+  "name": "DIVE — Cyberpunk Roleplay",
+  "short_name": "DIVE",
+  "description": "Associazione di Gioco di Ruolo Cyberpunk. Un altro mondo. Un'altra identità.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#04060A",
+  "theme_color": "#04060A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/city-bg.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
