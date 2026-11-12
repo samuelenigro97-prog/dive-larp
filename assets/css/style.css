@@ -6,29 +6,29 @@
 .scanlines {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.35) 50%
+    rgba(0, 0, 0, 0.28) 50%
   ), linear-gradient(
     90deg,
-    rgba(255, 0, 0, 0.03),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.03)
+    rgba(0, 240, 255, 0.03),
+    rgba(0, 0, 0, 0),
+    rgba(224, 36, 195, 0.03)
   );
   background-size: 100% 3px, 6px 100%;
   pointer-events: none;
 }
 
-/* Subtle Pulsing Cyber Glow */
+/* Subtle Pulsing Cyber Cyan Glow */
 @keyframes cyberGlow {
   0%, 100% {
-    filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.3));
+    filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.35));
   }
   50% {
-    filter: drop-shadow(0 0 30px rgba(212, 255, 0, 0.6));
+    filter: drop-shadow(0 0 28px rgba(0, 240, 255, 0.7));
   }
 }
 
 .cyber-glow {
-  animation: cyberGlow 4s ease-in-out infinite;
+  animation: cyberGlow 3.5s ease-in-out infinite;
 }
 
 /* Marquee Scrolling for Mobile Ticker */
@@ -59,9 +59,9 @@
   animation-play-state: paused;
 }
 
-/* Cyber Chamfered Card Styling */
+/* Cyber Card Smooth Tilt / Hover */
 .cyber-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cyber-card:hover {
@@ -74,14 +74,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #05070B;
+  background: #04060A;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1c2738;
+  background: #142136;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #d4ff00;
+  background: #00f0ff;
 }
