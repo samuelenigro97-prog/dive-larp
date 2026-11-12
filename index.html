@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DIVE — Cyberpunk Roleplay</title>
-  <meta name="description" content="DIVE: Associazione di Gioco di Ruolo. Un altro mondo. Un'altra identità. La prossima storia inizia con te.">
+  <meta name="description" content="DIVE: Cyberpunk Experience. Associazione di Gioco di Ruolo. Un altro mondo. Un'altra identità. La prossima storia inizia con te.">
   
   <!-- PWA & Mobile Web App Meta -->
   <meta name="theme-color" content="#04060A">
@@ -13,6 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DIVE">
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/images/dive-logo.png">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,14 +31,17 @@
             cyber: {
               black: '#04060A',
               dark: '#080C16',
-              surface: 'rgba(8, 14, 26, 0.72)',
+              surface: 'rgba(8, 14, 26, 0.75)',
+              orange: '#FF6600',
+              amber: '#FF7700',
+              orangeGlow: 'rgba(255, 102, 0, 0.5)',
               cyan: '#00F0FF',
               cyanGlow: 'rgba(0, 240, 255, 0.45)',
               magenta: '#E024C3',
               purple: '#9333EA',
               magentaGlow: 'rgba(224, 36, 195, 0.45)',
               border: 'rgba(0, 240, 255, 0.35)',
-              borderMagenta: 'rgba(224, 36, 195, 0.35)'
+              borderOrange: 'rgba(255, 102, 0, 0.45)'
             }
           },
           fontFamily: {
@@ -54,31 +58,29 @@
   <!-- Custom Cyberpunk Styling -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="bg-cyber-black text-slate-100 font-sans antialiased selection:bg-cyber-cyan selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
+<body class="bg-cyber-black text-slate-100 font-sans antialiased selection:bg-cyber-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
   <!-- Background Layer: Clean Cyberpunk City with Rain & Neon Lights -->
   <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-    <!-- City Skyline Image Background -->
     <div id="city-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100" style="background-image: url('assets/images/city-bg.jpg');"></div>
-    
-    <!-- Atmospheric Contrast Overlays: Tuned so city is clearly visible -->
     <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/55 via-[#04060A]/35 to-[#04060A]/75"></div>
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#04060A_95%)] opacity-70"></div>
-    
-    <!-- Subtle CRT Scanlines -->
     <div class="absolute inset-0 scanlines opacity-25"></div>
   </div>
 
   <!-- MOBILE TOP HUD TELEMETRY BAR (Visible on Mobile) -->
-  <div class="md:hidden sticky top-0 z-50 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/80 backdrop-blur-xl border-b border-cyber-cyan/20 px-4 py-2 flex items-center justify-between font-mono text-[10px] text-slate-400">
+  <div class="md:hidden sticky top-0 z-50 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/85 backdrop-blur-xl border-b border-cyber-cyan/20 px-4 py-2 flex items-center justify-between font-mono text-[10px] text-slate-400">
     <div class="flex items-center gap-2">
-      <span class="w-1.5 h-1.5 rounded-full bg-cyber-cyan animate-pulse"></span>
-      <span class="text-cyber-cyan font-bold tracking-widest">DIVE // OS 2.6</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-pulse"></span>
+      <a href="#hero" class="flex items-center">
+        <img src="assets/images/dive-logo.png" alt="DIVE" class="h-4 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,102,0,0.6)]">
+      </a>
+      <span class="text-cyber-cyan font-bold tracking-wider ml-1">// OS 2.6</span>
     </div>
     <div class="flex items-center gap-3">
-      <span id="mobile-live-clock" class="text-slate-300">18:58:33</span>
+      <span id="mobile-live-clock" class="text-slate-300">19:00:54</span>
       <span class="text-cyber-cyan/60">|</span>
-      <span class="text-cyber-magenta font-semibold tracking-wider">SYNC:100%</span>
+      <span class="text-cyber-orange font-semibold tracking-wider">SYNC:100%</span>
       <button id="sfx-mobile-toggle" class="p-1 rounded text-cyber-cyan hover:text-white" title="Toggle Audio">
         <span id="sfx-mobile-icon">🔊</span>
       </button>
@@ -89,11 +91,9 @@
   <header class="hidden md:block sticky top-0 z-50 w-full backdrop-blur-xl bg-[#04060A]/60 border-b border-cyber-cyan/20 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       
-      <!-- Brand Logo -->
-      <a href="#hero" class="flex items-center gap-2 group cyber-btn-sound">
-        <span class="font-orbitron font-black text-3xl tracking-widest text-white group-hover:text-cyber-cyan transition-colors drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]">
-          DIVE<span class="text-cyber-cyan">/</span>
-        </span>
+      <!-- Official Brand Logo -->
+      <a href="#hero" class="flex items-center gap-3 group cyber-btn-sound">
+        <img src="assets/images/dive-logo.png" alt="DIVE Cyberpunk Experience" class="h-8 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_15px_rgba(255,102,0,0.5)]">
       </a>
 
       <!-- Desktop Navigation Menu (HUD Frame Bracket) -->
@@ -114,7 +114,7 @@
         <span class="text-cyber-cyan/60 font-mono ml-2">┐</span>
       </nav>
 
-      <!-- Desktop CTA Button -->
+      <!-- Desktop CTA & SFX Controls -->
       <div class="flex items-center gap-4">
         <button id="sfx-toggle" class="px-3.5 py-1.5 rounded-full bg-[#080C16]/85 border border-cyber-cyan/40 text-[11px] font-mono tracking-wider text-cyber-cyan hover:bg-cyber-cyan/20 transition-all flex items-center gap-2 backdrop-blur-md shadow-[0_0_15px_rgba(0,240,255,0.2)]">
           <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
@@ -122,9 +122,9 @@
         </button>
 
         <a href="#accesso" class="relative group cyber-btn-sound">
-          <div class="px-5 py-2.5 rounded-full border border-cyber-cyan/50 bg-cyber-cyan/15 text-cyber-cyan text-xs font-mono font-bold tracking-widest uppercase flex items-center gap-2 group-hover:bg-cyber-cyan group-hover:text-black group-hover:shadow-[0_0_20px_rgba(0,240,255,0.5)] transition-all duration-300">
+          <div class="px-5 py-2.5 rounded-full border border-cyber-orange/60 bg-cyber-orange/15 text-cyber-orange text-xs font-mono font-bold tracking-widest uppercase flex items-center gap-2 group-hover:bg-cyber-orange group-hover:text-black group-hover:shadow-[0_0_20px_rgba(255,102,0,0.6)] transition-all duration-300">
             <span>ENTRA IN GIOCO</span>
-            <span class="w-5 h-5 rounded-full bg-cyber-cyan/25 group-hover:bg-black/25 flex items-center justify-center text-[10px] transition-colors">↗</span>
+            <span class="w-5 h-5 rounded-full bg-cyber-orange/25 group-hover:bg-black/25 flex items-center justify-center text-[10px] transition-colors">↗</span>
           </div>
         </a>
       </div>
@@ -134,23 +134,23 @@
 
   <!-- Side Telemetry (Visible on Large Desktops) -->
   <aside class="hidden xl:flex fixed right-8 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-6 pointer-events-none text-slate-400 font-mono text-[10px] tracking-[0.25em]">
-    <div class="w-[1px] h-24 bg-gradient-to-b from-transparent via-cyber-cyan/50 to-transparent"></div>
-    <span class="rotate-90 origin-center whitespace-nowrap text-cyber-cyan font-bold tracking-widest drop-shadow-[0_0_8px_rgba(0,240,255,0.6)]">
-      DIVE / CYBERPUNK ROLEPLAY
+    <div class="w-[1px] h-24 bg-gradient-to-b from-transparent via-cyber-orange/50 to-transparent"></div>
+    <span class="rotate-90 origin-center whitespace-nowrap text-cyber-orange font-bold tracking-widest drop-shadow-[0_0_8px_rgba(255,102,0,0.6)]">
+      DIVE // CYBERPUNK EXPERIENCE
     </span>
     <div class="w-[1px] h-12 bg-white/20"></div>
     <span id="telemetry-coord" class="rotate-90 origin-center whitespace-nowrap text-slate-400">SYS:35.6895 // 139.6917</span>
-    <div class="w-[1px] h-24 bg-gradient-to-b from-cyber-magenta/50 to-transparent"></div>
+    <div class="w-[1px] h-24 bg-gradient-to-b from-cyber-cyan/50 to-transparent"></div>
   </aside>
 
   <!-- Main Content Wrap -->
   <main class="flex-grow z-10 flex flex-col justify-between">
 
-    <!-- HERO SECTION (Mobile-First Ergonomic Layout) -->
+    <!-- HERO SECTION (Mobile-First Ergonomic Layout with Official Logo) -->
     <section id="hero" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-16 sm:pb-24 w-full flex flex-col justify-center min-h-[calc(100dvh-7rem)]">
       
       <!-- Central Cyber HUD Glass Container -->
-      <div class="relative w-full max-w-3xl mx-auto backdrop-blur-xl bg-[#060912]/75 border border-cyber-cyan/35 rounded-3xl p-5 sm:p-10 shadow-[0_0_40px_rgba(0,0,0,0.6)]">
+      <div class="relative w-full max-w-3xl mx-auto backdrop-blur-xl bg-[#060912]/80 border border-cyber-cyan/35 rounded-3xl p-5 sm:p-10 shadow-[0_0_40px_rgba(0,0,0,0.7)]">
         
         <!-- Corner Cyber Accents -->
         <div class="absolute -top-[1px] -left-[1px] w-4 h-4 border-t-2 border-l-2 border-cyber-cyan rounded-tl-xl"></div>
@@ -158,22 +158,21 @@
         <div class="absolute -bottom-[1px] -left-[1px] w-4 h-4 border-b-2 border-l-2 border-cyber-cyan rounded-bl-xl"></div>
         <div class="absolute -bottom-[1px] -right-[1px] w-4 h-4 border-b-2 border-r-2 border-cyber-cyan rounded-br-xl"></div>
 
-        <!-- Overline Cyber Eyebrow -->
-        <div class="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] font-semibold">
-          <span class="w-1.5 h-1.5 rounded-full bg-cyber-cyan animate-pulse"></span>
-          <span>ASSOCIAZIONE DI GIOCO DI RUOLO</span>
-        </div>
+        <!-- Official Logo Centerpiece Presentation -->
+        <div class="flex flex-col items-center justify-center text-center mb-6 pt-2">
+          <div class="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-cyber-orange/10 border border-cyber-orange/30 text-cyber-orange font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-pulse"></span>
+            <span>ASSOCIAZIONE DI GIOCO DI RUOLO</span>
+          </div>
 
-        <!-- Mobile Brand Title Logo -->
-        <div class="md:hidden flex items-center justify-between mb-3 border-b border-white/10 pb-2">
-          <span class="font-orbitron font-black text-2xl tracking-widest text-white">
-            DIVE<span class="text-cyber-cyan">/</span>
-          </span>
-          <span class="font-mono text-[10px] text-cyber-cyan/80 tracking-widest">LARP EXPERIENCE</span>
+          <!-- Official DIVE Logo Graphic -->
+          <div class="w-full max-w-[280px] sm:max-w-[360px] py-2">
+            <img src="assets/images/dive-logo.png" alt="DIVE - Cyberpunk Experience" class="w-full h-auto object-contain drop-shadow-[0_0_25px_rgba(255,102,0,0.65)] hover:scale-102 transition-transform duration-300">
+          </div>
         </div>
 
         <!-- Main Headline -->
-        <div class="space-y-1 mb-4 sm:mb-6">
+        <div class="space-y-1 mb-4 sm:mb-6 text-center sm:text-left">
           <h1 class="font-orbitron font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.98] uppercase">
             <span class="block text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">CAMBIA</span>
             <span class="block text-cyber-cyan drop-shadow-[0_0_35px_rgba(0,240,255,0.7)]">REALTÀ.</span>
@@ -182,12 +181,12 @@
 
         <!-- Geometric Prism Chevron Grid (From Canva Mockup) -->
         <div class="flex items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 opacity-85">
+          <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-orange rotate-45"></div>
+          <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-orange/60 rotate-45"></div>
           <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-cyan rotate-45"></div>
-          <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-cyan/60 rotate-45"></div>
           <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-magenta rotate-45"></div>
-          <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-cyber-magenta/60 rotate-45"></div>
-          <div class="h-[1px] flex-grow bg-gradient-to-r from-cyber-cyan/40 via-cyber-magenta/40 to-transparent"></div>
-          <span class="font-mono text-[9px] sm:text-[10px] text-cyber-cyan tracking-[0.25em] font-bold">IMAGINE. CHOOSE. LIVE.</span>
+          <div class="h-[1px] flex-grow bg-gradient-to-r from-cyber-orange/40 via-cyber-cyan/40 to-transparent"></div>
+          <span class="font-mono text-[9px] sm:text-[10px] text-cyber-orange tracking-[0.25em] font-bold">ENTER THE SYSTEM</span>
         </div>
 
         <!-- Subtitle Description -->
@@ -198,8 +197,8 @@
 
         <!-- 3 Pillars Grid (People / Stories / Worlds) -->
         <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-3 mb-6 sm:mb-8 border-t border-white/10 font-mono text-center">
-          <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyber-cyan/50 active:scale-95 transition-all">
-            <span class="text-xs sm:text-sm font-bold text-cyber-cyan block uppercase">PEOPLE</span>
+          <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyber-orange/50 active:scale-95 transition-all">
+            <span class="text-xs sm:text-sm font-bold text-cyber-orange block uppercase">PEOPLE</span>
             <span class="text-[9px] sm:text-[10px] text-slate-300">Alleati</span>
           </div>
           <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyber-magenta/50 active:scale-95 transition-all">
@@ -215,9 +214,9 @@
         <!-- Action Buttons Row (Thumb Friendly Targets) -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           
-          <!-- Primary CTA Button (Neon Cyan) -->
+          <!-- Primary CTA Button (Neon Orange Glow) -->
           <a href="#accesso" class="relative group cyber-btn-sound flex-1">
-            <div class="min-h-[48px] px-6 py-3.5 sm:py-4 rounded-2xl sm:rounded-full bg-cyber-cyan text-black font-mono font-bold text-xs sm:text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_0_25px_rgba(0,240,255,0.45)] hover:shadow-[0_0_40px_rgba(0,240,255,0.7)] active:scale-[0.97] transition-all duration-200">
+            <div class="min-h-[48px] px-6 py-3.5 sm:py-4 rounded-2xl sm:rounded-full bg-cyber-orange text-black font-mono font-bold text-xs sm:text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_0_25px_rgba(255,102,0,0.5)] hover:shadow-[0_0_40px_rgba(255,102,0,0.8)] active:scale-[0.97] transition-all duration-200">
               <span>ESPLORA GLI EVENTI</span>
               <span class="w-6 h-6 rounded-full bg-black/15 flex items-center justify-center font-black text-xs">↗</span>
             </div>
@@ -235,7 +234,7 @@
 
       <!-- Bottom Hint (Mobile) -->
       <div class="mt-6 sm:hidden flex items-center justify-center gap-2 text-slate-400 font-mono text-[10px] tracking-widest">
-        <span class="w-1.5 h-1.5 rounded-full bg-cyber-cyan animate-ping"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-cyber-orange animate-ping"></span>
         <span>SCORRI PER I PORTALI OPERATIVI</span>
       </div>
 
@@ -251,7 +250,7 @@
           <span class="uppercase">OLTRE LA SUPERFICIE</span>
         </div>
         <div class="flex items-center gap-4">
-          <span class="text-cyber-magenta font-semibold">// HIGH TECH. HUMAN STORIES.</span>
+          <span class="text-cyber-orange font-semibold">// HIGH TECH. HUMAN STORIES.</span>
           <span class="text-slate-600">|</span>
           <span class="text-white font-bold tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">IMMAGINA · SCEGLI · VIVI</span>
         </div>
@@ -265,14 +264,14 @@
       <div class="md:hidden flex whitespace-nowrap overflow-hidden marquee-container text-xs font-mono tracking-widest">
         <div class="marquee-content flex items-center gap-6 text-slate-300">
           <span class="text-cyber-cyan font-bold">[ ] OLTRE LA SUPERFICIE</span>
-          <span class="text-cyber-magenta font-semibold">// HIGH TECH. HUMAN STORIES.</span>
+          <span class="text-cyber-orange font-semibold">// HIGH TECH. HUMAN STORIES.</span>
           <span class="text-white font-bold">IMMAGINA · SCEGLI · VIVI</span>
           <span class="text-slate-400">LE TUE SCELTE. LA TUA STORIA.</span>
           <span class="text-cyber-cyan font-bold">DIVE INTO ANOTHER LIFE ↗</span>
         </div>
         <div class="marquee-content flex items-center gap-6 text-slate-300" aria-hidden="true">
           <span class="text-cyber-cyan font-bold">[ ] OLTRE LA SUPERFICIE</span>
-          <span class="text-cyber-magenta font-semibold">// HIGH TECH. HUMAN STORIES.</span>
+          <span class="text-cyber-orange font-semibold">// HIGH TECH. HUMAN STORIES.</span>
           <span class="text-white font-bold">IMMAGINA · SCEGLI · VIVI</span>
           <span class="text-slate-400">LE TUE SCELTE. LA TUA STORIA.</span>
           <span class="text-cyber-cyan font-bold">DIVE INTO ANOTHER LIFE ↗</span>
@@ -302,17 +301,17 @@
       <!-- Access Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
         
-        <!-- CARD 1: PROSSIMO EVENTO (CYAN NEON CARD) -->
-        <div class="cyber-card group relative p-1 rounded-3xl bg-cyber-cyan/15 border border-cyber-cyan/40 hover:border-cyber-cyan hover:shadow-[0_0_35px_rgba(0,240,255,0.4)] transition-all duration-500 overflow-hidden">
+        <!-- CARD 1: PROSSIMO EVENTO (ORANGE / AMBER NEON CARD) -->
+        <div class="cyber-card group relative p-1 rounded-3xl bg-cyber-orange/15 border border-cyber-orange/40 hover:border-cyber-orange hover:shadow-[0_0_35px_rgba(255,102,0,0.45)] transition-all duration-500 overflow-hidden">
           <div class="relative h-full bg-[#060912]/85 rounded-[calc(1.5rem-2px)] p-6 sm:p-8 flex flex-col justify-between backdrop-blur-xl">
             
             <!-- Card Top Row -->
             <div class="flex items-center justify-between mb-6 sm:mb-8">
-              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan font-mono text-[11px] font-bold tracking-widest uppercase">
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-orange/20 border border-cyber-orange/40 text-cyber-orange font-mono text-[11px] font-bold tracking-widest uppercase">
                 01 / NUOVA STORIA ↗
               </span>
               <!-- Calendar / Event Icon -->
-              <div class="w-10 h-10 rounded-2xl bg-cyber-cyan/15 border border-cyber-cyan/35 flex items-center justify-center text-cyber-cyan">
+              <div class="w-10 h-10 rounded-2xl bg-cyber-orange/15 border border-cyber-orange/35 flex items-center justify-center text-cyber-orange">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
@@ -321,7 +320,7 @@
 
             <!-- Card Body -->
             <div class="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-              <h3 class="font-orbitron font-black text-2xl sm:text-4xl text-white group-hover:text-cyber-cyan transition-colors">
+              <h3 class="font-orbitron font-black text-2xl sm:text-4xl text-white group-hover:text-cyber-orange transition-colors">
                 Prossimo evento
               </h3>
               <p class="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
@@ -331,31 +330,31 @@
 
             <!-- Card Bottom Button -->
             <div class="pt-4 border-t border-white/10 flex items-center justify-between">
-              <span class="font-mono text-xs text-cyber-cyan tracking-wider uppercase font-bold">INFO ISCRIZIONE E LORE</span>
-              <span class="w-9 h-9 rounded-full bg-cyber-cyan text-black flex items-center justify-center font-bold text-sm group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(0,240,255,0.6)] transition-all">↗</span>
+              <span class="font-mono text-xs text-cyber-orange tracking-wider uppercase font-bold">INFO ISCRIZIONE E LORE</span>
+              <span class="w-9 h-9 rounded-full bg-cyber-orange text-black flex items-center justify-center font-bold text-sm group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(255,102,0,0.6)] transition-all">↗</span>
             </div>
 
           </div>
         </div>
 
-        <!-- CARD 2: APP DI GIOCO (MAGENTA NEON CARD) -->
-        <div class="cyber-card group relative p-1 rounded-3xl bg-cyber-magenta/15 border border-cyber-magenta/40 hover:border-cyber-magenta hover:shadow-[0_0_35px_rgba(224,36,195,0.4)] transition-all duration-500 overflow-hidden">
+        <!-- CARD 2: APP DI GIOCO (CYAN NEON CARD) -->
+        <div class="cyber-card group relative p-1 rounded-3xl bg-cyber-cyan/15 border border-cyber-cyan/40 hover:border-cyber-cyan hover:shadow-[0_0_35px_rgba(0,240,255,0.4)] transition-all duration-500 overflow-hidden">
           <div class="relative h-full bg-[#060912]/85 rounded-[calc(1.5rem-2px)] p-6 sm:p-8 flex flex-col justify-between backdrop-blur-xl">
             
             <!-- Card Top Row -->
             <div class="flex items-center justify-between mb-6 sm:mb-8">
-              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-magenta/20 border border-cyber-magenta/40 text-cyber-magenta font-mono text-[11px] font-bold tracking-widest uppercase">
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan font-mono text-[11px] font-bold tracking-widest uppercase">
                 02 / STRUMENTI DI GIOCO ↗
               </span>
               <!-- Terminal Prompt Icon -->
-              <div class="w-10 h-10 rounded-2xl bg-cyber-magenta/15 border border-cyber-magenta/35 flex items-center justify-center text-cyber-magenta font-mono font-bold text-lg">
+              <div class="w-10 h-10 rounded-2xl bg-cyber-cyan/15 border border-cyber-cyan/35 flex items-center justify-center text-cyber-cyan font-mono font-bold text-lg">
                 &gt;_
               </div>
             </div>
 
             <!-- Card Body -->
             <div class="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-              <h3 class="font-orbitron font-black text-2xl sm:text-4xl text-white group-hover:text-cyber-magenta transition-colors">
+              <h3 class="font-orbitron font-black text-2xl sm:text-4xl text-white group-hover:text-cyber-cyan transition-colors">
                 App di gioco
               </h3>
               <p class="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
@@ -365,8 +364,8 @@
 
             <!-- Card Bottom Button -->
             <div class="pt-4 border-t border-white/10 flex items-center justify-between">
-              <span class="font-mono text-xs text-cyber-magenta tracking-wider uppercase font-bold">TERMINALE GIOCATORE</span>
-              <span class="w-9 h-9 rounded-full bg-cyber-magenta text-black flex items-center justify-center font-bold text-sm group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(224,36,195,0.6)] transition-all">↗</span>
+              <span class="font-mono text-xs text-cyber-cyan tracking-wider uppercase font-bold">TERMINALE GIOCATORE</span>
+              <span class="w-9 h-9 rounded-full bg-cyber-cyan text-black flex items-center justify-center font-bold text-sm group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(0,240,255,0.6)] transition-all">↗</span>
             </div>
 
           </div>
@@ -382,9 +381,9 @@
   <footer id="footer" class="relative z-10 border-t border-cyber-cyan/20 bg-[#04060A]/90 backdrop-blur-xl py-8 sm:py-10 mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
       
-      <!-- Footer Left -->
-      <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
-        <span class="font-orbitron font-bold text-lg text-white">DIVE<span class="text-cyber-cyan">/</span></span>
+      <!-- Footer Left with Logo -->
+      <div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+        <img src="assets/images/dive-logo.png" alt="DIVE" class="h-6 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,102,0,0.5)]">
         <span class="hidden sm:inline text-slate-600">|</span>
         <span class="font-sans text-xs sm:text-sm text-slate-400">
           Eventi di gioco di ruolo. Altre realtà.
@@ -394,7 +393,7 @@
       <!-- Footer Right -->
       <div class="flex items-center gap-4 sm:gap-6 font-mono text-xs text-slate-400">
         <span>DIVE © 2026</span>
-        <a href="#accesso" class="text-cyber-cyan hover:text-white transition-colors flex items-center gap-1 cyber-btn-sound">
+        <a href="#accesso" class="text-cyber-orange hover:text-white transition-colors flex items-center gap-1 cyber-btn-sound">
           <span>Prima di entrare</span>
           <span>↗</span>
         </a>
@@ -408,12 +407,12 @@
     <div class="flex items-center justify-around font-mono text-[10px] tracking-wider">
       
       <!-- Tab 00: Home -->
-      <a href="#hero" class="mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2.5 text-cyber-cyan">
+      <a href="#hero" class="mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2.5 text-cyber-orange">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
         <span class="font-bold">HOME</span>
-        <span class="w-1 h-1 rounded-full bg-cyber-cyan"></span>
+        <span class="w-1 h-1 rounded-full bg-cyber-orange"></span>
       </a>
 
       <!-- Tab 01: Eventi -->
@@ -427,10 +426,10 @@
 
       <!-- Quick Action: ENTRA IN GIOCO (Central Glow Pill) -->
       <a href="#accesso" class="flex flex-col items-center -mt-5">
-        <div class="w-12 h-12 rounded-full bg-cyber-cyan text-black flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(0,240,255,0.7)] active:scale-95 transition-transform">
+        <div class="w-12 h-12 rounded-full bg-cyber-orange text-black flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(255,102,0,0.7)] active:scale-95 transition-transform">
           ↗
         </div>
-        <span class="text-[9px] font-bold text-cyber-cyan mt-1">ENTRA</span>
+        <span class="text-[9px] font-bold text-cyber-orange mt-1">ENTRA</span>
       </a>
 
       <!-- Tab 02: Gallery -->
@@ -468,10 +467,10 @@
       <img src="assets/images/city-bg.jpg" alt="DIVE Cyberpunk City" class="w-full h-full object-cover sm:object-contain object-center">
       <div class="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 p-4 rounded-2xl bg-black/80 backdrop-blur-md border border-cyber-cyan/30 flex items-center justify-between font-mono text-xs text-slate-300">
         <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+          <span class="w-2 h-2 rounded-full bg-cyber-orange animate-pulse"></span>
           <span>DIVE ATMOSPHERE // SECTOR 04</span>
         </div>
-        <span class="text-cyber-cyan font-bold">REALTÀ ATTIVA</span>
+        <span class="text-cyber-orange font-bold">REALTÀ ATTIVA</span>
       </div>
     </div>
 
