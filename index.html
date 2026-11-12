@@ -53,9 +53,9 @@
         <button class="nav-tab-trigger px-3 py-1.5 text-dive-orange font-bold border-b-2 border-dive-orange transition-colors" data-tab="home">HOME</button>
         <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="net">THE NET</button>
         <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="comm">CHAT</button>
+        <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="profile">SCHEDA</button>
         <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="cyberdeck">CYBERDECK</button>
         <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="wallet">WALLET</button>
-        <button class="nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="profile">SCHEDA</button>
       </nav>
 
       <!-- Player Identity & Hardware Controls -->
@@ -183,9 +183,24 @@
             </div>
           </button>
 
+          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-orange transition-colors flex flex-col justify-between space-y-4 sm:col-span-2 lg:col-span-2" data-tab="profile">
+            <div class="flex items-center justify-between font-mono text-[11px]">
+              <span class="text-dive-orange font-semibold uppercase tracking-widest">03 // SCHEDA PG</span>
+              <span class="text-slate-500">BIOMONITOR &amp; CROMO</span>
+            </div>
+            <div>
+              <h3 class="font-orbitron font-bold text-base sm:text-lg text-white group-hover:text-dive-orange transition-colors">
+                IDENTITÀ RUNNER, QR PERSONALE E IMPIANTI CYBERWARE
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Controlla HP, carico di Cyberpsicosi, traumi, QR identificativo e schema verticale degli impianti installati.
+              </p>
+            </div>
+          </button>
+
           <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-cyan transition-colors flex flex-col justify-between space-y-4" data-tab="cyberdeck">
             <div class="flex items-center justify-between font-mono text-[11px]">
-              <span class="text-dive-cyan font-semibold uppercase tracking-widest">03 // CYBERDECK</span>
+              <span class="text-dive-cyan font-semibold uppercase tracking-widest">04 // CYBERDECK</span>
               <span class="text-slate-500">HACKING OS</span>
             </div>
             <div>
@@ -200,7 +215,7 @@
 
           <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-cyan transition-colors flex flex-col justify-between space-y-4" data-tab="wallet">
             <div class="flex items-center justify-between font-mono text-[11px]">
-              <span class="text-dive-cyan font-semibold uppercase tracking-widest">04 // WALLET</span>
+              <span class="text-dive-cyan font-semibold uppercase tracking-widest">05 // WALLET</span>
               <span class="text-slate-500">EURODOLLARI</span>
             </div>
             <div>
@@ -209,21 +224,6 @@
               </h3>
               <p class="text-xs text-slate-400 mt-1">
                 Invia e ricevi EuroDollari istantanei e consulta lo storico transazioni.
-              </p>
-            </div>
-          </button>
-
-          <button class="nav-tab-trigger text-left cyber-panel p-5 sm:p-6 group hover:border-dive-orange transition-colors flex flex-col justify-between space-y-4 sm:col-span-2 lg:col-span-2" data-tab="profile">
-            <div class="flex items-center justify-between font-mono text-[11px]">
-              <span class="text-dive-orange font-semibold uppercase tracking-widest">05 // SCHEDA PG</span>
-              <span class="text-slate-500">BIOMONITOR & CROMO</span>
-            </div>
-            <div>
-              <h3 class="font-orbitron font-bold text-base sm:text-lg text-white group-hover:text-dive-orange transition-colors">
-                IDENTITÀ RUNNER, QR PERSONALE E IMPIANTI CYBERWARE
-              </h3>
-              <p class="text-xs text-slate-400 mt-1">
-                Controlla HP, carico di Cyberpsicosi, traumi, QR identificativo e schema anatomico dei 4 impianti installati.
               </p>
             </div>
           </button>
@@ -1064,6 +1064,11 @@
         <span>CHAT</span>
       </button>
 
+      <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="profile">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        <span>SCHEDA</span>
+      </button>
+
       <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="cyberdeck">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         <span>DECK</span>
@@ -1072,11 +1077,6 @@
       <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="wallet">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
         <span>WALLET</span>
-      </button>
-
-      <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="profile">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-        <span>SCHEDA</span>
       </button>
 
     </div>
