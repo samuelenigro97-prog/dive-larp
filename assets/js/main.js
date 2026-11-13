@@ -564,6 +564,10 @@ document.addEventListener('DOMContentLoaded', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     playCyberSound(450, 'triangle', 0.05);
+
+    if (['net', 'profile'].includes(effectiveTab) && !getActiveSessionId() && typeof openLoginModal === 'function') {
+      openLoginModal(false);
+    }
   }
 
   tabTriggers.forEach(btn => {
@@ -2109,6 +2113,42 @@ document.addEventListener('DOMContentLoaded', () => {
     activeSheetRunner = findRunnerByPgParam(initialPg);
   }
 
+  // Eventi sub-tabs (Iscriviti, Guida/Manuale, Setting, Personaggi)
+  const eventSubtabBtns = document.querySelectorAll('.event-subtab-btn');
+  const eventSubtabPanels = document.querySelectorAll('.event-subtab-panel');
+  eventSubtabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = `event-sub-${btn.getAttribute('data-subtab')}`;
+      eventSubtabPanels.forEach(panel => {
+        panel.classList.toggle('hidden', panel.id !== targetId);
+      });
+      eventSubtabBtns.forEach(b => {
+        const active = b === btn;
+        b.classList.toggle('bg-dive-orange', active);
+        b.classList.toggle('text-black', active);
+        b.classList.toggle('font-bold', active);
+        b.classList.toggle('bg-white/5', !active);
+        b.classList.toggle('text-slate-300', !active);
+        b.classList.toggle('border', !active);
+        b.classList.toggle('border-white/15', !active);
+        b.classList.toggle('hover:text-white', !active);
+      });
+      playCyberSound(520, 'triangle', 0.04);
+    });
+  });
+
+  // Event registration form
+  const eventRegisterForm = document.getElementById('event-register-form');
+  const eventRegisterMsg = document.getElementById('event-register-msg');
+  if (eventRegisterForm && eventRegisterMsg) {
+    eventRegisterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      eventRegisterMsg.classList.remove('hidden');
+      eventRegisterForm.reset();
+      playCyberSound(680, 'sine', 0.08);
+    });
+  }
+
   // Initialize
   syncPlayerUI();
   renderChat();
@@ -2117,7 +2157,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (initialPg) {
     switchTab('profile');
-  } else if (!getActiveSessionId()) {
-    openLoginModal(true);
   }
 });
