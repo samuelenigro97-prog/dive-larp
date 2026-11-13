@@ -165,27 +165,107 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const ROSTER_SEED = [
-    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, wallet: 1500, ice: true },
-    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, wallet: 850, ice: false },
-    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 75, psych: 45, wallet: 320, ice: true },
-    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'red', hp: 100, psych: 0, wallet: 5400, ice: true },
-    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'cyan', hp: 100, psych: 15, wallet: 1200, ice: false }
+    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 8, ramMax: 8, ice: false },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 75, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 8, ramMax: 8, ice: false }
   ];
 
+  const ACCOUNTS_STORAGE_KEY = 'dive_accounts_v1';
+  const SESSION_STORAGE_KEY = 'dive_session_v1';
+
+  function normalizeAccount(raw) {
+    return {
+      ...DEFAULT_PLAYER,
+      ...raw,
+      iceActive: raw.iceActive !== undefined ? raw.iceActive : Boolean(raw.ice),
+      pin: raw.pin || '1234',
+      ram: raw.ram ?? 8,
+      ramMax: raw.ramMax ?? 8,
+      traumas: Array.isArray(raw.traumas) ? raw.traumas : [],
+      transactions: Array.isArray(raw.transactions) ? raw.transactions : [
+        { id: 'tx_init', type: 'in', desc: 'Saldo iniziale evento', amount: raw.wallet ?? 1000, time: 'Inizio Evento' }
+      ]
+    };
+  }
+
+  function getAccountsRegistry() {
+    try {
+      const stored = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length) {
+          return parsed.map(normalizeAccount);
+        }
+      }
+    } catch {
+      // fallback seed
+    }
+    const seeded = ROSTER_SEED.map(normalizeAccount);
+    localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(seeded));
+    return seeded;
+  }
+
+  function saveAccountsRegistry(accounts) {
+    localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
+  }
+
+  function getActiveSessionId() {
+    return localStorage.getItem(SESSION_STORAGE_KEY) || '';
+  }
+
+  function setActiveSessionId(secretId) {
+    if (secretId) {
+      localStorage.setItem(SESSION_STORAGE_KEY, secretId);
+    } else {
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+    }
+  }
+
   function getPlayerState() {
+    const accounts = getAccountsRegistry();
+    const sessionId = getActiveSessionId();
+    if (sessionId) {
+      const matched = accounts.find(a => a.secretId.toUpperCase() === sessionId.toUpperCase());
+      if (matched) return matched;
+    }
     try {
       const stored = localStorage.getItem('dive_player_state_v2');
-      return stored ? { ...DEFAULT_PLAYER, ...JSON.parse(stored) } : DEFAULT_PLAYER;
+      return stored ? { ...DEFAULT_PLAYER, ...JSON.parse(stored) } : accounts[0] || DEFAULT_PLAYER;
     } catch {
-      return DEFAULT_PLAYER;
+      return accounts[0] || DEFAULT_PLAYER;
     }
+  }
+
+  let syncPushTimeout = null;
+  function scheduleCloudPush() {
+    if (!window.DiveSync || window.DiveSync.getConfig().mode === 'local') return;
+    clearTimeout(syncPushTimeout);
+    syncPushTimeout = setTimeout(() => {
+      window.DiveSync.pushSharedState({
+        accounts: getAccountsRegistry(),
+        posts: typeof getSocialPosts === 'function' ? getSocialPosts() : [],
+        updatedAt: Date.now()
+      }).catch(err => console.warn('Cloud push error:', err));
+    }, 300);
   }
 
   function savePlayerState(state) {
     try {
-      localStorage.setItem('dive_player_state_v2', JSON.stringify(state));
+      const normalized = normalizeAccount(state);
+      localStorage.setItem('dive_player_state_v2', JSON.stringify(normalized));
+      const accounts = getAccountsRegistry();
+      const idx = accounts.findIndex(a => a.secretId.toUpperCase() === (normalized.secretId || '').toUpperCase());
+      if (idx >= 0) {
+        accounts[idx] = { ...accounts[idx], ...normalized };
+      } else {
+        accounts.push(normalized);
+      }
+      saveAccountsRegistry(accounts);
       syncPlayerUI();
       renderAdminRoster();
+      scheduleCloudPush();
     } catch (e) {
       console.warn('Storage error', e);
     }
@@ -206,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if ((player.secretId || '#V-7842').toUpperCase() === normalized) {
       return null; // È la propria scheda
     }
-    const found = ROSTER_SEED.find(r => r.secretId.toUpperCase() === normalized);
+    const found = getAccountsRegistry().find(r => r.secretId.toUpperCase() === normalized);
     if (!found) return null;
     return {
       callsign: found.callsign,
@@ -216,8 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
       themeColor: found.themeColor || 'orange',
       hp: found.hp,
       psych: found.psych,
-      iceActive: found.ice,
-      traumas: []
+      iceActive: found.iceActive,
+      traumas: found.traumas || []
     };
   }
 
@@ -1773,10 +1853,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderAdminRoster() {
     if (!adminRosterTbody) return;
-    const roster = [
-      { callsign: player.callsign, role: player.role, secretId: player.secretId, hp: player.hp, psych: player.psych, wallet: player.wallet, ice: player.iceActive },
-      ...ROSTER_SEED.filter(r => r.callsign !== player.callsign)
-    ];
+    const roster = getAccountsRegistry();
 
     adminRosterTbody.innerHTML = roster.map(r => `
       <tr class="hover:bg-white/5 transition-colors">
@@ -1785,10 +1862,219 @@ document.addEventListener('DOMContentLoaded', () => {
         <td class="py-2.5 text-dive-cyan font-bold">${r.secretId}</td>
         <td class="py-2.5 ${r.hp > 50 ? 'text-dive-green' : 'text-dive-red'}">${r.hp}%</td>
         <td class="py-2.5 ${r.psych > 60 ? 'text-dive-red' : 'text-dive-cyan'}">${r.psych}%</td>
-        <td class="py-2.5 text-dive-green">€$ ${r.wallet.toLocaleString()}</td>
-        <td class="py-2.5 text-right font-bold ${r.ice ? 'text-dive-green' : 'text-slate-500'}">${r.ice ? 'ON' : 'OFF'}</td>
+        <td class="py-2.5 text-dive-green">€$ ${(r.wallet || 0).toLocaleString()}</td>
+        <td class="py-2.5 text-right font-bold ${r.iceActive ? 'text-dive-green' : 'text-slate-500'}">${r.iceActive ? 'ON' : 'OFF'}</td>
       </tr>
     `).join('');
+  }
+
+  // --------------------------------------------------------------------------
+  // 16. Login, Registration, Account Switcher & Cloud Sync Connector
+  // --------------------------------------------------------------------------
+  const loginModal = document.getElementById('login-modal');
+  const openLoginBtn = document.getElementById('open-login-btn');
+  const closeLoginModalBtn = document.getElementById('close-login-modal-btn');
+  const loginTabSignin = document.getElementById('login-tab-signin');
+  const loginTabRegister = document.getElementById('login-tab-register');
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const loginIdentifierInput = document.getElementById('login-identifier');
+  const loginPinInput = document.getElementById('login-pin');
+  const loginErrorEl = document.getElementById('login-error');
+  const registerErrorEl = document.getElementById('register-error');
+  const loginSyncModeLabel = document.getElementById('login-sync-mode-label');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  function updateSyncStatusLabels() {
+    const label = window.DiveSync ? window.DiveSync.getStatusLabel() : 'DEMO LOCALE';
+    if (loginSyncModeLabel) loginSyncModeLabel.textContent = `MODALITÀ: ${label}`;
+    const adminBadge = document.getElementById('admin-sync-status-badge');
+    if (adminBadge) adminBadge.textContent = label;
+  }
+
+  function openLoginModal(requireAuth = false) {
+    if (!loginModal) return;
+    updateSyncStatusLabels();
+    if (closeLoginModalBtn) {
+      closeLoginModalBtn.classList.toggle('hidden', requireAuth && !getActiveSessionId());
+    }
+    loginModal.classList.remove('hidden', 'pointer-events-none');
+    setTimeout(() => loginModal.classList.add('opacity-100'), 10);
+  }
+
+  function closeLoginModal() {
+    if (!loginModal) return;
+    loginModal.classList.remove('opacity-100');
+    setTimeout(() => loginModal.classList.add('hidden', 'pointer-events-none'), 300);
+  }
+
+  function activateAccount(account) {
+    player = normalizeAccount(account);
+    setActiveSessionId(player.secretId);
+    activeSheetRunner = null;
+    savePlayerState(player);
+    renderRamUI();
+    renderSocialFeed();
+    renderChat();
+    closeLoginModal();
+    if (typeof playCyberFx === 'function') playCyberFx('success');
+  }
+
+  if (openLoginBtn) {
+    openLoginBtn.addEventListener('click', () => openLoginModal(false));
+  }
+  if (closeLoginModalBtn) {
+    closeLoginModalBtn.addEventListener('click', closeLoginModal);
+  }
+
+  if (loginTabSignin && loginTabRegister && loginForm && registerForm) {
+    loginTabSignin.addEventListener('click', () => {
+      loginTabSignin.className = 'py-2 rounded-sm bg-dive-orange text-black font-bold uppercase transition-colors';
+      loginTabRegister.className = 'py-2 rounded-sm bg-white/5 text-slate-300 border border-white/15 hover:border-dive-purple font-bold uppercase transition-colors';
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+    });
+
+    loginTabRegister.addEventListener('click', () => {
+      loginTabRegister.className = 'py-2 rounded-sm bg-dive-purple text-black font-bold uppercase transition-colors';
+      loginTabSignin.className = 'py-2 rounded-sm bg-white/5 text-slate-300 border border-white/15 hover:border-dive-orange font-bold uppercase transition-colors';
+      registerForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+    });
+  }
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (loginErrorEl) loginErrorEl.classList.add('hidden');
+      const id = loginIdentifierInput ? loginIdentifierInput.value : '';
+      const pin = loginPinInput ? loginPinInput.value : '';
+      const localAccounts = getAccountsRegistry();
+      const res = window.DiveSync
+        ? await window.DiveSync.loginAccount(id, pin, localAccounts)
+        : { ok: false, error: 'Modulo sync non disponibile' };
+
+      if (!res.ok) {
+        if (loginErrorEl) {
+          loginErrorEl.textContent = res.error;
+          loginErrorEl.classList.remove('hidden');
+        }
+        if (typeof playCyberFx === 'function') playCyberFx('denied');
+        return;
+      }
+      if (Array.isArray(res.pool)) saveAccountsRegistry(res.pool);
+      activateAccount(res.account);
+    });
+  }
+
+  document.querySelectorAll('.quick-login-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-id');
+      const acc = getAccountsRegistry().find(a => a.secretId.toUpperCase() === targetId.toUpperCase());
+      if (acc) activateAccount(acc);
+    });
+  });
+
+  if (registerForm) {
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (registerErrorEl) registerErrorEl.classList.add('hidden');
+      const rawCallsign = document.getElementById('reg-callsign')?.value.trim() || '';
+      const role = document.getElementById('reg-role')?.value || 'MERCENARIO // SOLO';
+      const themeColor = document.getElementById('reg-color')?.value || 'orange';
+      const pin = document.getElementById('reg-pin')?.value.trim() || '1234';
+
+      if (!rawCallsign) return;
+      const callsign = rawCallsign.startsWith('@') ? rawCallsign : `@${rawCallsign}`;
+      const accounts = getAccountsRegistry();
+      if (accounts.some(a => a.callsign.toUpperCase() === callsign.toUpperCase())) {
+        if (registerErrorEl) {
+          registerErrorEl.textContent = 'Callsign già registrato. Scegli un altro nome o accedi.';
+          registerErrorEl.classList.remove('hidden');
+        }
+        if (typeof playCyberFx === 'function') playCyberFx('denied');
+        return;
+      }
+
+      const avatars = [
+        'assets/images/avatars/pg-1.jpg',
+        'assets/images/avatars/pg-2.jpg',
+        'assets/images/avatars/pg-3.jpg',
+        'assets/images/avatars/pg-4.jpg'
+      ];
+      const prefix = callsign.replace('@', '').charAt(0).toUpperCase() || 'X';
+      const num = Math.floor(1000 + Math.random() * 9000);
+      const newAccount = normalizeAccount({
+        callsign,
+        role,
+        secretId: `#${prefix}-${num}`,
+        pin,
+        avatar: avatars[accounts.length % avatars.length],
+        themeColor,
+        hp: 100,
+        psych: 0,
+        fama: 1,
+        wallet: 1000,
+        ram: 8,
+        ramMax: 8,
+        iceActive: true
+      });
+
+      accounts.push(newAccount);
+      saveAccountsRegistry(accounts);
+      activateAccount(newAccount);
+    });
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      setActiveSessionId('');
+      if (profileEditModal) {
+        profileEditModal.classList.remove('opacity-100');
+        setTimeout(() => profileEditModal.classList.add('hidden', 'pointer-events-none'), 200);
+      }
+      openLoginModal(true);
+    });
+  }
+
+  // Admin Cloud Sync Config
+  const adminSyncForm = document.getElementById('admin-sync-form');
+  const adminSyncMode = document.getElementById('admin-sync-mode');
+  const adminSyncEndpoint = document.getElementById('admin-sync-endpoint');
+  const adminSyncKey = document.getElementById('admin-sync-key');
+
+  if (window.DiveSync && adminSyncMode && adminSyncEndpoint && adminSyncKey) {
+    const cfg = window.DiveSync.getConfig();
+    adminSyncMode.value = cfg.mode || 'local';
+    adminSyncEndpoint.value = cfg.endpoint || '';
+    adminSyncKey.value = cfg.apiKey || '';
+    updateSyncStatusLabels();
+  }
+
+  if (adminSyncForm && window.DiveSync) {
+    adminSyncForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nextCfg = window.DiveSync.setConfig({
+        mode: adminSyncMode.value,
+        endpoint: adminSyncEndpoint.value.trim(),
+        apiKey: adminSyncKey.value.trim()
+      });
+      updateSyncStatusLabels();
+      if (nextCfg.mode !== 'local' && nextCfg.endpoint) {
+        try {
+          await window.DiveSync.pushSharedState({
+            accounts: getAccountsRegistry(),
+            posts: typeof getSocialPosts === 'function' ? getSocialPosts() : [],
+            updatedAt: Date.now()
+          });
+          if (typeof playCyberFx === 'function') playCyberFx('success');
+        } catch (err) {
+          alert('Connettore salvato, ma test sync fallito: ' + err.message);
+        }
+      } else {
+        if (typeof playCyberFx === 'function') playCyberFx('ui');
+      }
+    });
   }
 
   // Sheet QR copy & return buttons
@@ -1831,5 +2117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (initialPg) {
     switchTab('profile');
+  } else if (!getActiveSessionId()) {
+    openLoginModal(true);
   }
 });
