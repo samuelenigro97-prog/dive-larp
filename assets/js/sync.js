@@ -107,12 +107,13 @@
     }
 
     const found = pool.find(acc => {
+      const e = String(acc.email || '').trim().toUpperCase();
       const c = String(acc.callsign || '').toUpperCase();
       const s = String(acc.secretId || '').toUpperCase();
-      return c === norm || c === normHandle || s === norm || s === normId;
+      return (e && e === norm) || c === norm || c === normHandle || s === norm || s === normId;
     });
 
-    if (!found) return { ok: false, error: 'Runner non trovato. Controlla Callsign o Codice ID.' };
+    if (!found) return { ok: false, error: 'Account non trovato. Controlla Email di partecipazione, Callsign o ID.' };
     if (String(found.pin || '1234') !== String(pin || '').trim()) {
       return { ok: false, error: 'PIN errato. (Per i profili demo il PIN è 1234)' };
     }

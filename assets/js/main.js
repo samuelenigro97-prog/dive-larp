@@ -137,6 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
     callsign: '@V_Solo',
     role: 'MERCENARIO // SOLO',
     secretId: '#V-7842',
+    playerName: 'Valerio',
+    playerSurname: 'Rinaldi',
+    email: 'v.solo@dive.larp',
+    playerContact: '+39 340 784 2019 · Telegram @valerio_r',
+    assignedByMaster: true,
     avatar: 'assets/images/avatars/pg-1.jpg',
     themeColor: 'orange',
     hp: 100,
@@ -165,11 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const ROSTER_SEED = [
-    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 8, ramMax: 8, ice: false },
-    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 75, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 8, ramMax: 8, ice: false }
+    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', playerName: 'Valerio', playerSurname: 'Rinaldi', email: 'v.solo@dive.larp', playerContact: '+39 340 784 2019 · Telegram @valerio_r', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', playerName: 'Elena', playerSurname: 'Moretti', email: 'kuro.04@dive.larp', playerContact: '+39 349 410 9044 · Telegram @elena_kuro', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 8, ramMax: 8, ice: false },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033 · Telegram @marco_b', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 75, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245 · Telegram @d_conti', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410 · Telegram @nico_ferri', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 8, ramMax: 8, ice: false }
   ];
 
   const ACCOUNTS_STORAGE_KEY = 'dive_accounts_v1';
@@ -349,6 +354,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Wallet display
     const walletBalanceDisplay = document.getElementById('wallet-balance-display');
     if (walletBalanceDisplay) walletBalanceDisplay.textContent = player.wallet.toLocaleString();
+
+    // Trafiletto anagrafico partecipante (solo per la propria scheda, mai su scansioni QR altrui)
+    const introBox = document.getElementById('participant-intro-box');
+    const introFullname = document.getElementById('intro-player-fullname');
+    const introEmail = document.getElementById('intro-player-email');
+    const introContact = document.getElementById('intro-player-contact');
+    const introPgTag = document.getElementById('intro-player-pg-tag');
+    if (introBox) {
+      introBox.classList.toggle('hidden', isViewingOther);
+      if (!isViewingOther) {
+        const fullName = [player.playerName, player.playerSurname].filter(Boolean).join(' ').trim() || 'Giocatore Registrato';
+        if (introFullname) introFullname.textContent = fullName;
+        if (introEmail) introEmail.textContent = player.email || 'Nessuna email collegata';
+        if (introContact) introContact.textContent = player.playerContact || 'Contatto non specificato';
+        if (introPgTag) introPgTag.textContent = `${player.callsign} (${player.secretId})`;
+      }
+    }
 
     // Banner lettura scheda altrui & controlli medici
     const otherBanner = document.getElementById('viewing-other-pg-banner');
@@ -1922,6 +1944,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSocialFeed();
     renderChat();
     closeLoginModal();
+    if (typeof switchTab === 'function') switchTab('profile');
     if (typeof playCyberFx === 'function') playCyberFx('success');
   }
 
