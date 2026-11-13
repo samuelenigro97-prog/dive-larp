@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cardAvatarImg.alt = sheetData.callsign;
     }
     if (cardAvatarFrame) {
-      cardAvatarFrame.className = `cyber-panel relative w-24 h-28 sm:w-28 sm:h-32 overflow-hidden border ${avatarTheme.border} bg-black flex-shrink-0`;
+      cardAvatarFrame.className = `cyber-panel relative w-16 h-20 sm:w-20 sm:h-24 overflow-hidden border ${avatarTheme.border} bg-black flex-shrink-0`;
     }
     if (cardAvatarTag) {
       const roleShort = (sheetData.role || 'SOLO').split('//')[0].trim().slice(0, 8);
