@@ -33,13 +33,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.24.0">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.25.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.24.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.25.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -161,19 +161,24 @@
       <div class="max-w-5xl mx-auto w-full space-y-8">
         
         <!-- 1. Slogan / Immagini -->
-        <div class="text-center space-y-4 pt-2 sm:pt-4">
-          <div class="font-mono text-[11px] text-dive-orange uppercase tracking-[0.22em]">
-            — ASSOCIAZIONE DI GIOCO DI RUOLO
+        <div class="relative overflow-hidden rounded-sm border border-white/15 px-4 sm:px-8 py-12 sm:py-16 text-center">
+          <img src="assets/images/hero-city-bg.jpg?v=0.25.0" alt="Metropoli Cyberpunk DIVE" class="absolute inset-0 w-full h-full object-cover object-center opacity-60 pointer-events-none select-none">
+          <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/65 via-[#04060A]/45 to-[#04060A]/90 pointer-events-none"></div>
+
+          <div class="relative z-10 space-y-4">
+            <div class="font-mono text-[11px] text-dive-orange uppercase tracking-[0.22em]">
+              — ASSOCIAZIONE DI GIOCO DI RUOLO
+            </div>
+
+            <h1 class="font-orbitron font-black text-4xl sm:text-7xl lg:text-8xl tracking-tight leading-[0.95] uppercase drop-shadow-[0_4px_18px_rgba(0,0,0,0.85)]">
+              <span class="block text-white">CAMBIA</span>
+              <span class="block text-dive-orange neon-orange">REALTÀ.</span>
+            </h1>
+
+            <p class="max-w-xl mx-auto text-slate-200 font-sans text-sm sm:text-base leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+              Un altro mondo. Un'altra identità. La prossima storia inizia con te.
+            </p>
           </div>
-
-          <h1 class="font-orbitron font-black text-4xl sm:text-7xl lg:text-8xl tracking-tight leading-[0.95] uppercase">
-            <span class="block text-white">CAMBIA</span>
-            <span class="block text-dive-orange neon-orange">REALTÀ.</span>
-          </h1>
-
-          <p class="max-w-xl mx-auto text-slate-400 font-sans text-sm sm:text-base leading-relaxed">
-            Un altro mondo. Un'altra identità. La prossima storia inizia con te.
-          </p>
         </div>
 
         <!-- Visual Strip / Slogan -->
@@ -1532,12 +1537,12 @@
 
   <!-- Floating Version Badge (Bottom-Right) -->
   <div id="app-version-badge" class="fixed bottom-20 md:bottom-3 right-3 z-30 pointer-events-none select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.24.0
+    v0.25.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.24.0"></script>
-  <script src="assets/js/main.js?v=0.24.0"></script>
+  <script src="assets/js/sync.js?v=0.25.0"></script>
+  <script src="assets/js/main.js?v=0.25.0"></script>
 </body>
 </html>
