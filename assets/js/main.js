@@ -1948,27 +1948,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  async function performLogin(id, pin, errorEl) {
+    if (errorEl) errorEl.classList.add('hidden');
+    const localAccounts = getAccountsRegistry();
+    const res = window.DiveSync
+      ? await window.DiveSync.loginAccount(id, pin, localAccounts)
+      : { ok: false, error: 'Modulo sync non disponibile' };
+
+    if (!res.ok) {
+      if (errorEl) {
+        errorEl.textContent = res.error;
+        errorEl.classList.remove('hidden');
+      }
+      if (typeof playCyberFx === 'function') playCyberFx('denied');
+      return false;
+    }
+    if (Array.isArray(res.pool)) saveAccountsRegistry(res.pool);
+    activateAccount(res.account);
+    return true;
+  }
+
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (loginErrorEl) loginErrorEl.classList.add('hidden');
       const id = loginIdentifierInput ? loginIdentifierInput.value : '';
       const pin = loginPinInput ? loginPinInput.value : '';
-      const localAccounts = getAccountsRegistry();
-      const res = window.DiveSync
-        ? await window.DiveSync.loginAccount(id, pin, localAccounts)
-        : { ok: false, error: 'Modulo sync non disponibile' };
+      await performLogin(id, pin, loginErrorEl);
+    });
+  }
 
-      if (!res.ok) {
-        if (loginErrorEl) {
-          loginErrorEl.textContent = res.error;
-          loginErrorEl.classList.remove('hidden');
-        }
-        if (typeof playCyberFx === 'function') playCyberFx('denied');
-        return;
-      }
-      if (Array.isArray(res.pool)) saveAccountsRegistry(res.pool);
-      activateAccount(res.account);
+  const dropdownLoginForm = document.getElementById('dropdown-login-form');
+  const dropdownLoginId = document.getElementById('dropdown-login-identifier');
+  const dropdownLoginPin = document.getElementById('dropdown-login-pin');
+  const dropdownLoginError = document.getElementById('dropdown-login-error');
+
+  if (dropdownLoginForm) {
+    dropdownLoginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = dropdownLoginId ? dropdownLoginId.value : '';
+      const pin = dropdownLoginPin ? dropdownLoginPin.value : '';
+      const ok = await performLogin(id, pin, dropdownLoginError);
+      if (ok) dropdownLoginForm.reset();
     });
   }
 
