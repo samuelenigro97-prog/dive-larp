@@ -344,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
       headerHp.className = player.hp > 50 ? 'text-dive-green font-bold' : (player.hp > 25 ? 'text-dive-orange font-bold' : 'text-dive-red font-bold animate-pulse');
     }
     if (headerBalance) headerBalance.textContent = player.wallet.toLocaleString();
+    if (typeof syncAuthMenuUI === 'function') syncAuthMenuUI();
 
     // Wallet display
     const walletBalanceDisplay = document.getElementById('wallet-balance-display');
@@ -2033,6 +2034,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       setActiveSessionId('');
+      if (typeof syncAuthMenuUI === 'function') syncAuthMenuUI();
       if (profileEditModal) {
         profileEditModal.classList.remove('opacity-100');
         setTimeout(() => profileEditModal.classList.add('hidden', 'pointer-events-none'), 200);
@@ -2149,11 +2151,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Login Menu Dropdown (In-Game Sections + Player HUD)
+  // Login Menu Dropdown (Guest vs Authenticated In-Game Sections)
   const loginMenuWrapper = document.getElementById('login-menu-wrapper');
   const loginMenuToggle = document.getElementById('login-menu-toggle');
+  const loginMenuToggleLabel = document.getElementById('login-menu-toggle-label');
   const loginMenuDropdown = document.getElementById('login-menu-dropdown');
   const loginMenuChevron = document.getElementById('login-menu-chevron');
+  const loginMenuGuest = document.getElementById('login-menu-guest');
+  const loginMenuAuthenticated = document.getElementById('login-menu-authenticated');
+  const openLoginGuestBtn = document.getElementById('open-login-guest-btn');
+  const headerLogoutBtn = document.getElementById('header-logout-btn');
+
+  function syncAuthMenuUI() {
+    const isAuthenticated = Boolean(getActiveSessionId());
+    if (loginMenuToggleLabel) {
+      loginMenuToggleLabel.textContent = isAuthenticated ? player.callsign : 'LOGIN';
+    }
+    if (loginMenuGuest) {
+      loginMenuGuest.classList.toggle('hidden', isAuthenticated);
+    }
+    if (loginMenuAuthenticated) {
+      loginMenuAuthenticated.classList.toggle('hidden', !isAuthenticated);
+    }
+  }
 
   function setLoginMenuOpen(isOpen) {
     if (!loginMenuDropdown || !loginMenuToggle) return;
@@ -2167,6 +2187,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginMenuToggle && loginMenuDropdown) {
     loginMenuToggle.addEventListener('click', (e) => {
       e.stopPropagation();
+      syncAuthMenuUI();
       const willOpen = loginMenuDropdown.classList.contains('hidden');
       setLoginMenuOpen(willOpen);
       playCyberSound(500, 'triangle', 0.04);
@@ -2186,6 +2207,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Escape') setLoginMenuOpen(false);
     });
   }
+
+  if (openLoginGuestBtn) {
+    openLoginGuestBtn.addEventListener('click', () => {
+      if (typeof openLoginModal === 'function') openLoginModal(false);
+    });
+  }
+
+  if (headerLogoutBtn) {
+    headerLogoutBtn.addEventListener('click', () => {
+      setActiveSessionId('');
+      syncAuthMenuUI();
+      const activeTab = document.querySelector('.app-tab.active');
+      if (activeTab && (activeTab.id === 'tab-net' || activeTab.id === 'tab-profile')) {
+        switchTab('home');
+      }
+      playCyberSound(340, 'triangle', 0.06);
+    });
+  }
+
+  syncAuthMenuUI();
 
   // Initialize
   syncPlayerUI();
