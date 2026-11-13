@@ -2149,6 +2149,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Login Menu Dropdown (In-Game Sections + Player HUD)
+  const loginMenuWrapper = document.getElementById('login-menu-wrapper');
+  const loginMenuToggle = document.getElementById('login-menu-toggle');
+  const loginMenuDropdown = document.getElementById('login-menu-dropdown');
+  const loginMenuChevron = document.getElementById('login-menu-chevron');
+
+  function setLoginMenuOpen(isOpen) {
+    if (!loginMenuDropdown || !loginMenuToggle) return;
+    loginMenuDropdown.classList.toggle('hidden', !isOpen);
+    loginMenuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    if (loginMenuChevron) {
+      loginMenuChevron.classList.toggle('rotate-180', isOpen);
+    }
+  }
+
+  if (loginMenuToggle && loginMenuDropdown) {
+    loginMenuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = loginMenuDropdown.classList.contains('hidden');
+      setLoginMenuOpen(willOpen);
+      playCyberSound(500, 'triangle', 0.04);
+    });
+
+    loginMenuDropdown.querySelectorAll('.login-menu-close-on-click').forEach(item => {
+      item.addEventListener('click', () => setLoginMenuOpen(false));
+    });
+
+    document.addEventListener('click', (e) => {
+      if (loginMenuWrapper && !loginMenuWrapper.contains(e.target)) {
+        setLoginMenuOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setLoginMenuOpen(false);
+    });
+  }
+
   // Initialize
   syncPlayerUI();
   renderChat();
