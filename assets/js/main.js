@@ -666,20 +666,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const walletBalanceDisplay = document.getElementById('wallet-balance-display');
     if (walletBalanceDisplay) walletBalanceDisplay.textContent = player.wallet.toLocaleString();
 
-    // Trafiletto anagrafico partecipante (solo per la propria scheda, mai su scansioni QR altrui)
+    // Trafiletto anagrafico partecipante (solo per la propria scheda, mai su scansioni QR altrui; aperto al click su ID)
     const introBox = document.getElementById('participant-intro-box');
     const introFullname = document.getElementById('intro-player-fullname');
     const introEmail = document.getElementById('intro-player-email');
     const introContact = document.getElementById('intro-player-contact');
     const introPgTag = document.getElementById('intro-player-pg-tag');
+    const secretIdBtn = document.getElementById('card-secret-id-btn');
+    const secretIdChevron = document.getElementById('card-secret-id-chevron');
     if (introBox) {
-      introBox.classList.toggle('hidden', isViewingOther);
-      if (!isViewingOther) {
+      introBox.dataset.canReveal = isViewingOther ? '0' : '1';
+      if (isViewingOther) {
+        introBox.dataset.isOpen = '0';
+        introBox.classList.add('hidden');
+      } else {
+        const isOpen = introBox.dataset.isOpen === '1';
+        introBox.classList.toggle('hidden', !isOpen);
         const fullName = [player.playerName, player.playerSurname].filter(Boolean).join(' ').trim() || 'Giocatore Registrato';
         if (introFullname) introFullname.textContent = fullName;
         if (introEmail) introEmail.textContent = player.email || 'Nessuna email collegata';
         if (introContact) introContact.textContent = player.playerContact || 'Contatto non specificato';
         if (introPgTag) introPgTag.textContent = `${player.callsign} (${player.secretId})`;
+      }
+      if (secretIdBtn) {
+        const expanded = !isViewingOther && introBox.dataset.isOpen === '1';
+        secretIdBtn.disabled = isViewingOther;
+        secretIdBtn.classList.toggle('cursor-pointer', !isViewingOther);
+        secretIdBtn.classList.toggle('cursor-default', isViewingOther);
+        secretIdBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        if (secretIdChevron) {
+          secretIdChevron.classList.toggle('hidden', isViewingOther);
+          secretIdChevron.textContent = expanded ? '▴' : '▾';
+        }
       }
     }
 
@@ -1526,6 +1544,39 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => ripperdocModal.classList.add('hidden', 'pointer-events-none'), 300);
       }
     });
+  }
+
+  // --------------------------------------------------------------------------
+  // 9b. Toggle Personal Details on ID Badge Click
+  // --------------------------------------------------------------------------
+  const secretIdToggleBtn = document.getElementById('card-secret-id-btn');
+  const participantIntroBox = document.getElementById('participant-intro-box');
+  const participantIntroCloseBtn = document.getElementById('participant-intro-close-btn');
+  const secretIdToggleChevron = document.getElementById('card-secret-id-chevron');
+
+  const setPersonalDetailsOpen = (open) => {
+    if (!participantIntroBox) return;
+    if (open && participantIntroBox.dataset.canReveal !== '1') return;
+    participantIntroBox.dataset.isOpen = open ? '1' : '0';
+    participantIntroBox.classList.toggle('hidden', !open);
+    if (secretIdToggleBtn) {
+      secretIdToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    if (secretIdToggleChevron) {
+      secretIdToggleChevron.textContent = open ? '▴' : '▾';
+    }
+  };
+
+  if (secretIdToggleBtn && participantIntroBox) {
+    secretIdToggleBtn.addEventListener('click', () => {
+      if (participantIntroBox.dataset.canReveal !== '1') return;
+      const isCurrentlyOpen = participantIntroBox.dataset.isOpen === '1';
+      setPersonalDetailsOpen(!isCurrentlyOpen);
+    });
+  }
+
+  if (participantIntroCloseBtn) {
+    participantIntroCloseBtn.addEventListener('click', () => setPersonalDetailsOpen(false));
   }
 
   // --------------------------------------------------------------------------
