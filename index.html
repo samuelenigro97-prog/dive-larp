@@ -36,42 +36,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.29.1">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.30.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.29.1">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.30.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
   <!-- Background Layer -->
   <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-    <div id="city-bg" class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('assets/images/city-bg.jpg');"></div>
-    <div class="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-dive-orange/15 blur-3xl"></div>
-    <div class="absolute top-1/3 -right-24 w-[28rem] h-[28rem] rounded-full bg-dive-purple/15 blur-3xl"></div>
-    <div class="absolute -bottom-32 left-1/3 w-96 h-96 rounded-full bg-dive-cyan/10 blur-3xl"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/80 via-[#04060A]/92 to-[#04060A]"></div>
+    <div id="city-bg" class="absolute inset-0 bg-cover bg-center opacity-20 transition-opacity duration-500" style="background-image: url('assets/images/city-bg.jpg');"></div>
+    <div id="bg-orb-1" class="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-dive-orange/15 blur-3xl transition-colors duration-500"></div>
+    <div id="bg-orb-2" class="absolute top-1/3 -right-24 w-[28rem] h-[28rem] rounded-full bg-dive-purple/15 blur-3xl transition-colors duration-500"></div>
+    <div id="bg-orb-3" class="absolute -bottom-32 left-1/3 w-96 h-96 rounded-full bg-dive-cyan/10 blur-3xl transition-colors duration-500"></div>
+    <div id="bg-gradient-veil" class="absolute inset-0 bg-gradient-to-b from-[#04060A]/80 via-[#04060A]/92 to-[#04060A] transition-colors duration-500"></div>
     <div class="absolute inset-0 scanlines opacity-20"></div>
   </div>
 
   <!-- TOP HARDWARE HUD BAR -->
-  <header class="sticky top-0 z-40 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/95 border-b border-white/10">
+  <header class="sticky top-0 z-40 w-full pt-[env(safe-area-inset-top)] bg-[#04060A]/95 border-b border-white/10 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between relative">
       
       <!-- Brand Logo -->
       <a href="#tab-home" class="nav-tab-trigger flex items-center gap-3" data-tab="home">
         <img src="assets/images/dive-logo.png" alt="DIVE" class="h-6 sm:h-7 w-auto object-contain">
-        <span class="hidden lg:inline font-mono text-[10px] tracking-[0.25em] text-slate-400 uppercase font-semibold">CYBERPUNK EXPERIENCE</span>
+        <span class="public-site-nav hidden lg:inline font-mono text-[10px] tracking-[0.25em] text-slate-400 uppercase font-semibold">CYBERPUNK EXPERIENCE</span>
+        <span id="ingame-os-badge" class="ingame-site-nav hidden lg:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm border font-mono text-[10px] tracking-[0.2em] uppercase font-bold ingame-theme-pill">
+          <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
+          <span id="ingame-os-label">IN-GAME OS</span>
+        </span>
       </a>
 
       <!-- Desktop Navigation Tabs: Sito (centrato perfettamente) -->
       <nav id="desktop-game-nav" class="hidden md:flex md:absolute md:left-1/2 md:-translate-x-1/2 items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-slate-400">
-        <button class="nav-tab-trigger px-2.5 py-1.5 text-dive-orange font-bold border-b-2 border-dive-orange transition-colors" data-tab="home">HOME</button>
-        <button class="nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="eventi">EVENTI</button>
-        <button class="nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="gallery">GALLERY</button>
-        <button class="nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="premesse">PREMESSE</button>
+        <button class="public-site-nav nav-tab-trigger px-2.5 py-1.5 text-dive-orange font-bold border-b-2 border-dive-orange transition-colors" data-tab="home">HOME</button>
+        <button class="public-site-nav nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="eventi">EVENTI</button>
+        <button class="public-site-nav nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="gallery">GALLERY</button>
+        <button class="public-site-nav nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="premesse">PREMESSE</button>
+        <button class="ingame-site-nav nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="profile">SCHEDA PG</button>
+        <button class="ingame-site-nav nav-tab-trigger px-3 py-1.5 border-b-2 border-transparent hover:text-white transition-colors" data-tab="net">DIVE SOCIAL</button>
       </nav>
 
       <!-- Login Menu (In-Game Sections + Player HUD) & Hardware Controls -->
@@ -1564,14 +1570,14 @@
     </div>
   </div>
 
-  <!-- MOBILE BOTTOM NAVIGATION DOCK (Hidden on Home Landing) -->
+  <!-- MOBILE BOTTOM NAVIGATION DOCK -->
   <nav id="mobile-game-dock" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#04060A]/95 border-t border-white/10 px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
     <div class="flex items-center justify-around font-mono text-[9px] tracking-wider text-slate-400">
-      <button class="nav-tab-trigger mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2 text-dive-orange" data-tab="home">
+      <button class="public-site-nav nav-tab-trigger mobile-dock-item active flex flex-col items-center gap-1 py-1 px-2 text-dive-orange" data-tab="home">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
         <span>HOME</span>
       </button>
-      <button class="nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="eventi">
+      <button class="public-site-nav nav-tab-trigger mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 hover:text-white" data-tab="eventi">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
         <span>EVENTI</span>
       </button>
@@ -1583,17 +1589,21 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
         <span>SCHEDA PG</span>
       </button>
+      <button id="mobile-logout-btn" type="button" class="ingame-site-nav mobile-dock-item flex flex-col items-center gap-1 py-1 px-2 text-dive-red hover:text-white">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        <span>ESCI</span>
+      </button>
     </div>
   </nav>
 
   <!-- Floating Version Badge (Bottom-Right) -->
   <div id="app-version-badge" class="fixed bottom-20 md:bottom-3 right-3 z-30 pointer-events-none select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.29.1
+    v0.30.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.29.1"></script>
-  <script src="assets/js/main.js?v=0.29.1"></script>
+  <script src="assets/js/sync.js?v=0.30.0"></script>
+  <script src="assets/js/main.js?v=0.30.0"></script>
 </body>
 </html>
