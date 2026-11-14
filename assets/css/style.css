@@ -232,7 +232,7 @@
 }
 
 /* ==========================================================================
-   IN-GAME MODE: FALLOUT / ROBCO / PIP-BOY RETRO-FUTURISTIC CRT TERMINAL
+   IN-GAME MODE: MATRIX CYBERPUNK TERMINAL HUD
    ========================================================================== */
 
 body.ingame-mode .public-site-nav {
@@ -244,90 +244,89 @@ body:not(.ingame-mode) .ingame-site-nav {
 }
 
 body.ingame-mode {
-  --pg-accent: #22FF66;
-  --pg-accent-rgb: 34, 255, 102;
-  --pg-accent-2: #FFB000;
-  --pg-accent-2-rgb: 255, 176, 0;
-  --pg-bg: #030A05;
-  --pg-panel: #06140A;
-  --pg-slot: #091D0F;
+  --pg-accent: #00FF66;
+  --pg-accent-rgb: 0, 255, 102;
+  --pg-accent-2: #00E5FF;
+  --pg-accent-2-rgb: 0, 229, 255;
+  --pg-bg: #020604;
+  --pg-panel: rgba(4, 12, 8, 0.9);
+  --pg-slot: rgba(6, 20, 12, 0.92);
   background-color: var(--pg-bg) !important;
-  color: #D7FFE3 !important;
+  color: #D8FFE7 !important;
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace !important;
   transition: background-color 0.35s ease;
 }
 
-/* Fallout Amber (New Vegas / Solo Ops) */
 body.ingame-mode[data-pg-theme="orange"] {
-  --pg-accent: #FFB000;
-  --pg-accent-rgb: 255, 176, 0;
-  --pg-accent-2: #FFD166;
-  --pg-accent-2-rgb: 255, 209, 102;
-  --pg-bg: #0A0702;
-  --pg-panel: #140E04;
-  --pg-slot: #1E1506;
-  color: #FFF0CC !important;
+  --pg-accent: #00FF66;
+  --pg-accent-rgb: 0, 255, 102;
+  --pg-accent-2: #FF9E00;
+  --pg-accent-2-rgb: 255, 158, 0;
+  --pg-bg: #020604;
+  --pg-panel: rgba(4, 12, 8, 0.9);
+  --pg-slot: rgba(6, 20, 12, 0.92);
+  color: #D8FFE7 !important;
 }
 
-/* RobCo Cryo-Phosphor (Netrunner) */
 body.ingame-mode[data-pg-theme="cyan"] {
-  --pg-accent: #38F2C0;
-  --pg-accent-rgb: 56, 242, 192;
-  --pg-accent-2: #80FFDB;
-  --pg-accent-2-rgb: 128, 255, 219;
-  --pg-bg: #020A09;
-  --pg-panel: #041513;
-  --pg-slot: #07201C;
-  color: #D6FFF5 !important;
+  --pg-accent: #00F5D4;
+  --pg-accent-rgb: 0, 245, 212;
+  --pg-accent-2: #00BBF9;
+  --pg-accent-2-rgb: 0, 187, 249;
+  --pg-bg: #020709;
+  --pg-panel: rgba(4, 14, 18, 0.9);
+  --pg-slot: rgba(6, 22, 28, 0.92);
+  color: #D6FFF9 !important;
 }
 
-/* Classic Pip-Boy 3000 Green Phosphor (Chimico / Default) */
 body.ingame-mode[data-pg-theme="green"] {
-  --pg-accent: #22FF66;
-  --pg-accent-rgb: 34, 255, 102;
-  --pg-accent-2: #8CFF9E;
-  --pg-accent-2-rgb: 140, 255, 158;
-  --pg-bg: #020A04;
-  --pg-panel: #051609;
-  --pg-slot: #08220F;
-  color: #D7FFE3 !important;
+  --pg-accent: #00FF66;
+  --pg-accent-rgb: 0, 255, 102;
+  --pg-accent-2: #39FF14;
+  --pg-accent-2-rgb: 57, 255, 20;
+  --pg-bg: #020604;
+  --pg-panel: rgba(4, 13, 7, 0.9);
+  --pg-slot: rgba(6, 21, 11, 0.92);
+  color: #D8FFE7 !important;
 }
 
-/* Vault-Tec Red Alert CRT (Ripperdoc) */
 body.ingame-mode[data-pg-theme="red"] {
-  --pg-accent: #FF5E4D;
-  --pg-accent-rgb: 255, 94, 77;
-  --pg-accent-2: #FFB000;
-  --pg-accent-2-rgb: 255, 176, 0;
-  --pg-bg: #0B0303;
-  --pg-panel: #170606;
-  --pg-slot: #230909;
-  color: #FFE0DC !important;
+  --pg-accent: #FF2A6D;
+  --pg-accent-rgb: 255, 42, 109;
+  --pg-accent-2: #05D9E8;
+  --pg-accent-2-rgb: 5, 217, 232;
+  --pg-bg: #070205;
+  --pg-panel: rgba(16, 5, 10, 0.9);
+  --pg-slot: rgba(24, 7, 15, 0.92);
+  color: #FFE1EC !important;
 }
 
-/* Nuka-Quantum Retro Phosphor (Media) */
 body.ingame-mode[data-pg-theme="purple"] {
-  --pg-accent: #4DEEEA;
-  --pg-accent-rgb: 77, 238, 234;
-  --pg-accent-2: #FFB000;
-  --pg-accent-2-rgb: 255, 176, 0;
-  --pg-bg: #03090C;
-  --pg-panel: #06131A;
-  --pg-slot: #0A1E28;
-  color: #DCFDFC !important;
+  --pg-accent: #C77DFF;
+  --pg-accent-rgb: 199, 125, 255;
+  --pg-accent-2: #00F5D4;
+  --pg-accent-2-rgb: 0, 245, 212;
+  --pg-bg: #050209;
+  --pg-panel: rgba(12, 5, 20, 0.9);
+  --pg-slot: rgba(18, 8, 30, 0.92);
+  color: #F2E3FF !important;
 }
 
-/* CRT Tube Vignette & Retro Scanlines */
+body.ingame-mode #matrix-rain-canvas {
+  display: block !important;
+}
+
+/* Matrix Scanline Grid Overlay */
 body.ingame-mode .scanlines {
   background:
-    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.36) 50%),
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.34) 50%),
     radial-gradient(ellipse at center, transparent 58%, rgba(0, 0, 0, 0.55) 100%) !important;
   background-size: 100% 3px, 100% 100% !important;
-  opacity: 0.78 !important;
+  opacity: 0.65 !important;
 }
 
 body.ingame-mode #bg-orb-1 {
-  background-color: rgba(var(--pg-accent-rgb), 0.16) !important;
+  background-color: rgba(var(--pg-accent-rgb), 0.14) !important;
 }
 
 body.ingame-mode #bg-orb-2 {
@@ -341,32 +340,30 @@ body.ingame-mode #bg-orb-3 {
 body.ingame-mode #bg-gradient-veil {
   background: radial-gradient(
     ellipse at top center,
-    rgba(var(--pg-accent-rgb), 0.1) 0%,
-    var(--pg-bg) 72%
+    rgba(var(--pg-accent-rgb), 0.08) 0%,
+    rgba(2, 6, 4, 0.84) 75%
   ) !important;
 }
 
 body.ingame-mode #city-bg {
-  filter: grayscale(100%) sepia(55%) contrast(1.25) brightness(0.42);
   opacity: 0.08 !important;
 }
 
 body.ingame-mode header {
-  background-color: rgba(3, 8, 4, 0.96) !important;
-  backdrop-filter: none;
-  border-bottom: 2px solid rgba(var(--pg-accent-rgb), 0.55) !important;
-  box-shadow: 0 2px 18px rgba(var(--pg-accent-rgb), 0.14);
+  background-color: rgba(2, 6, 4, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1.5px solid rgba(var(--pg-accent-rgb), 0.5) !important;
+  box-shadow: 0 4px 24px rgba(var(--pg-accent-rgb), 0.12);
 }
 
-/* Retro Terminal Box Framing (no chamfered cyberpunk polygons) */
+/* Cyberpunk Chamfered Panels + Matrix Neon Glow */
 body.ingame-mode .cyber-panel {
-  background: linear-gradient(180deg, rgba(var(--pg-accent-rgb), 0.04) 0%, var(--pg-panel) 100%) !important;
-  border: 1.5px solid rgba(var(--pg-accent-rgb), 0.45) !important;
-  clip-path: none !important;
-  border-radius: 2px !important;
+  background: var(--pg-panel) !important;
+  border: 1px solid rgba(var(--pg-accent-rgb), 0.42) !important;
+  backdrop-filter: blur(4px);
   box-shadow:
     inset 0 0 22px rgba(var(--pg-accent-rgb), 0.06),
-    0 0 12px rgba(var(--pg-accent-rgb), 0.06) !important;
+    0 0 14px rgba(var(--pg-accent-rgb), 0.08) !important;
 }
 
 body.ingame-mode .cyber-panel:hover {
@@ -381,8 +378,6 @@ body.ingame-mode .cyber-panel-inner {
 body.ingame-mode .cyberware-slot {
   background: var(--pg-slot) !important;
   border: 1px solid rgba(var(--pg-accent-rgb), 0.35) !important;
-  clip-path: none !important;
-  border-radius: 2px !important;
 }
 
 body.ingame-mode .cyberware-slot:hover {
@@ -391,22 +386,16 @@ body.ingame-mode .cyberware-slot:hover {
 }
 
 body.ingame-mode .cyber-btn {
-  clip-path: none !important;
-  border-radius: 2px !important;
   border: 1px solid rgba(var(--pg-accent-rgb), 0.7) !important;
-  text-shadow: none;
-  box-shadow: 0 0 10px rgba(var(--pg-accent-rgb), 0.18);
+  box-shadow: 0 0 12px rgba(var(--pg-accent-rgb), 0.2);
 }
 
-/* V.A.T.S. Corner Brackets */
 body.ingame-mode .hud-bracket::before,
 body.ingame-mode .hud-bracket::after {
-  width: 10px;
-  height: 10px;
   border-color: var(--pg-accent) !important;
 }
 
-/* Phosphor Headings & Monospace Retro Feel */
+/* Matrix Neon Headings & Terminal Typography */
 body.ingame-mode #tab-profile h1,
 body.ingame-mode #tab-profile h2,
 body.ingame-mode #tab-profile h3,
@@ -414,17 +403,9 @@ body.ingame-mode #tab-net h1,
 body.ingame-mode #tab-net h2,
 body.ingame-mode #tab-net h3,
 body.ingame-mode header .font-orbitron {
-  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
   letter-spacing: 0.06em;
   color: var(--pg-accent) !important;
-  text-shadow: 0 0 10px rgba(var(--pg-accent-rgb), 0.48) !important;
-}
-
-body.ingame-mode #tab-profile p,
-body.ingame-mode #tab-profile span,
-body.ingame-mode #tab-net p,
-body.ingame-mode #tab-net span {
-  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  text-shadow: 0 0 10px rgba(var(--pg-accent-rgb), 0.55) !important;
 }
 
 body.ingame-mode #tab-profile input,
@@ -433,8 +414,8 @@ body.ingame-mode #tab-profile textarea,
 body.ingame-mode #tab-net input,
 body.ingame-mode #tab-net select,
 body.ingame-mode #tab-net textarea {
-  background-color: rgba(0, 8, 3, 0.92) !important;
-  border-color: rgba(var(--pg-accent-rgb), 0.4) !important;
+  background-color: rgba(2, 8, 5, 0.92) !important;
+  border-color: rgba(var(--pg-accent-rgb), 0.42) !important;
   color: var(--pg-accent) !important;
   font-family: 'JetBrains Mono', ui-monospace, monospace !important;
 }
@@ -444,7 +425,7 @@ body.ingame-mode #tab-net input::placeholder {
   color: rgba(var(--pg-accent-rgb), 0.45) !important;
 }
 
-/* Segmented Pip-Boy Health/Stat Bars */
+/* Segmented Matrix Data Bars */
 body.ingame-mode #player-hp-bar,
 body.ingame-mode #player-psych-bar {
   background-image: repeating-linear-gradient(
@@ -454,29 +435,29 @@ body.ingame-mode #player-psych-bar {
     rgba(0, 0, 0, 0.55) 8px,
     rgba(0, 0, 0, 0.55) 11px
   );
-  box-shadow: 0 0 10px rgba(var(--pg-accent-rgb), 0.45);
+  box-shadow: 0 0 12px rgba(var(--pg-accent-rgb), 0.5);
 }
 
-/* Retro Phosphor Tint on Biometric Scan */
 body.ingame-mode img[alt="Cyberware Anatomy Scan"] {
-  filter: grayscale(100%) sepia(80%) hue-rotate(65deg) contrast(1.3) brightness(0.95);
+  filter: contrast(1.22) brightness(1.08) drop-shadow(0 0 10px rgba(var(--pg-accent-rgb), 0.35));
+  opacity: 0.96;
 }
 
 body.ingame-mode #mobile-game-dock {
-  background-color: var(--pg-bg) !important;
-  border-top: 2px solid rgba(var(--pg-accent-rgb), 0.55) !important;
+  background-color: rgba(2, 6, 4, 0.96) !important;
+  border-top: 1.5px solid rgba(var(--pg-accent-rgb), 0.5) !important;
 }
 
 body.ingame-mode #app-version-badge {
   color: var(--pg-accent) !important;
   border-color: rgba(var(--pg-accent-rgb), 0.55) !important;
-  background-color: var(--pg-bg) !important;
+  background-color: rgba(2, 6, 4, 0.95) !important;
 }
 
 body.ingame-mode .ingame-nav-active {
   color: var(--pg-accent) !important;
   border-bottom-color: var(--pg-accent) !important;
-  text-shadow: 0 0 8px rgba(var(--pg-accent-rgb), 0.5);
+  text-shadow: 0 0 10px rgba(var(--pg-accent-rgb), 0.6);
 }
 
 body.ingame-mode .ingame-theme-pill {
@@ -493,7 +474,7 @@ body.ingame-mode ::-webkit-scrollbar-thumb:hover {
   background: var(--pg-accent);
 }
 
-/* Estensione tema Fallout / CRT agli accenti interni In-Game */
+/* Accenti Matrix Cyberpunk In-Game */
 body.ingame-mode #tab-profile .text-dive-orange,
 body.ingame-mode #tab-net .text-dive-orange,
 body.ingame-mode #tab-profile .text-dive-cyan,
@@ -533,51 +514,43 @@ body.ingame-mode #sec-cyberware .cyberware-slot:hover {
   background: rgba(var(--pg-accent-rgb), 0.12) !important;
 }
 
-/* Luminous CRT Phosphor Zones (In-Game Focal Highlights) */
+/* Luminous Matrix Neon Focal Zones */
 body.ingame-mode #sec-scheda,
 body.ingame-mode #sec-role-console,
 body.ingame-mode #sec-wallet .cyber-panel {
   box-shadow:
-    inset 0 0 32px rgba(var(--pg-accent-rgb), 0.1),
-    0 0 18px rgba(var(--pg-accent-rgb), 0.12) !important;
+    inset 0 0 30px rgba(var(--pg-accent-rgb), 0.09),
+    0 0 18px rgba(var(--pg-accent-rgb), 0.14) !important;
 }
 
-/* Glowing Avatar & QR Sub-Screen */
 body.ingame-mode #card-avatar-frame,
 body.ingame-mode #sheet-qr-container {
-  box-shadow: 0 0 16px rgba(var(--pg-accent-rgb), 0.28);
-  border-color: rgba(var(--pg-accent-rgb), 0.75) !important;
+  box-shadow: 0 0 16px rgba(var(--pg-accent-rgb), 0.3);
+  border-color: rgba(var(--pg-accent-rgb), 0.78) !important;
 }
 
-/* Luminous Wallet Balance Readout */
 body.ingame-mode #wallet-balance-display {
   color: var(--pg-accent) !important;
-  text-shadow: 0 0 14px rgba(var(--pg-accent-rgb), 0.65), 0 0 28px rgba(var(--pg-accent-rgb), 0.25);
-}
-
-/* Illuminated Biometric Scan & Kiroshi Scanner Monitors */
-body.ingame-mode img[alt="Cyberware Anatomy Scan"] {
-  opacity: 0.96;
+  text-shadow: 0 0 14px rgba(var(--pg-accent-rgb), 0.7), 0 0 30px rgba(var(--pg-accent-rgb), 0.3);
 }
 
 body.ingame-mode #sec-cyberware .min-h-\[380px\],
 body.ingame-mode #sec-deck #qr-reader,
 body.ingame-mode #sec-deck #camera-placeholder {
   box-shadow:
-    inset 0 0 34px rgba(var(--pg-accent-rgb), 0.18),
+    inset 0 0 34px rgba(var(--pg-accent-rgb), 0.16),
     0 0 16px rgba(var(--pg-accent-rgb), 0.14);
 }
 
 body.ingame-mode #sec-cyberware .min-h-\[380px\] {
   border-color: rgba(var(--pg-accent-rgb), 0.75) !important;
-  background: radial-gradient(circle at center, rgba(var(--pg-accent-rgb), 0.16) 0%, #020804 75%) !important;
+  background: radial-gradient(circle at center, rgba(var(--pg-accent-rgb), 0.14) 0%, #020805 75%) !important;
 }
 
-/* Luminous Active Role Monitor Panels (Bioreactor Vats, Subjects, Ripper Monitor, Fixer Chat) */
 body.ingame-mode #sec-role-console {
-  border-color: rgba(var(--pg-accent-rgb), 0.75) !important;
+  border-color: rgba(var(--pg-accent-rgb), 0.78) !important;
   background:
-    radial-gradient(ellipse at top right, rgba(var(--pg-accent-rgb), 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at top right, rgba(var(--pg-accent-rgb), 0.12) 0%, transparent 55%),
     var(--pg-panel) !important;
 }
 
@@ -587,10 +560,9 @@ body.ingame-mode #netrunner-nodes-grid > div,
 body.ingame-mode #role-panel-ripperdoc .md\:col-span-7 {
   box-shadow:
     inset 0 0 20px rgba(var(--pg-accent-rgb), 0.1),
-    0 0 10px rgba(var(--pg-accent-rgb), 0.08);
+    0 0 10px rgba(var(--pg-accent-rgb), 0.09);
 }
 
-/* Luminous Active Chat & Feed Header */
 body.ingame-mode .chat-channel-btn.active,
 body.ingame-mode .feed-filter-btn.active {
   background-color: rgba(var(--pg-accent-rgb), 0.24) !important;
@@ -601,6 +573,6 @@ body.ingame-mode .feed-filter-btn.active {
 
 body.ingame-mode #tab-net .cyber-panel {
   box-shadow:
-    inset 0 0 24px rgba(var(--pg-accent-rgb), 0.09),
-    0 0 14px rgba(var(--pg-accent-rgb), 0.09) !important;
+    inset 0 0 24px rgba(var(--pg-accent-rgb), 0.08),
+    0 0 14px rgba(var(--pg-accent-rgb), 0.1) !important;
 }
