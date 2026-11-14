@@ -1491,8 +1491,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const isNews = post.type === 'news';
       const isAnon = post.isAnonymous;
 
+      const badgeClass = isAnon
+        ? 'bg-dive-purple/15 border-dive-purple/40 text-dive-purple'
+        : (isNews ? 'bg-dive-cyan/15 border-dive-cyan/40 text-dive-cyan' : 'bg-dive-orange/15 border-dive-orange/40 text-dive-orange');
+
       return `
-        <article class="cyber-panel p-4 sm:p-5 space-y-4 transition-colors ${post.isPinned ? 'border-dive-orange/60' : ''}" data-id="${post.id}" data-type="${post.type}" data-anon="${isAnon ? 'true' : 'false'}">
+        <article class="cyber-panel hud-bracket p-4 sm:p-5 space-y-3.5 transition-colors ${post.isPinned ? 'border-dive-orange/60' : ''}" data-id="${post.id}" data-type="${post.type}" data-anon="${isAnon ? 'true' : 'false'}">
             
             <!-- User Header -->
             <div class="flex items-center justify-between">
@@ -1520,7 +1524,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     [DEL]
                   </button>
                 ` : ''}
-                <span class="px-2 py-0.5 rounded-sm bg-[#080B12] border border-white/10 text-[9px] font-mono uppercase text-slate-400">
+                <span class="px-2 py-0.5 rounded-sm border text-[9px] font-mono font-bold uppercase ${badgeClass}">
                   ${isAnon ? 'LEAK' : (isNews ? 'NOTIZIA' : 'FOTO')}
                 </span>
               </div>
@@ -1587,6 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (feedCountEl) feedCountEl.textContent = posts.length;
     bindSocialPostEvents();
+    if (typeof applyFeedFilters === 'function') applyFeedFilters();
   }
 
   function bindSocialPostEvents() {
@@ -1702,33 +1707,78 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Filter Buttons
+  // Filter Buttons & Live Search
+  const feedSearchInput = document.getElementById('feed-search-input');
+  let activeFeedFilter = 'all';
+
+  function applyFeedFilters() {
+    const query = feedSearchInput ? feedSearchInput.value.trim().toLowerCase() : '';
+    document.querySelectorAll('#social-feed-grid article').forEach(card => {
+      const type = card.getAttribute('data-type');
+      const isAnon = card.getAttribute('data-anon') === 'true';
+
+      let matchesFilter = false;
+      if (activeFeedFilter === 'all') matchesFilter = true;
+      else if (activeFeedFilter === 'news' && type === 'news') matchesFilter = true;
+      else if (activeFeedFilter === 'photos' && type === 'photos') matchesFilter = true;
+      else if (activeFeedFilter === 'anonymous' && isAnon) matchesFilter = true;
+
+      const matchesSearch = !query || card.textContent.toLowerCase().includes(query);
+      card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+  }
+
   document.querySelectorAll('.feed-filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.feed-filter-btn').forEach(b => {
-        b.className = 'feed-filter-btn px-3.5 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap transition-colors';
+        b.className = 'feed-filter-btn px-3 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap transition-colors';
       });
-      btn.className = 'feed-filter-btn active px-3.5 py-1.5 rounded-sm border border-dive-orange bg-dive-orange/15 text-dive-orange font-semibold whitespace-nowrap transition-colors';
+      btn.className = 'feed-filter-btn active px-3 py-1.5 rounded-sm border border-dive-orange bg-dive-orange/15 text-dive-orange font-semibold whitespace-nowrap transition-colors';
 
-      const filter = btn.getAttribute('data-filter');
-      document.querySelectorAll('#social-feed-grid article').forEach(card => {
-        const type = card.getAttribute('data-type');
-        const isAnon = card.getAttribute('data-anon') === 'true';
-
-        if (filter === 'all') {
-          card.classList.remove('hidden');
-        } else if (filter === 'news' && type === 'news') {
-          card.classList.remove('hidden');
-        } else if (filter === 'photos' && type === 'photos') {
-          card.classList.remove('hidden');
-        } else if (filter === 'anonymous' && isAnon) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }
-      });
+      activeFeedFilter = btn.getAttribute('data-filter') || 'all';
+      applyFeedFilters();
     });
   });
+
+  if (feedSearchInput) {
+    feedSearchInput.addEventListener('input', applyFeedFilters);
+  }
+
+  // Quick-Post Composer Inline
+  const quickSocialForm = document.getElementById('quick-social-form');
+  const quickSocialInput = document.getElementById('quick-social-input');
+  const quickSocialAnon = document.getElementById('quick-social-anon');
+
+  if (quickSocialForm && quickSocialInput) {
+    quickSocialForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const content = quickSocialInput.value.trim();
+      if (!content) return;
+      const isAnon = Boolean(quickSocialAnon && quickSocialAnon.checked);
+      const posts = getSocialPosts();
+      posts.unshift({
+        id: 'post_' + Date.now(),
+        type: 'news',
+        author: isAnon ? 'Ghost_Net' : player.callsign,
+        isAnonymous: isAnon,
+        isVerified: !isAnon && (player.role.includes('MEDIA') || player.role.includes('CORPO')),
+        isPinned: false,
+        location: isAnon ? 'Rete Oscura' : 'The Net',
+        timestamp: 'Adesso',
+        title: isAnon ? 'LEAK ANONIMO' : '',
+        content,
+        likes: 0,
+        dislikes: 0,
+        likedBy: [],
+        dislikedBy: [],
+        comments: []
+      });
+      saveSocialPosts(posts);
+      renderSocialFeed();
+      quickSocialForm.reset();
+      if (typeof playCyberFx === 'function') playCyberFx('success');
+    });
+  }
 
   // Modal: Carica Foto
   const openUploadModalBtn = document.getElementById('open-upload-modal-btn');
