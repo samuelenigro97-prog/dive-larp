@@ -1048,11 +1048,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const rubricaGoScanBtn = document.getElementById('rubrica-go-scan-btn');
   if (rubricaGoScanBtn) {
     rubricaGoScanBtn.addEventListener('click', () => {
-      switchTab('deck');
+      switchTab('cyberdeck');
       setTimeout(() => {
+        const deckEl = document.getElementById('sec-deck');
+        if (deckEl) deckEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const codeInput = document.getElementById('manual-code-input');
         if (codeInput) codeInput.focus();
-      }, 120);
+      }, 140);
     });
   }
 
@@ -1067,6 +1069,7 @@ document.addEventListener('DOMContentLoaded', () => {
     biomonitor: { tab: 'profile', anchor: 'sec-biomonitor' },
     cyberware: { tab: 'profile', anchor: 'sec-cyberware' },
     cyberdeck: { tab: 'profile', anchor: 'sec-deck' },
+    deck: { tab: 'profile', anchor: 'sec-deck' },
     wallet: { tab: 'profile', anchor: 'sec-wallet' },
     profile: { tab: 'profile', anchor: null },
     comm: { tab: 'net', anchor: 'sec-chat' }
