@@ -893,6 +893,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cyberware: { tab: 'profile', anchor: 'sec-cyberware' },
     cyberdeck: { tab: 'profile', anchor: 'sec-deck' },
     wallet: { tab: 'profile', anchor: 'sec-wallet' },
+    mappa: { tab: 'profile', anchor: 'sec-map' },
     profile: { tab: 'profile', anchor: null },
     comm: { tab: 'net', anchor: 'sec-chat' }
   };
@@ -3068,11 +3069,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyInGameTheme(isAuthenticated, runner) {
     const matrixPalette = {
-      orange: '#10B981',
+      orange: '#00E5FF',
       cyan: '#00E5FF',
       green: '#10B981',
       red: '#FF2A6D',
-      purple: '#C77DFF'
+      purple: '#A855F7'
     };
     if (isAuthenticated) {
       const rawTheme = (runner && runner.themeColor) ? String(runner.themeColor).toLowerCase() : 'orange';
