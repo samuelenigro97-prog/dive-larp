@@ -2270,6 +2270,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   syncAuthMenuUI();
 
+  // Auto-check ultima versione su VERSION (evita cache obsolete del browser)
+  (async function checkRemoteVersionAndAutoUpdate() {
+    try {
+      const badgeEl = document.getElementById('app-version-badge');
+      const currentVersion = badgeEl ? badgeEl.textContent.trim() : '';
+      if (!currentVersion) return;
+
+      const res = await fetch(`VERSION?_=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const remoteVersion = (await res.text()).trim();
+      if (!/^v\d+\.\d+\.\d+$/.test(remoteVersion)) return;
+
+      if (remoteVersion !== currentVersion) {
+        const guardKey = `dive_reloaded_${remoteVersion}`;
+        if (sessionStorage.getItem(guardKey)) return;
+        sessionStorage.setItem(guardKey, '1');
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('v', remoteVersion.replace(/^v/, ''));
+        window.location.replace(url.toString());
+      }
+    } catch {
+      // ignore offline/local file errors
+    }
+  })();
+
   // Initialize
   syncPlayerUI();
   renderChat();
