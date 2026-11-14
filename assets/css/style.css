@@ -476,77 +476,40 @@ body.ingame-mode ::-webkit-scrollbar-thumb:hover {
   background: var(--pg-accent);
 }
 
-/* Accenti Unificati In-Game (Ciano HUD + Rosso solo per allerta/pericolo) */
-body.ingame-mode #tab-profile .text-dive-orange,
-body.ingame-mode #tab-net .text-dive-orange,
-body.ingame-mode #tab-profile .text-dive-purple,
-body.ingame-mode #tab-net .text-dive-purple,
-body.ingame-mode #tab-profile .text-dive-green,
-body.ingame-mode #tab-net .text-dive-green,
-body.ingame-mode #tab-profile .text-purple-400,
-body.ingame-mode #tab-profile .text-emerald-400,
-body.ingame-mode #tab-profile .text-blue-400 {
-  color: var(--pg-accent) !important;
-}
-
+/* Accenti Bilanciati In-Game: Ciano HUD + Viola Canva + Ambra/Verde semantici */
 body.ingame-mode #tab-profile .neon-orange,
 body.ingame-mode #tab-net .neon-orange {
-  text-shadow: 0 0 8px rgba(var(--pg-accent-rgb), 0.35), 0 0 16px rgba(var(--pg-accent-rgb), 0.16) !important;
+  text-shadow: 0 0 8px rgba(var(--pg-accent-rgb), 0.35), 0 0 16px rgba(var(--pg-accent-2-rgb), 0.2) !important;
 }
 
-body.ingame-mode #tab-profile .border-dive-orange\/40,
-body.ingame-mode #tab-profile .border-dive-orange\/50,
-body.ingame-mode #tab-profile .border-dive-orange\/60,
-body.ingame-mode #tab-profile .border-dive-purple\/40,
-body.ingame-mode #tab-profile .border-dive-purple\/50,
-body.ingame-mode #tab-profile .border-dive-green\/30,
-body.ingame-mode #tab-profile .border-dive-green\/40,
-body.ingame-mode #tab-profile .border-purple-500\/40,
-body.ingame-mode #tab-profile .border-purple-500\/50,
-body.ingame-mode #tab-profile .border-purple-500\/60,
-body.ingame-mode #tab-profile .border-emerald-500\/40,
-body.ingame-mode #tab-profile .border-emerald-500\/50,
-body.ingame-mode #tab-net .border-dive-orange\/40,
-body.ingame-mode #tab-net .border-dive-orange\/50,
-body.ingame-mode #tab-net .border-dive-purple\/40,
-body.ingame-mode #tab-net .border-dive-purple\/50 {
-  border-color: rgba(var(--pg-accent-rgb), 0.38) !important;
+/* Mantiene i pulsanti pieni eleganti (traslucidi HUD invece di blocchi piatti) */
+body.ingame-mode #tab-profile .bg-purple-600,
+body.ingame-mode #tab-profile .bg-dive-purple,
+body.ingame-mode #tab-net .bg-dive-purple {
+  background-color: rgba(168, 85, 247, 0.2) !important;
+  color: #F3E8FF !important;
+  border: 1px solid rgba(168, 85, 247, 0.6) !important;
 }
 
-body.ingame-mode #tab-profile .bg-dive-orange\/10,
-body.ingame-mode #tab-profile .bg-dive-orange\/15,
-body.ingame-mode #tab-profile .bg-dive-purple\/10,
-body.ingame-mode #tab-profile .bg-dive-purple\/15,
-body.ingame-mode #tab-profile .bg-dive-green\/10,
-body.ingame-mode #tab-profile .bg-purple-600\/20,
-body.ingame-mode #tab-profile .bg-purple-500\/15,
-body.ingame-mode #tab-profile .bg-emerald-500\/15,
-body.ingame-mode #tab-net .bg-dive-orange\/15,
-body.ingame-mode #tab-net .bg-dive-purple\/15 {
-  background-color: rgba(var(--pg-accent-rgb), 0.12) !important;
+body.ingame-mode #tab-profile .bg-purple-600:hover,
+body.ingame-mode #tab-profile .bg-dive-purple:hover,
+body.ingame-mode #tab-net .bg-dive-purple:hover {
+  background-color: rgba(168, 85, 247, 0.85) !important;
+  color: #03060A !important;
 }
 
 body.ingame-mode #tab-profile .bg-dive-orange,
-body.ingame-mode #tab-profile .bg-dive-purple,
-body.ingame-mode #tab-profile .bg-dive-green,
-body.ingame-mode #tab-profile .bg-purple-600,
-body.ingame-mode #tab-profile .bg-emerald-600,
-body.ingame-mode #tab-net .bg-dive-orange,
-body.ingame-mode #tab-net .bg-dive-purple {
-  background-color: rgba(var(--pg-accent-rgb), 0.22) !important;
+body.ingame-mode #tab-net .bg-dive-orange {
+  background-color: rgba(var(--pg-accent-rgb), 0.2) !important;
   color: #E6F9FF !important;
   border: 1px solid rgba(var(--pg-accent-rgb), 0.65) !important;
 }
 
-body.ingame-mode #login-menu-toggle {
-  border-color: rgba(var(--pg-accent-rgb), 0.55) !important;
-  background-color: rgba(var(--pg-accent-rgb), 0.14) !important;
-  color: var(--pg-accent) !important;
-}
-
-body.ingame-mode #login-menu-toggle:hover {
-  background-color: var(--pg-accent) !important;
-  color: #03060A !important;
+body.ingame-mode #tab-profile .bg-dive-green,
+body.ingame-mode #tab-profile .bg-emerald-600 {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #D1FAE5 !important;
+  border: 1px solid rgba(16, 185, 129, 0.55) !important;
 }
 
 body.ingame-mode #sec-cyberware .cyberware-slot {
