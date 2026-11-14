@@ -1280,21 +1280,30 @@ document.addEventListener('DOMContentLoaded', () => {
   // --------------------------------------------------------------------------
   // 10. Personal QR Fullscreen Modal
   // --------------------------------------------------------------------------
-  const openMyQrBtn = document.getElementById('open-my-qr-btn');
+  const openMyQrTrigger = document.getElementById('sheet-qr-container');
   const myQrModal = document.getElementById('my-qr-modal');
   const closeMyQrBtn = document.getElementById('close-my-qr-btn');
 
-  if (openMyQrBtn && myQrModal) {
-    openMyQrBtn.addEventListener('click', () => {
+  const closeMyQrModal = () => {
+    if (!myQrModal) return;
+    myQrModal.classList.remove('opacity-100');
+    setTimeout(() => myQrModal.classList.add('hidden', 'pointer-events-none'), 300);
+  };
+
+  if (openMyQrTrigger && myQrModal) {
+    openMyQrTrigger.addEventListener('click', () => {
       myQrModal.classList.remove('hidden', 'pointer-events-none');
       setTimeout(() => myQrModal.classList.add('opacity-100'), 10);
     });
   }
 
   if (closeMyQrBtn && myQrModal) {
-    closeMyQrBtn.addEventListener('click', () => {
-      myQrModal.classList.remove('opacity-100');
-      setTimeout(() => myQrModal.classList.add('hidden', 'pointer-events-none'), 300);
+    closeMyQrBtn.addEventListener('click', closeMyQrModal);
+  }
+
+  if (myQrModal) {
+    myQrModal.addEventListener('click', (e) => {
+      if (e.target === myQrModal) closeMyQrModal();
     });
   }
 
