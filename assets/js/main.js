@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return {
       ...DEFAULT_PLAYER,
       ...raw,
+      playerContact: String(raw.playerContact ?? DEFAULT_PLAYER.playerContact).replace(/\s*·\s*Telegram\b.*$/i, '').trim(),
       iceActive: raw.iceActive !== undefined ? raw.iceActive : Boolean(raw.ice),
       pin: raw.pin || '1234',
       ram: raw.ram ?? 8,
