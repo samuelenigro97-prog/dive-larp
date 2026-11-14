@@ -240,6 +240,11 @@ document.addEventListener('DOMContentLoaded', () => {
         { author: '@The_Fixer', text: '[TAGLIA] Cerco qualcuno per estrarre il datashard dal terminale blu al piano inferiore. Paga: 400 €$.', time: '19:00' },
         { author: '@The_Fixer', text: 'Chi ha bisogno di codici bersaglio per intrusioni, mi trova all\'angolo bar.', time: '19:15' }
       ],
+      blackmarket: [
+        { author: '@BROKER_ANON', text: '[ID #291012340] Pacchetto sigillato. Consegna silenziosa al molo di Navarro. Paga: 650 €$.', time: '19:02' },
+        { author: '@BROKER_ANON', text: '[ID #300419409] Estrazione campione biologico non tracciato (settore Neptun). Paga: 900 €$.', time: '19:08' },
+        { author: '@BROKER_ANON', text: '[ID #419085703] Recupero modulo Kiroshi danneggiato da corpo Scav. Solo contatto cifrato.', time: '19:14' }
+      ],
       corp: [
         { author: '@DIVE_Control', text: 'Benvenuti nel Settore 04 Ciminiere. Vietato estrarre armi nei privé.', time: '19:00' }
       ],
@@ -514,6 +519,112 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  const IMMERSION_BADGES = {
+    normale: { label: '潜る NORMALE', cls: 'px-1.5 py-0.5 bg-black border border-slate-500/50 text-slate-300 font-bold' },
+    vivibile: { label: '潜る VIVIBILE', cls: 'px-1.5 py-0.5 bg-black border border-emerald-500/50 text-emerald-400 font-bold' },
+    medio: { label: '潜る MEDIO', cls: 'px-1.5 py-0.5 bg-black border border-blue-500/50 text-blue-400 font-bold' },
+    difficile: { label: '潜る DIFFICILE', cls: 'px-1.5 py-0.5 bg-black border border-purple-500/60 text-purple-400 font-bold' }
+  };
+
+  const PG_PSYCH_BY_ID = {
+    '#V-7842': {
+      faction: 'PORTO FRANCO NAVARRO',
+      immersion: 'medio',
+      mantra: '"Non mi volto indietro finché il conto non è chiuso."',
+      song: 'Nightcall — Kavinsky',
+      thought: '"Non credevo di poter arrivare fino a qui, sono così vicino a lei. Se i miei calcoli sono giusti, tra qualche giorno potrò raggiungerla."',
+      keyConcepts: ['Ex-militare', 'Debito d\'onore', 'Sangue freddo', 'Cicatrici', 'Lealtà selettiva', 'Ricerca'],
+      archetype: 'Ribelle // ISTP',
+      traumaCore: 'Perdita in zona bellica',
+      reaction: 'Freddezza / Rabbia controllata',
+      motivation: 'Ritrovare un legame & Sopravvivere'
+    },
+    '#K-4109': {
+      faction: 'CARAVIGLIARDI // LA STELLA',
+      immersion: 'difficile',
+      mantra: '"Ogni sistema ha una crepa. Io ci vivo dentro."',
+      song: 'Resonance — HOME',
+      thought: '"I Caravigliardi si fidano solo dei Tarocchi e del codice. Se salto un nodo stasera, salta l\'intera copertura."',
+      keyConcepts: ['Oracolo: La Stella', 'Infiltrazione', 'Paranoia lucida', 'Debito Neptun', 'Segreti', 'Net-ghost'],
+      archetype: 'Architetto // INTJ',
+      traumaCore: 'Tradimento intellettuale',
+      reaction: 'Dissociazione / Controllo analitico',
+      motivation: 'Scoprire la verità su Neptun'
+    },
+    '#D-5510': {
+      faction: 'PORTO FRANCO NAVARRO',
+      immersion: 'medio',
+      mantra: '"La carne cede, il cromo tiene il conto."',
+      song: 'Turbo Killer — Carpenter Brut',
+      thought: '"Troppe teste cromate dei KK stanno andando fuori fase. Qualcuno deve tenerli in piedi prima che esploda il settore."',
+      keyConcepts: ['Clinica clandestina', 'Empatia soppressa', 'Debiti di sangue', 'Bisturi', 'Fornitore KK', 'Cinismo'],
+      archetype: 'Distruttore // ENTP',
+      traumaCore: 'Fallimento pubblico in sala',
+      reaction: 'Sarcasmo difensivo / Pragmatismo',
+      motivation: 'Ripagare un errore passato'
+    },
+    '#F-3088': {
+      faction: 'NYOKA CIRCLE',
+      immersion: 'difficile',
+      mantra: '"There\'s no good ending in cyberpunk."',
+      song: 'After Dark — Mr.Kitty',
+      thought: '"Tutti credono che il Fixer muova i fili, ma basta un contratto sbagliato tra Nyoka Circle e Caravigliardi per bruciare tutto."',
+      keyConcepts: ['Nyoka Circle', 'Doppio gioco', 'Informazioni', 'Taglie Black Market', 'Carisma', 'Rischio'],
+      archetype: 'Comandante // ENTJ',
+      traumaCore: 'Sospeso con vecchio socio',
+      reaction: 'Manipolazione / Calcolo freddo',
+      motivation: 'Controllo del Porto Franco'
+    },
+    '#B-6420': {
+      faction: 'NEPTUN // BIOTECH',
+      immersion: 'difficile',
+      mantra: '"Se non controlli la mutazione, ti divora."',
+      song: 'Genesis — Grimes',
+      thought: '"I campioni delle vasche non rispondono più ai protocolli Neptun. Se esce fuori che il siero è instabile, sono finita."',
+      keyConcepts: ['Biolab Neptun', 'Muffe & Patogeni', 'Segreto corporativo', 'Insonnia', 'Immunosoppressori', 'Ambizione'],
+      archetype: 'Visionario // INFJ',
+      traumaCore: 'Ricordi modificati dal sistema',
+      reaction: 'Evitamento / Iper-focus',
+      motivation: 'Creare l\'antidoto definitivo'
+    },
+    '#R-9921': {
+      faction: 'INDIPENDENTE // SCAV',
+      immersion: 'normale',
+      mantra: '"Finché respiro, recupero quello che gli altri buttano."',
+      song: 'The Perfect Girl — Mareux',
+      thought: '"Nessuna fazione mi comanda. Un lavoretto pulito tra le rovine e domani sparisco."',
+      keyConcepts: ['Neutrale', 'Recupero Scav', 'Libertà', 'Sopravvivenza', 'Astuzia', 'Zero padroni'],
+      archetype: 'Protagonista // ESFP',
+      traumaCore: 'Cacciato dal vecchio gruppo',
+      reaction: 'Istinto / Eccesso',
+      motivation: 'Farsi un nome senza fazioni'
+    },
+    '#C-0012': {
+      faction: 'KK // CROMO PESANTE',
+      immersion: 'difficile',
+      mantra: '"Più cromo, meno carne, nessuna pietà."',
+      song: 'Le Perv — Carpenter Brut',
+      thought: '"La pelle è solo rumore di fondo. Le voci nei cavi mi dicono che stanotte qualcuno proverà a fermarci."',
+      keyConcepts: ['Estetica Dieselpunk', 'Iper-cromato', 'Rischio Psicosi', 'Forza bruta', 'Furia', 'Senza paura'],
+      archetype: 'Guerriero // ESTP',
+      traumaCore: 'Alienazione corporea totale',
+      reaction: 'Aggressività diretta / Rabbia',
+      motivation: 'Dimostrare la supremazia KK'
+    },
+    '#M-3384': {
+      faction: 'CARAVIGLIARDI // L\'EREMITA',
+      immersion: 'vivibile',
+      mantra: '"Quello che non va in onda non è mai esistito."',
+      song: 'Midnight City — M83',
+      thought: '"Ho le prove video di cosa succede davvero nei campi sperimentali. Devo solo trovare il momento giusto per trasmettere."',
+      keyConcepts: ['Oracolo: L\'Eremita', 'Archivio segreto', 'Studio Media', 'Verità scomode', 'Contatti', 'Ironia'],
+      archetype: 'Esploratore // INFP',
+      traumaCore: 'Censura & perdita collega',
+      reaction: 'Osservazione / Denuncia',
+      motivation: 'Smascherare Vertex & Neptun'
+    }
+  };
+
   function renderCyberwareGrid(sheetData) {
     const colLeft = document.getElementById('cyberware-col-left');
     const colRight = document.getElementById('cyberware-col-right');
@@ -626,6 +737,47 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cardCallsign) cardCallsign.textContent = sheetData.callsign;
     if (cardRole) cardRole.textContent = sheetData.role;
     if (cardSecretId) cardSecretId.textContent = sheetData.secretId || '#V-7842';
+
+    const psychProfile = PG_PSYCH_BY_ID[String(sheetData.secretId || '#V-7842').toUpperCase()] || {
+      faction: 'PORTO FRANCO NAVARRO',
+      immersion: 'normale',
+      mantra: '"Ogni scelta a Navarro ha un prezzo."',
+      song: 'Nightcall — Kavinsky',
+      thought: '"Arrivato a Navarro senza troppe domande. Il resto si decide in scena."',
+      keyConcepts: ['Indipendente', 'Sopravvivenza', 'Adattamento', 'Contatti', 'Segreti', 'Nuovo inizio'],
+      archetype: 'Neutrale // Flessibile',
+      traumaCore: 'Passato da chiarire',
+      reaction: 'Prudenza / Osservazione',
+      motivation: 'Trovare il proprio posto a Navarro'
+    };
+    const immersionBadgeEl = document.getElementById('card-immersion-badge');
+    const immCfg = IMMERSION_BADGES[psychProfile.immersion] || IMMERSION_BADGES.normale;
+    if (immersionBadgeEl) {
+      immersionBadgeEl.textContent = immCfg.label;
+      immersionBadgeEl.className = immCfg.cls;
+    }
+    const factionEl = document.getElementById('card-faction-label');
+    const songEl = document.getElementById('card-song');
+    const mantraEl = document.getElementById('card-mantra');
+    const thoughtEl = document.getElementById('card-thought');
+    const conceptsEl = document.getElementById('card-key-concepts');
+    const archEl = document.getElementById('card-archetype');
+    const traumaCoreEl = document.getElementById('card-trauma-core');
+    const reactionEl = document.getElementById('card-reaction');
+    const motivationEl = document.getElementById('card-motivation');
+    if (factionEl) factionEl.textContent = psychProfile.faction;
+    if (songEl) songEl.textContent = psychProfile.song;
+    if (mantraEl) mantraEl.textContent = psychProfile.mantra;
+    if (thoughtEl) thoughtEl.textContent = psychProfile.thought;
+    if (archEl) archEl.textContent = psychProfile.archetype;
+    if (traumaCoreEl) traumaCoreEl.textContent = psychProfile.traumaCore;
+    if (reactionEl) reactionEl.textContent = psychProfile.reaction;
+    if (motivationEl) motivationEl.textContent = psychProfile.motivation;
+    if (conceptsEl) {
+      conceptsEl.innerHTML = (psychProfile.keyConcepts || []).slice(0, 6).map(c =>
+        `<span class="px-2 py-1 rounded-sm bg-black/70 border border-dive-cyan/30 text-slate-200 truncate" title="${c}">${c}</span>`
+      ).join('');
+    }
     if (playerHpText) playerHpText.textContent = `${sheetData.hp}% ${sheetData.hp > 75 ? 'NOMINALE' : (sheetData.hp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
     if (playerHpBar) {
       playerHpBar.style.width = `${sheetData.hp}%`;
@@ -1732,6 +1884,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dmRecipientWrap) dmRecipientWrap.classList.add('hidden');
         const channelLabels = {
           fixer: '# CONTRATTI & TAGLIE FIXER',
+          blackmarket: '# BLACK MARKET // SOLO CODICI ID',
           corp: '# DISPACCI UFFICIALI CORP & MASTER'
         };
         if (currentChannelLabel) currentChannelLabel.textContent = channelLabels[currentChatChannel] || '# RADIO';
