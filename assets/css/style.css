@@ -430,7 +430,6 @@ body.ingame-mode #tab-net input::placeholder {
 }
 
 /* Segmented Matrix Data Bars */
-body.ingame-mode #player-hp-bar,
 body.ingame-mode #player-psych-bar {
   background-image: repeating-linear-gradient(
     90deg,
