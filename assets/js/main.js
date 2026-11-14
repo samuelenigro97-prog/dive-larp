@@ -1401,10 +1401,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatMessagesContainer = document.getElementById('chat-messages-container');
   const chatSendForm = document.getElementById('chat-send-form');
   const chatTextInput = document.getElementById('chat-text-input');
+  const chatReplyBanner = document.getElementById('chat-reply-banner');
+  const chatReplyAuthor = document.getElementById('chat-reply-author');
+  const chatReplyPreview = document.getElementById('chat-reply-preview');
+  const cancelChatReplyBtn = document.getElementById('cancel-chat-reply-btn');
   const currentChannelLabel = document.getElementById('current-channel-label');
   const dmRecipientWrap = document.getElementById('dm-recipient-wrap');
   const dmRecipientSelect = document.getElementById('dm-recipient-select');
   const chatChannelBtns = document.querySelectorAll('.chat-channel-btn');
+
+  let activeReplyTo = null;
+  let lastRenderedChatMsgs = [];
+
+  function escapeChatText(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function setChatReply(author, text) {
+    const cleanAuthor = String(author || '').split(' -> ')[0].trim();
+    const cleanText = String(text || '').trim();
+    if (!cleanAuthor || !cleanText) return;
+    activeReplyTo = {
+      author: cleanAuthor,
+      text: cleanText.length > 90 ? cleanText.slice(0, 87) + '...' : cleanText
+    };
+    if (chatReplyAuthor) chatReplyAuthor.textContent = activeReplyTo.author;
+    if (chatReplyPreview) chatReplyPreview.textContent = activeReplyTo.text;
+    if (chatReplyBanner) chatReplyBanner.classList.remove('hidden');
+    if (chatTextInput) chatTextInput.focus();
+  }
+
+  function clearChatReply() {
+    activeReplyTo = null;
+    if (chatReplyBanner) chatReplyBanner.classList.add('hidden');
+  }
+
+  if (cancelChatReplyBtn) {
+    cancelChatReplyBtn.addEventListener('click', clearChatReply);
+  }
 
   const chatGroupsActions = document.getElementById('chat-groups-actions');
   const chatGroupsBar = document.getElementById('chat-groups-bar');
@@ -1485,6 +1523,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const myGroups = getMyChatGroups();
       const activeGrp = myGroups.find(g => g.id === activeGroupId);
       if (!activeGrp) {
+        lastRenderedChatMsgs = [];
         chatMessagesContainer.innerHTML = '<div class="text-center text-slate-500 font-mono text-xs py-8">Crea un nuovo gruppo o inserisci un codice invito per iniziare a chattare in squadra.</div>';
         return;
       }
@@ -1493,21 +1532,39 @@ document.addEventListener('DOMContentLoaded', () => {
       msgs = player.chatMessages[currentChatChannel] || [];
     }
 
+    lastRenderedChatMsgs = msgs;
+
     if (msgs.length === 0) {
       chatMessagesContainer.innerHTML = '<div class="text-center text-slate-500 font-mono text-xs py-8">Nessun messaggio su questa frequenza.</div>';
       return;
     }
 
-    chatMessagesContainer.innerHTML = msgs.map(msg => {
+    chatMessagesContainer.innerHTML = msgs.map((msg, idx) => {
       const isMe = msg.author === player.callsign || msg.author.startsWith(`${player.callsign} ->`);
+      const isSystem = msg.author === 'SISTEMA';
+      const canReply = !isMe && !isSystem;
+      const quoteHtml = msg.replyTo ? `
+        <div class="mb-1.5 px-2 py-1 rounded-sm bg-black/45 border-l-2 border-dive-cyan/70 text-[10px] font-mono">
+          <span class="text-dive-cyan font-bold">${escapeChatText(msg.replyTo.author)}</span>
+          <span class="text-slate-400 block truncate">${escapeChatText(msg.replyTo.text)}</span>
+        </div>
+      ` : '';
+      const replyActionsHtml = canReply ? `
+        <div class="flex items-center gap-1 ml-1">
+          <button type="button" data-chat-reply="${idx}" class="px-1.5 py-0.5 rounded-sm bg-white/5 hover:bg-dive-cyan hover:text-black text-dive-cyan border border-dive-cyan/30 text-[9px] font-bold uppercase transition-colors">RISPONDI</button>
+          ${currentChatChannel !== 'direct' ? `<button type="button" data-chat-dm="${idx}" class="px-1.5 py-0.5 rounded-sm bg-white/5 hover:bg-dive-orange hover:text-black text-dive-orange border border-dive-orange/30 text-[9px] font-bold uppercase transition-colors">DM</button>` : ''}
+        </div>
+      ` : '';
       return `
         <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-          <div class="flex items-center gap-1.5 font-mono text-[10px] text-slate-500 mb-0.5">
-            <span class="font-bold ${isMe ? 'text-dive-orange' : 'text-dive-cyan'}">${msg.author}</span>
-            <span>• ${msg.time}</span>
+          <div class="flex flex-wrap items-center gap-1.5 font-mono text-[10px] text-slate-500 mb-0.5">
+            <span class="font-bold ${isMe ? 'text-dive-orange' : 'text-dive-cyan'}">${escapeChatText(msg.author)}</span>
+            <span>• ${escapeChatText(msg.time)}</span>
+            ${replyActionsHtml}
           </div>
           <div class="px-3.5 py-2 rounded-sm max-w-[85%] text-xs ${isMe ? 'bg-dive-orange/15 border border-dive-orange/35 text-white' : 'bg-[#080B12] border border-white/10 text-slate-200'}">
-            ${msg.text}
+            ${quoteHtml}
+            <div>${escapeChatText(msg.text)}</div>
           </div>
         </div>
       `;
@@ -1516,8 +1573,46 @@ document.addEventListener('DOMContentLoaded', () => {
     chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
   }
 
+  if (chatMessagesContainer) {
+    chatMessagesContainer.addEventListener('click', (e) => {
+      const replyBtn = e.target.closest('[data-chat-reply]');
+      if (replyBtn) {
+        const idx = Number(replyBtn.getAttribute('data-chat-reply'));
+        const targetMsg = lastRenderedChatMsgs[idx];
+        if (targetMsg) {
+          setChatReply(targetMsg.author, targetMsg.text);
+          playCyberSound(500, 'sine', 0.04);
+        }
+        return;
+      }
+
+      const dmBtn = e.target.closest('[data-chat-dm]');
+      if (dmBtn) {
+        const idx = Number(dmBtn.getAttribute('data-chat-dm'));
+        const targetMsg = lastRenderedChatMsgs[idx];
+        if (!targetMsg) return;
+        const recipientName = String(targetMsg.author || '').split(' -> ')[0].trim();
+        const directBtn = document.querySelector('.chat-channel-btn[data-channel="direct"]');
+        if (directBtn) directBtn.click();
+        if (dmRecipientSelect && recipientName) {
+          const exists = Array.from(dmRecipientSelect.options).some(opt => opt.value === recipientName);
+          if (!exists) {
+            const opt = document.createElement('option');
+            opt.value = recipientName;
+            opt.textContent = recipientName;
+            dmRecipientSelect.appendChild(opt);
+          }
+          dmRecipientSelect.value = recipientName;
+        }
+        setChatReply(recipientName, targetMsg.text);
+        playCyberSound(560, 'sine', 0.05);
+      }
+    });
+  }
+
   chatChannelBtns.forEach(btn => {
     btn.addEventListener('click', () => {
+      clearChatReply();
       chatChannelBtns.forEach(b => {
         b.className = 'chat-channel-btn px-2.5 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap';
       });
@@ -1649,29 +1744,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const replyPayload = activeReplyTo ? { author: activeReplyTo.author, text: activeReplyTo.text } : null;
 
       if (currentChatChannel === 'groups') {
         const groups = getChatGroups();
         const target = groups.find(g => g.id === activeGroupId);
         if (!target) return;
-        target.messages.push({
+        const msgObj = {
           author: player.callsign,
           text,
           time: timeStr
-        });
+        };
+        if (replyPayload) msgObj.replyTo = replyPayload;
+        target.messages.push(msgObj);
         saveChatGroups(groups);
       } else {
         const recipient = (currentChatChannel === 'direct' && dmRecipientSelect) ? ` -> ${dmRecipientSelect.value}` : '';
         if (!player.chatMessages[currentChatChannel]) player.chatMessages[currentChatChannel] = [];
-        player.chatMessages[currentChatChannel].push({
+        const msgObj = {
           author: player.callsign + recipient,
           text: text,
           time: timeStr
-        });
+        };
+        if (replyPayload) msgObj.replyTo = replyPayload;
+        player.chatMessages[currentChatChannel].push(msgObj);
         savePlayerState(player);
       }
 
       chatTextInput.value = '';
+      clearChatReply();
       renderChat();
       playCyberSound(620, 'square', 0.05);
     });

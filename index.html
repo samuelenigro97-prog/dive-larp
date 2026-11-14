@@ -36,13 +36,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.34.6">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.35.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.34.6">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.35.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -634,6 +634,14 @@
 
               <div id="chat-messages-container" class="flex-grow overflow-y-auto py-4 space-y-3 font-sans text-xs pr-1">
                 <!-- Messages inserted via JS -->
+              </div>
+
+              <div id="chat-reply-banner" class="hidden mb-2 px-3 py-1.5 rounded-sm bg-[#04060A] border-l-2 border-dive-cyan border border-white/10 flex items-center justify-between gap-2 font-mono text-[10px]">
+                <div class="min-w-0 truncate">
+                  <span class="text-dive-cyan font-bold">RISPOSTA A <span id="chat-reply-author">@The_Fixer</span>:</span>
+                  <span id="chat-reply-preview" class="text-slate-400 ml-1"></span>
+                </div>
+                <button id="cancel-chat-reply-btn" type="button" class="text-slate-400 hover:text-white px-1 font-bold flex-shrink-0" title="Annulla risposta">✕</button>
               </div>
 
               <form id="chat-send-form" class="pt-3 border-t border-white/10 flex items-center gap-2">
@@ -1665,12 +1673,12 @@
 
   <!-- Floating Version Badge (Bottom-Right) -->
   <div id="app-version-badge" class="fixed bottom-20 md:bottom-3 right-3 z-30 pointer-events-none select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.34.6
+    v0.35.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.34.6"></script>
-  <script src="assets/js/main.js?v=0.34.6"></script>
+  <script src="assets/js/sync.js?v=0.35.0"></script>
+  <script src="assets/js/main.js?v=0.35.0"></script>
 </body>
 </html>
