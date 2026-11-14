@@ -330,7 +330,8 @@ body.ingame-mode #city-bg {
 }
 
 body.ingame-mode header {
-  background-color: rgba(4, 6, 10, 0.92) !important;
+  background-color: rgba(4, 6, 10, 0.97) !important;
+  backdrop-filter: blur(12px);
   border-bottom-color: rgba(var(--pg-accent-rgb), 0.35) !important;
   box-shadow: 0 4px 24px rgba(var(--pg-accent-rgb), 0.08);
 }
