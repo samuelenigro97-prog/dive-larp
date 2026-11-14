@@ -229,3 +229,151 @@
     grid-column: span 8 / span 8;
   }
 }
+
+/* ==========================================================================
+   IN-GAME MODE & PER-CHARACTER (PG) THEMES
+   ========================================================================== */
+
+body.ingame-mode .public-site-nav {
+  display: none !important;
+}
+
+body:not(.ingame-mode) .ingame-site-nav {
+  display: none !important;
+}
+
+body.ingame-mode {
+  --pg-accent: #FF6B00;
+  --pg-accent-rgb: 255, 107, 0;
+  --pg-accent-2: #FFB800;
+  --pg-accent-2-rgb: 255, 184, 0;
+  --pg-bg: #080504;
+  --pg-panel: #100A07;
+  --pg-slot: #170F0A;
+  background-color: var(--pg-bg) !important;
+  transition: background-color 0.35s ease;
+}
+
+body.ingame-mode[data-pg-theme="orange"] {
+  --pg-accent: #FF6B00;
+  --pg-accent-rgb: 255, 107, 0;
+  --pg-accent-2: #FFB800;
+  --pg-accent-2-rgb: 255, 184, 0;
+  --pg-bg: #080503;
+  --pg-panel: #110B07;
+  --pg-slot: #19100A;
+}
+
+body.ingame-mode[data-pg-theme="cyan"] {
+  --pg-accent: #00D4FF;
+  --pg-accent-rgb: 0, 212, 255;
+  --pg-accent-2: #38BDF8;
+  --pg-accent-2-rgb: 56, 189, 248;
+  --pg-bg: #03080E;
+  --pg-panel: #06111D;
+  --pg-slot: #0A1A2B;
+}
+
+body.ingame-mode[data-pg-theme="green"] {
+  --pg-accent: #00FF88;
+  --pg-accent-rgb: 0, 255, 136;
+  --pg-accent-2: #A3E635;
+  --pg-accent-2-rgb: 163, 230, 53;
+  --pg-bg: #030906;
+  --pg-panel: #06140D;
+  --pg-slot: #0A1E14;
+}
+
+body.ingame-mode[data-pg-theme="red"] {
+  --pg-accent: #FF2A4B;
+  --pg-accent-rgb: 255, 42, 75;
+  --pg-accent-2: #FF6B8B;
+  --pg-accent-2-rgb: 255, 107, 139;
+  --pg-bg: #0A0305;
+  --pg-panel: #14060A;
+  --pg-slot: #1E0910;
+}
+
+body.ingame-mode[data-pg-theme="purple"] {
+  --pg-accent: #B829FF;
+  --pg-accent-rgb: 184, 41, 255;
+  --pg-accent-2: #F472B6;
+  --pg-accent-2-rgb: 244, 114, 182;
+  --pg-bg: #07040C;
+  --pg-panel: #10081B;
+  --pg-slot: #180D28;
+}
+
+body.ingame-mode #bg-orb-1 {
+  background-color: rgba(var(--pg-accent-rgb), 0.22) !important;
+}
+
+body.ingame-mode #bg-orb-2 {
+  background-color: rgba(var(--pg-accent-2-rgb), 0.18) !important;
+}
+
+body.ingame-mode #bg-orb-3 {
+  background-color: rgba(var(--pg-accent-rgb), 0.14) !important;
+}
+
+body.ingame-mode #bg-gradient-veil {
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--pg-accent-rgb), 0.06) 0%,
+    var(--pg-bg) 75%
+  ) !important;
+}
+
+body.ingame-mode #city-bg {
+  opacity: 0.12 !important;
+}
+
+body.ingame-mode header {
+  background-color: rgba(4, 6, 10, 0.92) !important;
+  border-bottom-color: rgba(var(--pg-accent-rgb), 0.35) !important;
+  box-shadow: 0 4px 24px rgba(var(--pg-accent-rgb), 0.08);
+}
+
+body.ingame-mode .cyber-panel {
+  background: var(--pg-panel) !important;
+  border-color: rgba(var(--pg-accent-rgb), 0.28) !important;
+}
+
+body.ingame-mode .cyber-panel:hover {
+  border-color: rgba(var(--pg-accent-rgb), 0.6) !important;
+}
+
+body.ingame-mode .cyber-panel-inner {
+  background: var(--pg-slot) !important;
+  border-color: rgba(var(--pg-accent-rgb), 0.14) !important;
+}
+
+body.ingame-mode .hud-bracket::before,
+body.ingame-mode .hud-bracket::after {
+  border-color: var(--pg-accent) !important;
+}
+
+body.ingame-mode #mobile-game-dock {
+  background-color: var(--pg-bg) !important;
+  border-top-color: rgba(var(--pg-accent-rgb), 0.35) !important;
+}
+
+body.ingame-mode #app-version-badge {
+  color: var(--pg-accent) !important;
+  border-color: rgba(var(--pg-accent-rgb), 0.45) !important;
+}
+
+body.ingame-mode .ingame-nav-active {
+  color: var(--pg-accent) !important;
+  border-bottom-color: var(--pg-accent) !important;
+}
+
+body.ingame-mode .ingame-theme-pill {
+  color: var(--pg-accent);
+  border-color: rgba(var(--pg-accent-rgb), 0.45);
+  background-color: rgba(var(--pg-accent-rgb), 0.12);
+}
+
+body.ingame-mode ::-webkit-scrollbar-thumb:hover {
+  background: var(--pg-accent);
+}

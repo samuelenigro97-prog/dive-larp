@@ -542,10 +542,18 @@ document.addEventListener('DOMContentLoaded', () => {
     comm: { tab: 'net', anchor: 'sec-chat' }
   };
 
+  const PUBLIC_TABS = ['home', 'eventi', 'gallery', 'premesse'];
+
   function switchTab(tabId) {
+    const isAuthenticated = Boolean(getActiveSessionId());
     const route = SECTION_ROUTES[tabId];
     const scrollTargetId = route ? route.anchor : null;
-    const effectiveTab = route ? route.tab : tabId;
+    let effectiveTab = route ? route.tab : tabId;
+
+    // Se il PG è loggato, la Home pubblica non è visibile: resta nella sezione In-Game
+    if (isAuthenticated && PUBLIC_TABS.includes(effectiveTab)) {
+      effectiveTab = 'profile';
+    }
 
     appTabs.forEach(tab => {
       if (tab.id === `tab-${effectiveTab}`) {
@@ -560,10 +568,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Desktop Nav
     document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
       if (btn.getAttribute('data-tab') === effectiveTab) {
-        btn.classList.add('text-dive-orange', 'font-bold', 'border-dive-orange');
+        btn.classList.add('font-bold');
+        if (isAuthenticated) {
+          btn.classList.add('ingame-nav-active', 'text-white');
+          btn.classList.remove('text-dive-orange', 'border-dive-orange');
+        } else {
+          btn.classList.add('text-dive-orange', 'border-dive-orange');
+          btn.classList.remove('ingame-nav-active', 'text-white');
+        }
         btn.classList.remove('text-slate-400', 'font-normal', 'border-transparent');
       } else {
-        btn.classList.remove('text-dive-orange', 'font-bold', 'border-dive-orange');
+        btn.classList.remove('text-dive-orange', 'font-bold', 'border-dive-orange', 'ingame-nav-active', 'text-white');
         btn.classList.add('text-slate-400', 'font-normal', 'border-transparent');
       }
     });
@@ -1943,6 +1958,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderRamUI();
     renderSocialFeed();
     renderChat();
+    if (typeof syncAuthMenuUI === 'function') syncAuthMenuUI();
     closeLoginModal();
     if (typeof switchTab === 'function') switchTab('profile');
     if (typeof playCyberFx === 'function') playCyberFx('success');
@@ -2076,13 +2092,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      setActiveSessionId('');
-      if (typeof syncAuthMenuUI === 'function') syncAuthMenuUI();
+      if (typeof performLogout === 'function') {
+        performLogout();
+      } else {
+        setActiveSessionId('');
+        if (typeof syncAuthMenuUI === 'function') syncAuthMenuUI();
+        switchTab('home');
+      }
       if (profileEditModal) {
         profileEditModal.classList.remove('opacity-100');
         setTimeout(() => profileEditModal.classList.add('hidden', 'pointer-events-none'), 200);
       }
-      openLoginModal(true);
     });
   }
 
@@ -2204,6 +2224,44 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginMenuAuthenticated = document.getElementById('login-menu-authenticated');
   const openLoginGuestBtn = document.getElementById('open-login-guest-btn');
   const headerLogoutBtn = document.getElementById('header-logout-btn');
+  const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+  const ingameOsLabel = document.getElementById('ingame-os-label');
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
+  const PG_THEMES = {
+    orange: { label: 'OS // SOLO OPS', metaBg: '#080503' },
+    cyan: { label: 'OS // NETRUNNER ICE', metaBg: '#03080E' },
+    green: { label: 'OS // BIO-TERMINAL', metaBg: '#030906' },
+    red: { label: 'OS // BLACKWALL', metaBg: '#0A0305' },
+    purple: { label: 'OS // SYNTHWAVE', metaBg: '#07040C' }
+  };
+
+  function applyInGameTheme(isAuthenticated, runner) {
+    if (isAuthenticated) {
+      const rawTheme = (runner && runner.themeColor) ? String(runner.themeColor).toLowerCase() : 'orange';
+      const themeKey = PG_THEMES[rawTheme] ? rawTheme : 'orange';
+      const themeCfg = PG_THEMES[themeKey];
+      document.body.classList.add('ingame-mode');
+      document.body.setAttribute('data-pg-theme', themeKey);
+      if (ingameOsLabel) {
+        const callsign = runner && runner.callsign ? runner.callsign : '';
+        ingameOsLabel.textContent = callsign ? `${callsign} • ${themeCfg.label}` : themeCfg.label;
+      }
+      if (themeColorMeta) themeColorMeta.setAttribute('content', themeCfg.metaBg);
+    } else {
+      document.body.classList.remove('ingame-mode');
+      document.body.removeAttribute('data-pg-theme');
+      if (themeColorMeta) themeColorMeta.setAttribute('content', '#04060A');
+    }
+  }
+
+  function performLogout() {
+    setActiveSessionId('');
+    activeSheetRunner = null;
+    syncAuthMenuUI();
+    switchTab('home');
+    playCyberSound(340, 'triangle', 0.06);
+  }
 
   function syncAuthMenuUI() {
     const isAuthenticated = Boolean(getActiveSessionId());
@@ -2216,6 +2274,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginMenuAuthenticated) {
       loginMenuAuthenticated.classList.toggle('hidden', !isAuthenticated);
     }
+    applyInGameTheme(isAuthenticated, player);
   }
 
   function setLoginMenuOpen(isOpen) {
@@ -2258,15 +2317,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (headerLogoutBtn) {
-    headerLogoutBtn.addEventListener('click', () => {
-      setActiveSessionId('');
-      syncAuthMenuUI();
-      const activeTab = document.querySelector('.app-tab.active');
-      if (activeTab && (activeTab.id === 'tab-net' || activeTab.id === 'tab-profile')) {
-        switchTab('home');
-      }
-      playCyberSound(340, 'triangle', 0.06);
-    });
+    headerLogoutBtn.addEventListener('click', performLogout);
+  }
+  if (mobileLogoutBtn) {
+    mobileLogoutBtn.addEventListener('click', performLogout);
   }
 
   syncAuthMenuUI();
@@ -2316,7 +2370,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSocialFeed();
   renderAdminRoster();
 
-  if (initialPg) {
+  if (initialPg || getActiveSessionId()) {
     switchTab('profile');
   }
 });
