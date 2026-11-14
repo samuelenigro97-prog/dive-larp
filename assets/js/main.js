@@ -3108,11 +3108,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginMenuToggleLabel) {
       loginMenuToggleLabel.textContent = isAuthenticated ? player.callsign : 'LOGIN';
     }
+    if (loginMenuToggle) {
+      loginMenuToggle.setAttribute('aria-haspopup', isAuthenticated ? 'false' : 'true');
+      loginMenuToggle.setAttribute('title', isAuthenticated ? 'Vai alla Scheda PG' : 'Accedi al terminale');
+    }
+    if (loginMenuChevron) {
+      loginMenuChevron.classList.toggle('hidden', isAuthenticated);
+    }
     if (loginMenuGuest) {
       loginMenuGuest.classList.toggle('hidden', isAuthenticated);
     }
     if (loginMenuAuthenticated) {
       loginMenuAuthenticated.classList.toggle('hidden', !isAuthenticated);
+    }
+    if (isAuthenticated) {
+      setLoginMenuOpen(false);
     }
     if (headerQuickLogoutBtn) {
       headerQuickLogoutBtn.classList.toggle('hidden', !isAuthenticated);
@@ -3132,6 +3142,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginMenuToggle && loginMenuDropdown) {
     loginMenuToggle.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (getActiveSessionId()) {
+        setLoginMenuOpen(false);
+        switchTab('profile');
+        return;
+      }
       syncAuthMenuUI();
       const willOpen = loginMenuDropdown.classList.contains('hidden');
       setLoginMenuOpen(willOpen);
