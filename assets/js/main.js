@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. Cyberpunk Web Audio Synthesizer (Zero external dependencies)
   // --------------------------------------------------------------------------
   let audioCtx = null;
+  let audioBus = null;
   let sfxEnabled = true;
   const sfxToggle = document.getElementById('sfx-toggle');
 
@@ -23,9 +24,57 @@ document.addEventListener('DOMContentLoaded', () => {
     return audioCtx;
   }
 
-  function synthTone(ctx, { freqStart, freqEnd, type = 'sawtooth', duration = 0.12, gainPeak = 0.08, delay = 0, filterFreq = 2200, filterQ = 4, detune = 0 }) {
+  function getAudioBus(ctx) {
+    if (audioBus && audioBus.ctx === ctx) return audioBus.input;
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.85, ctx.currentTime);
+
+    const limiter = ctx.createDynamicsCompressor();
+    limiter.threshold.setValueAtTime(-12, ctx.currentTime);
+    limiter.ratio.setValueAtTime(8, ctx.currentTime);
+    master.connect(limiter);
+    limiter.connect(ctx.destination);
+
+    // Subtle cyberdeck metallic slapback echo
+    const delayNode = ctx.createDelay(0.5);
+    delayNode.delayTime.setValueAtTime(0.052, ctx.currentTime);
+    const echoFilter = ctx.createBiquadFilter();
+    echoFilter.type = 'bandpass';
+    echoFilter.frequency.setValueAtTime(1750, ctx.currentTime);
+    echoFilter.Q.setValueAtTime(1.4, ctx.currentTime);
+    const feedback = ctx.createGain();
+    feedback.gain.setValueAtTime(0.24, ctx.currentTime);
+    const wetGain = ctx.createGain();
+    wetGain.gain.setValueAtTime(0.22, ctx.currentTime);
+
+    master.connect(delayNode);
+    delayNode.connect(echoFilter);
+    echoFilter.connect(feedback);
+    feedback.connect(delayNode);
+    echoFilter.connect(wetGain);
+    wetGain.connect(limiter);
+
+    audioBus = { ctx, input: master };
+    return master;
+  }
+
+  function synthTone(ctx, {
+    freqStart,
+    freqEnd,
+    type = 'sawtooth',
+    duration = 0.12,
+    gainPeak = 0.08,
+    delay = 0,
+    filterFreq = 2200,
+    filterType = 'lowpass',
+    filterQ = 4,
+    detune = 0,
+    fmFreq = 0,
+    fmDepth = 0
+  }) {
     const t0 = ctx.currentTime + delay;
     const t1 = t0 + duration;
+    const bus = getAudioBus(ctx);
 
     const osc = ctx.createOscillator();
     const filter = ctx.createBiquadFilter();
@@ -36,21 +85,37 @@ document.addEventListener('DOMContentLoaded', () => {
     osc.frequency.setValueAtTime(Math.max(40, freqStart), t0);
     osc.frequency.exponentialRampToValueAtTime(Math.max(40, freqEnd ?? freqStart), t1);
 
-    filter.type = 'lowpass';
+    let modOsc = null;
+    if (fmFreq > 0 && fmDepth > 0) {
+      modOsc = ctx.createOscillator();
+      const modGain = ctx.createGain();
+      modOsc.type = 'sine';
+      modOsc.frequency.setValueAtTime(fmFreq, t0);
+      modGain.gain.setValueAtTime(fmDepth, t0);
+      modGain.gain.exponentialRampToValueAtTime(1, t1);
+      modOsc.connect(modGain);
+      modGain.connect(osc.frequency);
+      modOsc.start(t0);
+      modOsc.stop(t1 + 0.01);
+    }
+
+    filter.type = filterType;
     filter.frequency.setValueAtTime(filterFreq, t0);
-    filter.frequency.exponentialRampToValueAtTime(Math.max(180, filterFreq * 0.35), t1);
+    if (filterType === 'lowpass') {
+      filter.frequency.exponentialRampToValueAtTime(Math.max(180, filterFreq * 0.3), t1);
+    }
     filter.Q.setValueAtTime(filterQ, t0);
 
     gain.gain.setValueAtTime(0.0001, t0);
-    gain.gain.linearRampToValueAtTime(gainPeak, t0 + Math.min(0.015, duration * 0.2));
+    gain.gain.linearRampToValueAtTime(gainPeak, t0 + Math.min(0.012, duration * 0.18));
     gain.gain.exponentialRampToValueAtTime(0.0001, t1);
 
     osc.connect(filter);
     filter.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(bus);
 
     osc.start(t0);
-    osc.stop(t1 + 0.01);
+    osc.stop(t1 + 0.015);
   }
 
   function playCyberFx(preset = 'ui') {
@@ -61,41 +126,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
       switch (preset) {
         case 'ui':
-          synthTone(ctx, { freqStart: 1200, freqEnd: 520, type: 'triangle', duration: 0.045, gainPeak: 0.06, filterFreq: 2800, filterQ: 3 });
-          synthTone(ctx, { freqStart: 240, freqEnd: 160, type: 'sine', duration: 0.04, gainPeak: 0.04, filterFreq: 900 });
+          // Tactile holographic HUD chirp + sub click
+          synthTone(ctx, { freqStart: 1650, freqEnd: 740, type: 'sawtooth', duration: 0.038, gainPeak: 0.05, filterFreq: 3400, filterType: 'bandpass', filterQ: 3.5, fmFreq: 95, fmDepth: 120 });
+          synthTone(ctx, { freqStart: 220, freqEnd: 110, type: 'triangle', duration: 0.035, gainPeak: 0.045, filterFreq: 800 });
           break;
         case 'scan':
-          synthTone(ctx, { freqStart: 920, freqEnd: 1380, type: 'sine', duration: 0.07, gainPeak: 0.07, filterFreq: 3200 });
-          synthTone(ctx, { freqStart: 1380, freqEnd: 1840, type: 'triangle', duration: 0.09, gainPeak: 0.06, delay: 0.075, filterFreq: 3600 });
+          // Kiroshi optical lock-on double telemetry ping
+          synthTone(ctx, { freqStart: 980, freqEnd: 1760, type: 'sine', duration: 0.055, gainPeak: 0.06, filterFreq: 3800, fmFreq: 45, fmDepth: 65 });
+          synthTone(ctx, { freqStart: 1480, freqEnd: 2340, type: 'triangle', duration: 0.085, gainPeak: 0.06, delay: 0.065, filterFreq: 4200, filterQ: 5 });
           break;
         case 'quickhack':
-          // Netrunner breach sweep: dual detuned saw + sub pulse
-          synthTone(ctx, { freqStart: 280, freqEnd: 1420, type: 'sawtooth', duration: 0.14, gainPeak: 0.075, filterFreq: 3400, filterQ: 8, detune: -12 });
-          synthTone(ctx, { freqStart: 280, freqEnd: 1420, type: 'sawtooth', duration: 0.14, gainPeak: 0.065, filterFreq: 3400, filterQ: 8, detune: 12 });
-          synthTone(ctx, { freqStart: 1420, freqEnd: 460, type: 'square', duration: 0.18, gainPeak: 0.05, delay: 0.12, filterFreq: 2200, filterQ: 6 });
+          // Netrunner ICE breach sweep: dual detuned saw + FM modem pulse
+          synthTone(ctx, { freqStart: 240, freqEnd: 1580, type: 'sawtooth', duration: 0.15, gainPeak: 0.07, filterFreq: 3600, filterQ: 8, detune: -14, fmFreq: 55, fmDepth: 140 });
+          synthTone(ctx, { freqStart: 240, freqEnd: 1580, type: 'sawtooth', duration: 0.15, gainPeak: 0.06, filterFreq: 3600, filterQ: 8, detune: 14 });
+          synthTone(ctx, { freqStart: 1320, freqEnd: 420, type: 'square', duration: 0.16, gainPeak: 0.045, delay: 0.11, filterFreq: 2400, filterQ: 6, fmFreq: 180, fmDepth: 90 });
           break;
         case 'quickhack-end':
-          synthTone(ctx, { freqStart: 540, freqEnd: 110, type: 'sawtooth', duration: 0.22, gainPeak: 0.07, filterFreq: 1600, filterQ: 5 });
+          synthTone(ctx, { freqStart: 620, freqEnd: 92, type: 'sawtooth', duration: 0.22, gainPeak: 0.065, filterFreq: 1800, filterQ: 6, fmFreq: 35, fmDepth: 55 });
           break;
         case 'ram':
-          synthTone(ctx, { freqStart: 320, freqEnd: 640, type: 'triangle', duration: 0.08, gainPeak: 0.065, filterFreq: 2400 });
-          synthTone(ctx, { freqStart: 640, freqEnd: 1180, type: 'sine', duration: 0.12, gainPeak: 0.07, delay: 0.07, filterFreq: 3200 });
+          // Cyberdeck capacitor surge
+          synthTone(ctx, { freqStart: 280, freqEnd: 720, type: 'sawtooth', duration: 0.075, gainPeak: 0.055, filterFreq: 2600, filterQ: 5 });
+          synthTone(ctx, { freqStart: 720, freqEnd: 1440, type: 'triangle', duration: 0.12, gainPeak: 0.065, delay: 0.065, filterFreq: 3600, fmFreq: 80, fmDepth: 60 });
           break;
         case 'success':
-          synthTone(ctx, { freqStart: 523, freqEnd: 523, type: 'triangle', duration: 0.08, gainPeak: 0.065, filterFreq: 2600 });
-          synthTone(ctx, { freqStart: 659, freqEnd: 659, type: 'triangle', duration: 0.08, gainPeak: 0.065, delay: 0.065, filterFreq: 3000 });
-          synthTone(ctx, { freqStart: 1046, freqEnd: 1046, type: 'sine', duration: 0.16, gainPeak: 0.07, delay: 0.13, filterFreq: 3600 });
+          // Neon synth chord arpeggio (D-minor / cyber triad shimmer)
+          synthTone(ctx, { freqStart: 440, freqEnd: 440, type: 'sawtooth', duration: 0.09, gainPeak: 0.05, filterFreq: 2600, filterQ: 4 });
+          synthTone(ctx, { freqStart: 659, freqEnd: 659, type: 'triangle', duration: 0.1, gainPeak: 0.06, delay: 0.055, filterFreq: 3200 });
+          synthTone(ctx, { freqStart: 880, freqEnd: 1318, type: 'sine', duration: 0.18, gainPeak: 0.065, delay: 0.11, filterFreq: 4200, fmFreq: 6, fmDepth: 12 });
           break;
         case 'denied':
-          synthTone(ctx, { freqStart: 175, freqEnd: 110, type: 'sawtooth', duration: 0.11, gainPeak: 0.08, filterFreq: 900, filterQ: 6, detune: -15 });
-          synthTone(ctx, { freqStart: 155, freqEnd: 95, type: 'square', duration: 0.15, gainPeak: 0.07, delay: 0.1, filterFreq: 800, filterQ: 5, detune: 15 });
+          // Heavy ICE firewall rejection buzz
+          synthTone(ctx, { freqStart: 165, freqEnd: 95, type: 'sawtooth', duration: 0.11, gainPeak: 0.08, filterFreq: 950, filterQ: 7, detune: -18, fmFreq: 42, fmDepth: 45 });
+          synthTone(ctx, { freqStart: 145, freqEnd: 82, type: 'square', duration: 0.16, gainPeak: 0.07, delay: 0.095, filterFreq: 820, filterQ: 6, detune: 18 });
           break;
         case 'alert':
-          synthTone(ctx, { freqStart: 780, freqEnd: 520, type: 'sawtooth', duration: 0.16, gainPeak: 0.075, filterFreq: 2200, filterQ: 7 });
-          synthTone(ctx, { freqStart: 780, freqEnd: 520, type: 'sawtooth', duration: 0.18, gainPeak: 0.075, delay: 0.18, filterFreq: 2200, filterQ: 7 });
+          // Corporate perimeter klaxon pulse
+          synthTone(ctx, { freqStart: 860, freqEnd: 490, type: 'sawtooth', duration: 0.15, gainPeak: 0.07, filterFreq: 2400, filterQ: 7, fmFreq: 30, fmDepth: 55 });
+          synthTone(ctx, { freqStart: 860, freqEnd: 490, type: 'sawtooth', duration: 0.18, gainPeak: 0.07, delay: 0.17, filterFreq: 2400, filterQ: 7, fmFreq: 30, fmDepth: 55 });
+          break;
+        case 'logout':
+          // Neural jack-out power-down sequence
+          synthTone(ctx, { freqStart: 920, freqEnd: 420, type: 'triangle', duration: 0.08, gainPeak: 0.06, filterFreq: 2600 });
+          synthTone(ctx, { freqStart: 420, freqEnd: 110, type: 'sawtooth', duration: 0.18, gainPeak: 0.065, delay: 0.07, filterFreq: 1400, filterQ: 5, fmFreq: 24, fmDepth: 35 });
           break;
         default:
-          synthTone(ctx, { freqStart: 700, freqEnd: 420, type: 'triangle', duration: 0.06, gainPeak: 0.06 });
+          synthTone(ctx, { freqStart: 840, freqEnd: 460, type: 'sawtooth', duration: 0.055, gainPeak: 0.05, filterFreq: 2600, filterQ: 4 });
       }
     } catch {
       // silent
@@ -107,14 +183,18 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const ctx = getAudioContext();
       if (!ctx) return;
-      // Map legacy calls to richer filtered synth tones
+      // Map legacy calls to layered cyberpunk synth presets
       if (frequency <= 260) {
-        synthTone(ctx, { freqStart: frequency, freqEnd: frequency * 0.6, type: 'sawtooth', duration: Math.max(duration, 0.14), gainPeak: 0.07, filterFreq: 950, filterQ: 6, detune: -10 });
-        synthTone(ctx, { freqStart: frequency * 0.98, freqEnd: frequency * 0.58, type: 'square', duration: Math.max(duration, 0.14), gainPeak: 0.045, filterFreq: 900, detune: 10 });
-      } else if (duration <= 0.06) {
-        synthTone(ctx, { freqStart: frequency * 1.4, freqEnd: frequency * 0.75, type: 'triangle', duration: 0.045, gainPeak: 0.055, filterFreq: 2600, filterQ: 3 });
+        synthTone(ctx, { freqStart: frequency, freqEnd: frequency * 0.55, type: 'sawtooth', duration: Math.max(duration, 0.15), gainPeak: 0.07, filterFreq: 980, filterQ: 7, detune: -12, fmFreq: 38, fmDepth: 40 });
+        synthTone(ctx, { freqStart: frequency * 0.98, freqEnd: frequency * 0.52, type: 'square', duration: Math.max(duration, 0.15), gainPeak: 0.045, filterFreq: 900, detune: 12 });
+      } else if (duration <= 0.065) {
+        synthTone(ctx, { freqStart: frequency * 1.45, freqEnd: frequency * 0.72, type: 'sawtooth', duration: 0.042, gainPeak: 0.05, filterFreq: 2900, filterType: 'bandpass', filterQ: 3.5, fmFreq: 75, fmDepth: 80 });
+        synthTone(ctx, { freqStart: frequency * 0.5, freqEnd: frequency * 0.35, type: 'sine', duration: 0.035, gainPeak: 0.035, filterFreq: 900 });
+      } else if (frequency >= 750) {
+        synthTone(ctx, { freqStart: frequency * 0.78, freqEnd: frequency * 1.18, type: 'triangle', duration: Math.min(duration, 0.14), gainPeak: 0.055, filterFreq: 3400, filterQ: 4 });
+        synthTone(ctx, { freqStart: frequency * 1.18, freqEnd: frequency * 1.5, type: 'sine', duration: Math.min(duration, 0.14), gainPeak: 0.05, delay: 0.05, filterFreq: 4000 });
       } else {
-        synthTone(ctx, { freqStart: frequency, freqEnd: frequency * 1.22, type: type === 'sine' ? 'triangle' : type, duration, gainPeak: 0.065, filterFreq: 2800, filterQ: 4 });
+        synthTone(ctx, { freqStart: frequency, freqEnd: frequency * 1.25, type: type === 'sine' ? 'sawtooth' : type, duration, gainPeak: 0.058, filterFreq: 2800, filterQ: 5, fmFreq: 40, fmDepth: 45 });
       }
     } catch {
       // silent
@@ -2742,6 +2822,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginMenuAuthenticated = document.getElementById('login-menu-authenticated');
   const openLoginGuestBtn = document.getElementById('open-login-guest-btn');
   const headerLogoutBtn = document.getElementById('header-logout-btn');
+  const headerQuickLogoutBtn = document.getElementById('header-quick-logout-btn');
   const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
   const ingameOsLabel = document.getElementById('ingame-os-label');
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
@@ -2778,7 +2859,7 @@ document.addEventListener('DOMContentLoaded', () => {
     activeSheetRunner = null;
     syncAuthMenuUI();
     switchTab('home');
-    playCyberSound(340, 'triangle', 0.06);
+    playCyberFx('logout');
   }
 
   function syncAuthMenuUI() {
@@ -2791,6 +2872,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (loginMenuAuthenticated) {
       loginMenuAuthenticated.classList.toggle('hidden', !isAuthenticated);
+    }
+    if (headerQuickLogoutBtn) {
+      headerQuickLogoutBtn.classList.toggle('hidden', !isAuthenticated);
     }
     applyInGameTheme(isAuthenticated, player);
   }
@@ -2836,6 +2920,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (headerLogoutBtn) {
     headerLogoutBtn.addEventListener('click', performLogout);
+  }
+  if (headerQuickLogoutBtn) {
+    headerQuickLogoutBtn.addEventListener('click', performLogout);
   }
   if (mobileLogoutBtn) {
     mobileLogoutBtn.addEventListener('click', performLogout);
