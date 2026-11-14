@@ -2270,8 +2270,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   syncAuthMenuUI();
 
-  // Auto-check ultima versione su VERSION (evita cache obsolete del browser)
-  (async function checkRemoteVersionAndAutoUpdate() {
+  // Auto-check ultima versione su VERSION + verifica CDN index.html (evita cache obsolete del browser)
+  async function checkRemoteVersionAndAutoUpdate() {
     try {
       const badgeEl = document.getElementById('app-version-badge');
       const currentVersion = badgeEl ? badgeEl.textContent.trim() : '';
@@ -2285,16 +2285,29 @@ document.addEventListener('DOMContentLoaded', () => {
       if (remoteVersion !== currentVersion) {
         const guardKey = `dive_reloaded_${remoteVersion}`;
         if (sessionStorage.getItem(guardKey)) return;
-        sessionStorage.setItem(guardKey, '1');
 
+        // Verifica che index.html sul CDN abbia già la nuova versione prima di ricaricare
+        const htmlRes = await fetch(`index.html?_=${Date.now()}`, { cache: 'no-store' });
+        if (!htmlRes.ok) return;
+        const htmlText = await htmlRes.text();
+        if (!htmlText.includes(remoteVersion)) return;
+
+        sessionStorage.setItem(guardKey, '1');
         const url = new URL(window.location.href);
         url.searchParams.set('v', remoteVersion.replace(/^v/, ''));
+        url.searchParams.set('_', String(Date.now()));
         window.location.replace(url.toString());
       }
     } catch {
       // ignore offline/local file errors
     }
-  })();
+  }
+
+  checkRemoteVersionAndAutoUpdate();
+  setInterval(checkRemoteVersionAndAutoUpdate, 30000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') checkRemoteVersionAndAutoUpdate();
+  });
 
   // Initialize
   syncPlayerUI();
