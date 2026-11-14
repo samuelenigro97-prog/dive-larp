@@ -4185,4 +4185,50 @@ document.addEventListener('DOMContentLoaded', () => {
   if (initialPg || getActiveSessionId()) {
     switchTab('profile');
   }
+
+  // --------------------------------------------------------------------------
+  // 16. PWA Service Worker & Install Prompt
+  // --------------------------------------------------------------------------
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch((err) => {
+        console.warn('SW registration failed:', err);
+      });
+    });
+  }
+
+  const pwaInstallBtn = document.getElementById('pwa-install-btn');
+  let deferredInstallPrompt = null;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+  if (pwaInstallBtn && !isStandalone) {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      pwaInstallBtn.classList.remove('hidden');
+    });
+
+    if (isIos) {
+      pwaInstallBtn.classList.remove('hidden');
+    }
+
+    pwaInstallBtn.addEventListener('click', async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice.catch(() => null);
+        if (choice && choice.outcome === 'accepted') {
+          pwaInstallBtn.classList.add('hidden');
+        }
+        deferredInstallPrompt = null;
+      } else if (isIos) {
+        alert('Per installare DIVE su iPhone/iPad: tocca il tasto Condividi (quadrato con freccia in su) e scegli "Aggiungi alla schermata Home".');
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      pwaInstallBtn.classList.add('hidden');
+      deferredInstallPrompt = null;
+    });
+  }
 });
