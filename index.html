@@ -36,13 +36,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.36.1">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.37.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.36.1">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.37.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -105,11 +105,12 @@
               <div class="pt-2 border-t border-white/10 space-y-1.5">
                 <div class="text-[9px] text-slate-400 uppercase tracking-[0.18em]">ACCESSO RAPIDO DEMO (1 CLIC)</div>
                 <div class="flex flex-wrap gap-1">
-                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-orange/40 text-dive-orange hover:bg-dive-orange hover:text-black text-[9px] font-bold transition-colors" data-id="#V-7842">@V_Solo</button>
-                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-cyan/40 text-dive-cyan hover:bg-dive-cyan hover:text-black text-[9px] font-bold transition-colors" data-id="#K-4109">@Kuro_04</button>
-                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black text-[9px] font-bold transition-colors" data-id="#R-9921">@Runner_Insolito</button>
-                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-red/40 text-dive-red hover:bg-dive-red hover:text-black text-[9px] font-bold transition-colors" data-id="#C-0012">@CyberRex</button>
-                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-purple/40 text-dive-purple hover:bg-dive-purple hover:text-black text-[9px] font-bold transition-colors" data-id="#M-3384">@Nico_Media</button>
+                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-orange/40 text-dive-orange hover:bg-dive-orange hover:text-black text-[9px] font-bold transition-colors" data-id="#V-7842">@V_Solo (Solo)</button>
+                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-cyan/40 text-dive-cyan hover:bg-dive-cyan hover:text-black text-[9px] font-bold transition-colors" data-id="#K-4109">@Kuro_04 (Netrunner)</button>
+                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-red/40 text-dive-red hover:bg-dive-red hover:text-black text-[9px] font-bold transition-colors" data-id="#D-5510">@Doc_Chrome (Ripperdoc)</button>
+                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-orange/40 text-dive-orange hover:bg-dive-orange hover:text-black text-[9px] font-bold transition-colors" data-id="#F-3088">@The_Fixer (Fixer)</button>
+                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black text-[9px] font-bold transition-colors" data-id="#B-6420">@Dr_Vex (Chimico)</button>
+                  <button type="button" class="quick-login-btn login-menu-close-on-click px-2 py-1 rounded-sm bg-black border border-dive-purple/40 text-dive-purple hover:bg-dive-purple hover:text-black text-[9px] font-bold transition-colors" data-id="#M-3384">@Nico_Media (Media)</button>
                 </div>
               </div>
               <button id="open-login-guest-btn" type="button" class="login-menu-close-on-click w-full py-1.5 px-2 rounded-sm border border-white/10 bg-white/[0.02] text-slate-400 hover:text-white hover:border-white/30 text-[9px] uppercase tracking-wider transition-colors">
@@ -834,6 +835,193 @@
             </div>
           </div>
         </div>
+
+        <!-- SEZIONE VERTICALE 2B: CONSOLE SPECIALISTICA DI RUOLO (RIPPERDOC / FIXER / NETRUNNER / CHIMICO) -->
+        <div id="sec-role-console" class="hidden scroll-mt-20 cyber-panel hud-bracket p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10">
+            <div>
+              <div id="role-console-eyebrow" class="text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+                MODULO OPERATIVO // RUOLO SPECIALISTICO
+              </div>
+              <h2 id="role-console-title" class="font-orbitron font-bold text-lg sm:text-xl text-white">
+                CONSOLE DI RUOLO
+              </h2>
+            </div>
+            <span id="role-console-badge" class="font-mono text-[10px] px-2 py-0.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan uppercase font-bold">
+              ATTIVO
+            </span>
+          </div>
+
+          <!-- 1. CONSOLE RIPPERDOC: PAZIENTI & CHIRURGIA -->
+          <div id="role-panel-ripperdoc" class="hidden space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+              <div class="md:col-span-5 space-y-2">
+                <div class="font-mono text-[10px] text-dive-red uppercase tracking-wider font-bold">
+                  PAZIENTI REGISTRATI (SELEZIONA)
+                </div>
+                <div id="ripper-patients-list" class="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+                  <!-- Popolato da JS -->
+                </div>
+              </div>
+
+              <div class="md:col-span-7 p-3.5 rounded-sm bg-[#04060A] border border-dive-red/30 space-y-3">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div>
+                    <span class="font-mono text-[9px] text-slate-400 uppercase block">MONITOR CLINICO PAZIENTE</span>
+                    <span id="ripper-selected-name" class="font-orbitron font-bold text-sm text-white">Seleziona un paziente</span>
+                  </div>
+                  <span id="ripper-selected-id" class="font-mono text-[10px] text-dive-cyan font-bold">-</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 font-mono text-[10px]">
+                  <div class="p-2 bg-black/60 border border-white/10 rounded-sm">
+                    <span class="text-slate-400 block">INTEGRITÀ (HP)</span>
+                    <span id="ripper-patient-hp" class="text-dive-green font-bold text-xs">-</span>
+                  </div>
+                  <div class="p-2 bg-black/60 border border-white/10 rounded-sm">
+                    <span class="text-slate-400 block">CYBERPSICOSI</span>
+                    <span id="ripper-patient-psych" class="text-dive-red font-bold text-xs">-</span>
+                  </div>
+                  <div class="p-2 bg-black/60 border border-white/10 rounded-sm">
+                    <span class="text-slate-400 block">TRAUMI ATTIVI</span>
+                    <span id="ripper-patient-traumas" class="text-dive-orange font-bold text-xs">-</span>
+                  </div>
+                  <div class="p-2 bg-black/60 border border-white/10 rounded-sm">
+                    <span class="text-slate-400 block">STATO ICE</span>
+                    <span id="ripper-patient-ice" class="text-dive-cyan font-bold text-xs">-</span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 font-mono text-[10px]">
+                  <button type="button" id="ripper-heal-btn" class="py-2 px-2.5 rounded-sm bg-dive-green/15 border border-dive-green/50 text-dive-green hover:bg-dive-green hover:text-black font-bold uppercase transition-colors">
+                    +35% HP SINTESI
+                  </button>
+                  <button type="button" id="ripper-trauma-btn" class="py-2 px-2.5 rounded-sm bg-dive-orange/15 border border-dive-orange/50 text-dive-orange hover:bg-dive-orange hover:text-black font-bold uppercase transition-colors">
+                    RIMUOVI TRAUMA
+                  </button>
+                  <button type="button" id="ripper-immuno-btn" class="py-2 px-2.5 rounded-sm bg-dive-purple/15 border border-dive-purple/50 text-dive-purple hover:bg-dive-purple hover:text-black font-bold uppercase transition-colors">
+                    -20% PSICOSI
+                  </button>
+                  <button type="button" id="ripper-ice-btn" class="py-2 px-2.5 rounded-sm bg-dive-cyan/15 border border-dive-cyan/50 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold uppercase transition-colors">
+                    RIPARA ICE
+                  </button>
+                </div>
+
+                <div id="ripper-log" class="font-mono text-[10px] text-slate-400 border-t border-white/10 pt-2 space-y-0.5 max-h-20 overflow-y-auto">
+                  <div>&gt; Pronto per diagnostica clinica...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. CONSOLE FIXER: QUEST, ANNUNCI & CHAT RISPOSTE PG -->
+          <div id="role-panel-fixer" class="hidden space-y-4">
+            <form id="fixer-new-quest-form" class="p-3 rounded-sm bg-[#04060A] border border-dive-orange/30 grid grid-cols-1 sm:grid-cols-12 gap-2 font-mono text-xs">
+              <input type="text" id="fixer-quest-title" placeholder="Titolo contratto / quest (es. Estrazione Datashard Blu)..." class="sm:col-span-5 px-2.5 py-2 rounded-sm bg-black border border-white/15 focus:border-dive-orange text-white text-[11px] outline-none" required>
+              <input type="number" id="fixer-quest-reward" min="50" step="50" placeholder="Paga €$" value="400" class="sm:col-span-2 px-2.5 py-2 rounded-sm bg-black border border-white/15 focus:border-dive-orange text-white text-[11px] outline-none" required>
+              <input type="text" id="fixer-quest-brief" placeholder="Dettagli operativi per i runner..." class="sm:col-span-3 px-2.5 py-2 rounded-sm bg-black border border-white/15 focus:border-dive-orange text-white text-[11px] outline-none" required>
+              <button type="submit" class="sm:col-span-2 py-2 px-3 rounded-sm bg-dive-orange text-black font-bold text-[10px] uppercase hover:bg-white transition-colors">
+                PUBBLICA
+              </button>
+            </form>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+              <div class="md:col-span-6 space-y-2">
+                <div class="font-mono text-[10px] text-dive-orange uppercase tracking-wider font-bold">
+                  ANNUNCI / QUEST &amp; RISPOSTE PG
+                </div>
+                <div id="fixer-quests-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                  <!-- Popolato da JS -->
+                </div>
+              </div>
+
+              <div class="md:col-span-6 p-3 rounded-sm bg-[#04060A] border border-dive-cyan/30 flex flex-col justify-between space-y-2.5 min-h-[260px]">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2 font-mono">
+                  <div>
+                    <span class="text-[9px] text-slate-400 uppercase block">CANALE DIRETTO SU CONTRATTO</span>
+                    <span id="fixer-chat-target-label" class="text-xs text-dive-cyan font-bold">Seleziona una risposta PG</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <button type="button" id="fixer-assign-btn" class="hidden px-2 py-1 rounded-sm bg-dive-orange/20 border border-dive-orange/50 text-dive-orange hover:bg-dive-orange hover:text-black text-[9px] font-bold uppercase transition-colors">
+                      ASSEGNA
+                    </button>
+                    <button type="button" id="fixer-pay-btn" class="hidden px-2 py-1 rounded-sm bg-dive-green/20 border border-dive-green/50 text-dive-green hover:bg-dive-green hover:text-black text-[9px] font-bold uppercase transition-colors">
+                      PAGA €$
+                    </button>
+                  </div>
+                </div>
+
+                <div id="fixer-quest-chat-messages" class="flex-1 space-y-2 max-h-44 overflow-y-auto pr-1 font-sans text-xs">
+                  <div class="text-slate-500 font-mono text-[10px] py-6 text-center">Seleziona un annuncio o la risposta di un PG per aprire la chat del contratto.</div>
+                </div>
+
+                <form id="fixer-quest-reply-form" class="flex gap-1.5 pt-2 border-t border-white/10 font-mono">
+                  <input type="text" id="fixer-quest-reply-input" placeholder="Rispondi al runner sull'annuncio..." class="flex-1 min-w-0 px-2.5 py-1.5 rounded-sm bg-black border border-white/15 focus:border-dive-cyan text-white text-[11px] outline-none" required>
+                  <button type="submit" class="px-3 py-1.5 rounded-sm bg-dive-cyan text-black font-bold text-[10px] uppercase hover:bg-white transition-colors">
+                    INVIA
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. CONSOLE NETRUNNER: NODI RETE, ICE & SNIFFER -->
+          <div id="role-panel-netrunner" class="hidden space-y-3">
+            <div id="netrunner-nodes-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <!-- Popolato da JS -->
+            </div>
+            <div class="p-3 rounded-sm bg-black border border-dive-cyan/30 font-mono text-[10px] space-y-1">
+              <div class="flex items-center justify-between text-dive-cyan font-bold pb-1 border-b border-white/10">
+                <span>PACKET SNIFFER // LOG INTRUSIONI</span>
+                <button type="button" id="netrunner-scan-all-btn" class="px-2 py-0.5 bg-dive-cyan/15 border border-dive-cyan/40 hover:bg-dive-cyan hover:text-black rounded-sm uppercase">
+                  PING RETE
+                </button>
+              </div>
+              <div id="netrunner-sniffer-log" class="text-slate-300 space-y-0.5 max-h-28 overflow-y-auto">
+                <div>&gt; Sniffer attivo. Seleziona un nodo per avviare il breach ICE (-1 RAM).</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. CONSOLE CHIMICO: VASCHE MUFFE/PATOGENI, IMMUNOSOPPRESSORI & CAVIE -->
+          <div id="role-panel-chimico" class="hidden space-y-4">
+            <!-- Inventario Reagenti & Sintesi Immunosoppressori -->
+            <div class="p-3 rounded-sm bg-[#04060A] border border-dive-green/35 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono">
+              <div class="flex flex-wrap items-center gap-3 text-[11px]">
+                <span class="px-2 py-1 bg-black border border-white/15 text-slate-200">MUFFE ESTRATTE: <strong id="chem-mold-count" class="text-dive-green">2</strong></span>
+                <span class="px-2 py-1 bg-black border border-white/15 text-slate-200">PATOGENI: <strong id="chem-pathogen-count" class="text-dive-orange">1</strong></span>
+                <span class="px-2 py-1 bg-black border border-dive-purple/40 text-dive-purple">IMMUNOSOPPRESSORI PRONTI: <strong id="chem-immuno-count" class="text-white">1</strong></span>
+              </div>
+              <button type="button" id="chem-synthesize-btn" class="px-3 py-2 rounded-sm bg-dive-purple text-black font-bold text-[10px] uppercase hover:bg-white transition-colors whitespace-nowrap">
+                SINTETIZZA IMMUNOSOPPRESSORE (-1 MUFFA, -1 PATOGENO)
+              </button>
+            </div>
+
+            <!-- Vasche Coltura -->
+            <div class="space-y-2">
+              <div class="font-mono text-[10px] text-dive-green uppercase tracking-wider font-bold">
+                VASCHE BIOREATTORE // MUFFE &amp; PATOGENI (MONITOR LIVE)
+              </div>
+              <div id="chem-vats-grid" class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                <!-- Popolato da JS -->
+              </div>
+            </div>
+
+            <!-- Monitor Cavie -->
+            <div class="space-y-2">
+              <div class="font-mono text-[10px] text-dive-red uppercase tracking-wider font-bold">
+                MONITOR CAVIE &amp; TEST CYBERPSICOSI
+              </div>
+              <div id="chem-subjects-grid" class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                <!-- Popolato da JS -->
+              </div>
+            </div>
+
+            <div id="chem-lab-log" class="p-2.5 rounded-sm bg-black border border-white/10 font-mono text-[10px] text-slate-400 space-y-0.5 max-h-24 overflow-y-auto">
+              <div>&gt; Biolab inizializzato. Parametri vasche e monitor cavie attivi.</div>
+            </div>
+          </div>
+        </div>
         </div>
 
         <!-- SEZIONE VERTICALE 3: CYBERWARE & IMPIANTI INSTALLATI -->
@@ -1478,6 +1666,7 @@
             <option value="MEDIA // REPORTER">MEDIA // REPORTER</option>
             <option value="CORPO // AGENTE">CORPO // AGENTE</option>
             <option value="TECHIE // RIPPERDOC">TECHIE // RIPPERDOC</option>
+            <option value="CHIMICO // BIOTECH">CHIMICO // BIOTECH</option>
             <option value="FIXER // BROKER">FIXER // BROKER</option>
           </select>
         </div>
@@ -1536,11 +1725,12 @@
         <div class="pt-3 border-t border-white/10 space-y-2">
           <span class="block text-[10px] text-slate-400 uppercase">ACCESSO RAPIDO DEMO (1 CLIC):</span>
           <div class="flex flex-wrap gap-1.5">
-            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-orange/40 text-dive-orange hover:bg-dive-orange hover:text-black text-[10px] font-bold transition-colors" data-id="#V-7842">@V_Solo</button>
-            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-cyan/40 text-dive-cyan hover:bg-dive-cyan hover:text-black text-[10px] font-bold transition-colors" data-id="#K-4109">@Kuro_04</button>
-            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black text-[10px] font-bold transition-colors" data-id="#R-9921">@Runner_Insolito</button>
-            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-red/40 text-dive-red hover:bg-dive-red hover:text-black text-[10px] font-bold transition-colors" data-id="#C-0012">@CyberRex</button>
-            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-purple/40 text-dive-purple hover:bg-dive-purple hover:text-black text-[10px] font-bold transition-colors" data-id="#M-3384">@Nico_Media</button>
+            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-orange/40 text-dive-orange hover:bg-dive-orange hover:text-black text-[10px] font-bold transition-colors" data-id="#V-7842">@V_Solo (Solo)</button>
+            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-cyan/40 text-dive-cyan hover:bg-dive-cyan hover:text-black text-[10px] font-bold transition-colors" data-id="#K-4109">@Kuro_04 (Netrunner)</button>
+            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-red/40 text-dive-red hover:bg-dive-red hover:text-black text-[10px] font-bold transition-colors" data-id="#D-5510">@Doc_Chrome (Ripperdoc)</button>
+            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-orange/40 text-dive-orange hover:bg-dive-orange hover:text-black text-[10px] font-bold transition-colors" data-id="#F-3088">@The_Fixer (Fixer)</button>
+            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black text-[10px] font-bold transition-colors" data-id="#B-6420">@Dr_Vex (Chimico)</button>
+            <button type="button" class="quick-login-btn px-2 py-1 rounded-sm bg-black border border-dive-purple/40 text-dive-purple hover:bg-dive-purple hover:text-black text-[10px] font-bold transition-colors" data-id="#M-3384">@Nico_Media (Media)</button>
           </div>
         </div>
       </form>
@@ -1561,6 +1751,7 @@
               <option value="MEDIA // REPORTER">MEDIA // REPORTER</option>
               <option value="CORPO // AGENTE">CORPO // AGENTE</option>
               <option value="TECHIE // RIPPERDOC">TECHIE // RIPPERDOC</option>
+            <option value="CHIMICO // BIOTECH">CHIMICO // BIOTECH</option>
               <option value="FIXER // BROKER">FIXER // BROKER</option>
             </select>
           </div>
@@ -1677,12 +1868,12 @@
 
   <!-- Floating Version Badge (Bottom-Right) -->
   <div id="app-version-badge" class="fixed bottom-20 md:bottom-3 right-3 z-30 pointer-events-none select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.36.1
+    v0.37.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.36.1"></script>
-  <script src="assets/js/main.js?v=0.36.1"></script>
+  <script src="assets/js/sync.js?v=0.37.0"></script>
+  <script src="assets/js/main.js?v=0.37.0"></script>
 </body>
 </html>

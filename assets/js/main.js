@@ -252,7 +252,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const ROSTER_SEED = [
     { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', playerName: 'Valerio', playerSurname: 'Rinaldi', email: 'v.solo@dive.larp', playerContact: '+39 340 784 2019', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 8, ramMax: 8, ice: true },
     { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', playerName: 'Elena', playerSurname: 'Moretti', email: 'kuro.04@dive.larp', playerContact: '+39 349 410 9044', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 8, ramMax: 8, ice: false },
-    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 75, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Doc_Chrome', role: 'TECHIE // RIPPERDOC', secretId: '#D-5510', pin: '1234', playerName: 'Lorenzo', playerSurname: 'De Luca', email: 'doc.chrome@dive.larp', playerContact: '+39 345 551 0088', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'red', hp: 100, psych: 15, fama: 4, wallet: 2200, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@The_Fixer', role: 'FIXER // BROKER', secretId: '#F-3088', pin: '1234', playerName: 'Giulia', playerSurname: 'Sartori', email: 'the.fixer@dive.larp', playerContact: '+39 348 308 8120', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 5, fama: 5, wallet: 4800, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Dr_Vex', role: 'CHIMICO // BIOTECH', secretId: '#B-6420', pin: '1234', playerName: 'Chiara', playerSurname: 'Valenti', email: 'dr.vex@dive.larp', playerContact: '+39 342 642 0199', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'green', hp: 100, psych: 20, fama: 3, wallet: 1750, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 55, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: false, traumas: [{ name: 'Frattura Avambraccio', desc: 'Riduce stabilità arma secondaria.' }] },
     { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 8, ramMax: 8, ice: true },
     { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 8, ramMax: 8, ice: false }
   ];
@@ -282,7 +285,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length) {
-          return parsed.map(normalizeAccount);
+          const normalized = parsed.map(normalizeAccount);
+          let added = false;
+          ROSTER_SEED.forEach(seed => {
+            if (!normalized.some(acc => (acc.secretId || '').toUpperCase() === seed.secretId.toUpperCase())) {
+              normalized.push(normalizeAccount(seed));
+              added = true;
+            }
+          });
+          if (added) localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(normalized));
+          return normalized;
         }
       }
     } catch {
@@ -537,6 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (headerBalance) headerBalance.textContent = player.wallet.toLocaleString();
     if (typeof syncAuthMenuUI === 'function') syncAuthMenuUI();
+    if (typeof renderActiveRoleConsole === 'function') renderActiveRoleConsole();
 
     // Wallet display
     const walletBalanceDisplay = document.getElementById('wallet-balance-display');
@@ -1849,6 +1862,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (replyPayload) msgObj.replyTo = replyPayload;
         player.chatMessages[currentChatChannel].push(msgObj);
         savePlayerState(player);
+        if (currentChatChannel === 'fixer' && typeof recordPlayerReplyToFixerQuest === 'function') {
+          recordPlayerReplyToFixerQuest(player.callsign, text, timeStr);
+        }
       }
 
       chatTextInput.value = '';
@@ -2968,6 +2984,737 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') checkRemoteVersionAndAutoUpdate();
   });
+
+  // --------------------------------------------------------------------------
+  // 16. Role Specialist Consoles (Ripperdoc, Fixer, Netrunner, Chimico)
+  // --------------------------------------------------------------------------
+  const secRoleConsole = document.getElementById('sec-role-console');
+  const roleConsoleEyebrow = document.getElementById('role-console-eyebrow');
+  const roleConsoleTitle = document.getElementById('role-console-title');
+  const roleConsoleBadge = document.getElementById('role-console-badge');
+  const rolePanelRipperdoc = document.getElementById('role-panel-ripperdoc');
+  const rolePanelFixer = document.getElementById('role-panel-fixer');
+  const rolePanelNetrunner = document.getElementById('role-panel-netrunner');
+  const rolePanelChimico = document.getElementById('role-panel-chimico');
+
+  function getRoleKind(roleStr) {
+    const r = String(roleStr || '').toUpperCase();
+    if (r.includes('RIPPERDOC')) return 'ripperdoc';
+    if (r.includes('FIXER')) return 'fixer';
+    if (r.includes('NETRUNNER') || r.includes('HACKER')) return 'netrunner';
+    if (r.includes('CHIMICO') || r.includes('BIOTECH')) return 'chimico';
+    return null;
+  }
+
+  // --- A. RIPPERDOC: Pazienti & Interventi ---
+  const ripperPatientsList = document.getElementById('ripper-patients-list');
+  const ripperSelectedName = document.getElementById('ripper-selected-name');
+  const ripperSelectedId = document.getElementById('ripper-selected-id');
+  const ripperPatientHp = document.getElementById('ripper-patient-hp');
+  const ripperPatientPsych = document.getElementById('ripper-patient-psych');
+  const ripperPatientTraumas = document.getElementById('ripper-patient-traumas');
+  const ripperPatientIce = document.getElementById('ripper-patient-ice');
+  const ripperLogEl = document.getElementById('ripper-log');
+  let selectedPatientId = '#R-9921';
+
+  function appendRipperLog(msg) {
+    if (!ripperLogEl) return;
+    const row = document.createElement('div');
+    row.textContent = `> ${msg}`;
+    ripperLogEl.prepend(row);
+  }
+
+  function renderRipperdocConsole() {
+    if (!ripperPatientsList) return;
+    const accounts = getAccountsRegistry();
+    if (!accounts.some(a => a.secretId === selectedPatientId) && accounts[0]) {
+      selectedPatientId = accounts[0].secretId;
+    }
+
+    ripperPatientsList.innerHTML = accounts.map(acc => {
+      const isSelected = acc.secretId === selectedPatientId;
+      const needsCare = acc.hp < 100 || (acc.psych || 0) >= 35 || (acc.traumas && acc.traumas.length > 0);
+      return `
+        <button type="button" data-patient-id="${acc.secretId}" class="w-full text-left p-2 rounded-sm border transition-colors ${isSelected ? 'bg-dive-red/15 border-dive-red text-white' : 'bg-[#04060A] border-white/10 text-slate-300 hover:border-white/30'}">
+          <div class="flex items-center justify-between font-mono text-[10px]">
+            <span class="font-bold">${escapeChatText(acc.callsign)}</span>
+            <span class="${acc.hp < 70 ? 'text-dive-red font-bold' : 'text-dive-green'}">${acc.hp}% HP</span>
+          </div>
+          <div class="flex items-center justify-between font-mono text-[9px] text-slate-400 mt-0.5">
+            <span>PSICOSI ${acc.psych || 0}%</span>
+            ${needsCare ? '<span class="text-dive-orange font-bold">RICHIEDE CURE</span>' : '<span class="text-slate-500">STABILE</span>'}
+          </div>
+        </button>
+      `;
+    }).join('');
+
+    const target = accounts.find(a => a.secretId === selectedPatientId);
+    if (target) {
+      if (ripperSelectedName) ripperSelectedName.textContent = target.callsign;
+      if (ripperSelectedId) ripperSelectedId.textContent = target.secretId;
+      if (ripperPatientHp) ripperPatientHp.textContent = `${target.hp}%`;
+      if (ripperPatientPsych) ripperPatientPsych.textContent = `${target.psych || 0}%`;
+      if (ripperPatientTraumas) ripperPatientTraumas.textContent = (target.traumas && target.traumas.length) ? target.traumas.map(t => t.name).join(', ') : 'Nessuno';
+      if (ripperPatientIce) ripperPatientIce.textContent = target.iceActive ? 'ATTIVO' : 'DISATTIVATO';
+    }
+  }
+
+  if (ripperPatientsList) {
+    ripperPatientsList.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-patient-id]');
+      if (!btn) return;
+      selectedPatientId = btn.getAttribute('data-patient-id');
+      renderRipperdocConsole();
+      playCyberFx('ui');
+    });
+  }
+
+  function applyRipperAction(mutator, logMsg) {
+    const accounts = getAccountsRegistry();
+    const idx = accounts.findIndex(a => a.secretId === selectedPatientId);
+    if (idx < 0) return;
+    mutator(accounts[idx]);
+    saveAccountsRegistry(accounts);
+    if (accounts[idx].secretId === player.secretId) {
+      player = normalizeAccount(accounts[idx]);
+      savePlayerState(player);
+    } else {
+      renderRipperdocConsole();
+    }
+    appendRipperLog(`${accounts[idx].callsign}: ${logMsg}`);
+    playCyberFx('success');
+  }
+
+  document.getElementById('ripper-heal-btn')?.addEventListener('click', () => {
+    applyRipperAction(p => { p.hp = Math.min(100, (p.hp || 0) + 35); }, '+35% HP Sintesi Tissutale');
+  });
+  document.getElementById('ripper-trauma-btn')?.addEventListener('click', () => {
+    applyRipperAction(p => { if (Array.isArray(p.traumas) && p.traumas.length) p.traumas.shift(); }, 'Trauma rimosso chirurgicamente');
+  });
+  document.getElementById('ripper-immuno-btn')?.addEventListener('click', () => {
+    applyRipperAction(p => { p.psych = Math.max(0, (p.psych || 0) - 20); }, '-20% Cyberpsicosi (Immunosoppressore)');
+  });
+  document.getElementById('ripper-ice-btn')?.addEventListener('click', () => {
+    applyRipperAction(p => { p.iceActive = true; }, 'Patch ICE neurale riattivata');
+  });
+
+  // --- B. FIXER: Annunci/Quest & Chat Risposte PG ---
+  const FIXER_QUESTS_KEY = 'dive_fixer_quests_v1';
+  const DEFAULT_FIXER_QUESTS = [
+    {
+      id: 'q_datashard_blu',
+      title: 'Estrazione Datashard Terminale Blu',
+      reward: 400,
+      brief: 'Recupera il datashard criptato dal terminale blu al piano inferiore.',
+      status: 'APERTO',
+      assignedTo: '',
+      responses: [
+        {
+          id: 'resp_1',
+          runnerCallsign: '@V_Solo',
+          status: 'CANDIDATO',
+          messages: [
+            { author: '@V_Solo', text: 'Sono già vicino alle scale del piano inferiore. Posso fare l\'estrazione ora per 400 €$.', time: '19:04' },
+            { author: '@The_Fixer', text: 'Ricevuto @V_Solo. Occhio alle guardie vicino al terminale blu, fammi sapere appena hai il shard.', time: '19:06' }
+          ]
+        },
+        {
+          id: 'resp_2',
+          runnerCallsign: '@Kuro_04',
+          status: 'CANDIDATO',
+          messages: [
+            { author: '@Kuro_04', text: 'Se c\'è un ICE sul terminale blu posso bucarlo da remoto mentre qualcuno copre.', time: '19:08' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'q_scorta_vip',
+      title: 'Scorta Discreta Zona Bar',
+      reward: 650,
+      brief: 'Proteggi il corriere durante lo scambio codici all\'angolo bar per 20 minuti.',
+      status: 'APERTO',
+      assignedTo: '',
+      responses: [
+        {
+          id: 'resp_3',
+          runnerCallsign: '@Runner_Insolito',
+          status: 'CANDIDATO',
+          messages: [
+            { author: '@Runner_Insolito', text: 'Disponibile per copertura armata, ma mi serve uno stimpack prima.', time: '19:16' }
+          ]
+        }
+      ]
+    }
+  ];
+
+  function getFixerQuests() {
+    try {
+      const raw = localStorage.getItem(FIXER_QUESTS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch { /* fallback */ }
+    localStorage.setItem(FIXER_QUESTS_KEY, JSON.stringify(DEFAULT_FIXER_QUESTS));
+    return JSON.parse(JSON.stringify(DEFAULT_FIXER_QUESTS));
+  }
+
+  function saveFixerQuests(quests) {
+    localStorage.setItem(FIXER_QUESTS_KEY, JSON.stringify(quests));
+  }
+
+  function recordPlayerReplyToFixerQuest(runnerCallsign, text, timeStr) {
+    const quests = getFixerQuests();
+    if (!quests[0]) return;
+    let resp = quests[0].responses.find(r => r.runnerCallsign.toUpperCase() === runnerCallsign.toUpperCase());
+    if (!resp) {
+      resp = { id: 'resp_' + Date.now(), runnerCallsign, status: 'CANDIDATO', messages: [] };
+      quests[0].responses.unshift(resp);
+    }
+    resp.messages.push({ author: runnerCallsign, text, time: timeStr });
+    saveFixerQuests(quests);
+  }
+
+  const fixerQuestsList = document.getElementById('fixer-quests-list');
+  const fixerChatTargetLabel = document.getElementById('fixer-chat-target-label');
+  const fixerQuestChatMessages = document.getElementById('fixer-quest-chat-messages');
+  const fixerAssignBtn = document.getElementById('fixer-assign-btn');
+  const fixerPayBtn = document.getElementById('fixer-pay-btn');
+  let selectedFixerQuestId = 'q_datashard_blu';
+  let selectedFixerRespId = 'resp_1';
+
+  function renderFixerConsole() {
+    if (!fixerQuestsList) return;
+    const quests = getFixerQuests();
+    if (!quests.some(q => q.id === selectedFixerQuestId) && quests[0]) {
+      selectedFixerQuestId = quests[0].id;
+    }
+    const activeQuest = quests.find(q => q.id === selectedFixerQuestId);
+    if (activeQuest && !activeQuest.responses.some(r => r.id === selectedFixerRespId)) {
+      selectedFixerRespId = activeQuest.responses[0] ? activeQuest.responses[0].id : '';
+    }
+
+    fixerQuestsList.innerHTML = quests.map(q => {
+      const respButtons = (q.responses || []).map(r => {
+        const isSel = q.id === selectedFixerQuestId && r.id === selectedFixerRespId;
+        const lastMsg = r.messages[r.messages.length - 1];
+        return `
+          <button type="button" data-quest-id="${q.id}" data-resp-id="${r.id}" class="w-full text-left px-2 py-1.5 rounded-sm border font-mono text-[10px] transition-colors ${isSel ? 'bg-dive-cyan/15 border-dive-cyan text-white' : 'bg-black/60 border-white/10 text-slate-300 hover:border-white/30'}">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-dive-cyan">${escapeChatText(r.runnerCallsign)}</span>
+              <span class="text-[9px] text-slate-400">${r.messages.length} msg</span>
+            </div>
+            <div class="text-[10px] text-slate-400 truncate">${escapeChatText(lastMsg ? lastMsg.text : '')}</div>
+          </button>
+        `;
+      }).join('');
+
+      return `
+        <div class="p-2.5 rounded-sm bg-[#04060A] border ${q.id === selectedFixerQuestId ? 'border-dive-orange/60' : 'border-white/10'} space-y-2">
+          <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
+            <span class="font-bold text-white truncate">${escapeChatText(q.title)}</span>
+            <span class="px-1.5 py-0.5 bg-dive-green/15 border border-dive-green/40 text-dive-green font-bold whitespace-nowrap">€$ ${q.reward}</span>
+          </div>
+          <div class="flex items-center justify-between font-mono text-[9px] text-slate-400">
+            <span>STATO: <strong class="text-dive-orange">${escapeChatText(q.status)}</strong>${q.assignedTo ? ` (${escapeChatText(q.assignedTo)})` : ''}</span>
+            <span>${(q.responses || []).length} risposte PG</span>
+          </div>
+          <div class="space-y-1">${respButtons || '<div class="text-[10px] text-slate-500 italic">Nessuna risposta ancora.</div>'}</div>
+        </div>
+      `;
+    }).join('');
+
+    const activeResp = activeQuest && activeQuest.responses.find(r => r.id === selectedFixerRespId);
+    if (activeQuest && activeResp) {
+      if (fixerChatTargetLabel) fixerChatTargetLabel.textContent = `${activeResp.runnerCallsign} — ${activeQuest.title}`;
+      if (fixerAssignBtn) fixerAssignBtn.classList.remove('hidden');
+      if (fixerPayBtn) fixerPayBtn.classList.remove('hidden');
+      if (fixerQuestChatMessages) {
+        fixerQuestChatMessages.innerHTML = activeResp.messages.map(m => {
+          const isFixer = m.author === player.callsign || m.author === '@The_Fixer';
+          return `
+            <div class="flex flex-col ${isFixer ? 'items-end' : 'items-start'}">
+              <span class="font-mono text-[9px] text-slate-500">${escapeChatText(m.author)} • ${escapeChatText(m.time)}</span>
+              <div class="px-2.5 py-1.5 rounded-sm max-w-[90%] text-[11px] ${isFixer ? 'bg-dive-orange/15 border border-dive-orange/40 text-white' : 'bg-black border border-white/10 text-slate-200'}">
+                ${escapeChatText(m.text)}
+              </div>
+            </div>
+          `;
+        }).join('');
+        fixerQuestChatMessages.scrollTop = fixerQuestChatMessages.scrollHeight;
+      }
+    } else {
+      if (fixerChatTargetLabel) fixerChatTargetLabel.textContent = 'Seleziona una risposta PG';
+      if (fixerAssignBtn) fixerAssignBtn.classList.add('hidden');
+      if (fixerPayBtn) fixerPayBtn.classList.add('hidden');
+    }
+  }
+
+  fixerQuestsList?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-resp-id]');
+    if (!btn) return;
+    selectedFixerQuestId = btn.getAttribute('data-quest-id');
+    selectedFixerRespId = btn.getAttribute('data-resp-id');
+    renderFixerConsole();
+    playCyberFx('ui');
+  });
+
+  document.getElementById('fixer-new-quest-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = document.getElementById('fixer-quest-title')?.value.trim();
+    const reward = Number(document.getElementById('fixer-quest-reward')?.value || 400);
+    const brief = document.getElementById('fixer-quest-brief')?.value.trim();
+    if (!title || !brief) return;
+    const quests = getFixerQuests();
+    const newQ = {
+      id: 'q_' + Date.now(),
+      title,
+      reward,
+      brief,
+      status: 'APERTO',
+      assignedTo: '',
+      responses: [
+        {
+          id: 'resp_' + Date.now(),
+          runnerCallsign: '@V_Solo',
+          status: 'IN ASCOLTO',
+          messages: [{ author: 'SISTEMA', text: `Annuncio pubblicato su #CONTRATTI FIXER: "${title}" (€$ ${reward}).`, time: 'Adesso' }]
+        }
+      ]
+    };
+    quests.unshift(newQ);
+    saveFixerQuests(quests);
+    selectedFixerQuestId = newQ.id;
+    selectedFixerRespId = newQ.responses[0].id;
+    if (!player.chatMessages.fixer) player.chatMessages.fixer = [];
+    player.chatMessages.fixer.push({ author: player.callsign, text: `[TAGLIA €\$ ${reward}] ${title} — ${brief}`, time: 'Adesso' });
+    savePlayerState(player);
+    renderChat();
+    e.target.reset();
+    renderFixerConsole();
+    playCyberFx('success');
+  });
+
+  document.getElementById('fixer-quest-reply-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('fixer-quest-reply-input');
+    const text = input?.value.trim();
+    if (!text) return;
+    const quests = getFixerQuests();
+    const q = quests.find(x => x.id === selectedFixerQuestId);
+    const r = q?.responses.find(x => x.id === selectedFixerRespId);
+    if (!r) return;
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    r.messages.push({ author: player.callsign, text, time: timeStr });
+    saveFixerQuests(quests);
+    if (!player.chatMessages.direct) player.chatMessages.direct = [];
+    player.chatMessages.direct.push({ author: `${player.callsign} -> ${r.runnerCallsign}`, text: `[${q.title}] ${text}`, time: timeStr });
+    savePlayerState(player);
+    if (input) input.value = '';
+    renderFixerConsole();
+    renderChat();
+    playCyberFx('ui');
+  });
+
+  fixerAssignBtn?.addEventListener('click', () => {
+    const quests = getFixerQuests();
+    const q = quests.find(x => x.id === selectedFixerQuestId);
+    const r = q?.responses.find(x => x.id === selectedFixerRespId);
+    if (!q || !r) return;
+    q.status = 'ASSEGNATO';
+    q.assignedTo = r.runnerCallsign;
+    r.messages.push({ author: player.callsign, text: `[CONTRATTO ASSEGNATO] ${r.runnerCallsign} ha l'incarico ufficiale.`, time: 'Adesso' });
+    saveFixerQuests(quests);
+    renderFixerConsole();
+    playCyberFx('success');
+  });
+
+  fixerPayBtn?.addEventListener('click', () => {
+    const quests = getFixerQuests();
+    const q = quests.find(x => x.id === selectedFixerQuestId);
+    const r = q?.responses.find(x => x.id === selectedFixerRespId);
+    if (!q || !r) return;
+    if (player.wallet < q.reward) {
+      playCyberFx('denied');
+      alert('Crediti €$ insufficienti per pagare la ricompensa.');
+      return;
+    }
+    const accounts = getAccountsRegistry();
+    const runnerAcc = accounts.find(a => a.callsign.toUpperCase() === r.runnerCallsign.toUpperCase());
+    if (runnerAcc) {
+      runnerAcc.wallet += q.reward;
+      runnerAcc.transactions.unshift({ id: 'tx_q_' + Date.now(), type: 'in', desc: `Taglia Fixer: ${q.title}`, amount: q.reward, time: 'Adesso' });
+      saveAccountsRegistry(accounts);
+    }
+    player.wallet -= q.reward;
+    player.transactions.unshift({ id: 'tx_qp_' + Date.now(), type: 'out', desc: `Pagamento quest ${r.runnerCallsign}`, amount: q.reward, time: 'Adesso' });
+    q.status = 'PAGATO';
+    r.messages.push({ author: 'SISTEMA', text: `Pagati €$ ${q.reward} a ${r.runnerCallsign}.`, time: 'Adesso' });
+    saveFixerQuests(quests);
+    savePlayerState(player);
+    renderFixerConsole();
+    playCyberFx('success');
+  });
+
+  // --- C. NETRUNNER: Nodi Rete, ICE & Sniffer ---
+  const NETRUNNER_NODES_KEY = 'dive_netrunner_nodes_v1';
+  const DEFAULT_NETRUNNER_NODES = [
+    { id: 'TERM-BLUE-44', label: 'Terminale Blu Piano Inf.', iceLevel: 'ICE LV.2', status: 'PROTETTO', payload: 'CODICE BERSAGLIO: #V-7842 // SHARD KEY 44B' },
+    { id: 'NODE-MILITECH-07', label: 'Relay Militech Settore 04', iceLevel: 'ICE LV.3', status: 'PROTETTO', payload: 'PASS FREQUENZA PRIVATA: GRP-409' },
+    { id: 'ICE-ARASAKA-CORE', label: 'Archivio Medico Arasaka', iceLevel: 'BLACK ICE', status: 'PROTETTO', payload: 'FORMULA BASE IMMUNO-NEURALE v2.4' },
+    { id: 'BLACKWALL-RELAY', label: 'Nodo Fantasma GhostNet', iceLevel: 'ICE LV.1', status: 'BRECCIATO', payload: 'CANALE LIBERO: ACCESSO DATALEAK ATTIVO' }
+  ];
+
+  function getNetrunnerNodes() {
+    try {
+      const raw = localStorage.getItem(NETRUNNER_NODES_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch { /* fallback */ }
+    localStorage.setItem(NETRUNNER_NODES_KEY, JSON.stringify(DEFAULT_NETRUNNER_NODES));
+    return JSON.parse(JSON.stringify(DEFAULT_NETRUNNER_NODES));
+  }
+
+  function saveNetrunnerNodes(nodes) {
+    localStorage.setItem(NETRUNNER_NODES_KEY, JSON.stringify(nodes));
+  }
+
+  const netrunnerNodesGrid = document.getElementById('netrunner-nodes-grid');
+  const netrunnerSnifferLog = document.getElementById('netrunner-sniffer-log');
+
+  function appendNetrunnerLog(msg) {
+    if (!netrunnerSnifferLog) return;
+    const div = document.createElement('div');
+    div.textContent = `> ${msg}`;
+    netrunnerSnifferLog.prepend(div);
+  }
+
+  function renderNetrunnerConsole() {
+    if (!netrunnerNodesGrid) return;
+    const nodes = getNetrunnerNodes();
+    netrunnerNodesGrid.innerHTML = nodes.map(n => {
+      const breached = n.status === 'BRECCIATO';
+      return `
+        <div class="p-3 rounded-sm bg-[#04060A] border ${breached ? 'border-dive-green/50' : 'border-dive-cyan/35'} space-y-2 font-mono">
+          <div class="flex items-center justify-between text-[10px]">
+            <span class="text-white font-bold">${escapeChatText(n.id)}</span>
+            <span class="px-1.5 py-0.5 rounded-sm ${breached ? 'bg-dive-green/15 text-dive-green border border-dive-green/40' : 'bg-dive-red/15 text-dive-red border border-dive-red/40'} text-[9px] font-bold">${escapeChatText(n.status)}</span>
+          </div>
+          <div class="text-[11px] text-slate-300 font-sans">${escapeChatText(n.label)} <span class="font-mono text-[9px] text-dive-orange">(${escapeChatText(n.iceLevel)})</span></div>
+          <div class="p-1.5 rounded-sm bg-black/70 border border-white/10 text-[9px] ${breached ? 'text-dive-green' : 'text-slate-500'}">
+            ${breached ? escapeChatText(n.payload) : '[ENCRYPTED // RICHIEDE BREACH ICE]'}
+          </div>
+          <div class="flex gap-1.5 text-[9px]">
+            <button type="button" data-node-ping="${n.id}" class="px-2 py-1 rounded-sm bg-white/5 border border-white/15 text-slate-200 hover:bg-white hover:text-black font-bold uppercase">PING</button>
+            ${breached
+              ? `<button type="button" data-node-reset="${n.id}" class="flex-1 px-2 py-1 rounded-sm bg-dive-orange/15 border border-dive-orange/40 text-dive-orange hover:bg-dive-orange hover:text-black font-bold uppercase">RIPRISTINA ICE</button>`
+              : `<button type="button" data-node-breach="${n.id}" class="flex-1 px-2 py-1 rounded-sm bg-dive-cyan text-black hover:bg-white font-bold uppercase">BREACH ICE (-1 RAM)</button>`
+            }
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  netrunnerNodesGrid?.addEventListener('click', (e) => {
+    const pingId = e.target.closest('[data-node-ping]')?.getAttribute('data-node-ping');
+    if (pingId) {
+      appendNetrunnerLog(`PING ${pingId}: latenza 11ms — firma ICE rilevata.`);
+      playCyberFx('scan');
+      return;
+    }
+    const breachId = e.target.closest('[data-node-breach]')?.getAttribute('data-node-breach');
+    if (breachId) {
+      if ((player.ram || 0) < 1) {
+        playCyberFx('denied');
+        appendNetrunnerLog(`ERRORE: RAM Cyberdeck esaurita per ${breachId}!`);
+        return;
+      }
+      const nodes = getNetrunnerNodes();
+      const target = nodes.find(n => n.id === breachId);
+      if (!target) return;
+      player.ram = Math.max(0, (player.ram || 0) - 1);
+      target.status = 'BRECCIATO';
+      saveNetrunnerNodes(nodes);
+      savePlayerState(player);
+      renderRamUI();
+      renderNetrunnerConsole();
+      appendNetrunnerLog(`BREACH RIUSCITO su ${breachId} (-1 RAM) -> ${target.payload}`);
+      playCyberFx('quickhack');
+      return;
+    }
+    const resetId = e.target.closest('[data-node-reset]')?.getAttribute('data-node-reset');
+    if (resetId) {
+      const nodes = getNetrunnerNodes();
+      const target = nodes.find(n => n.id === resetId);
+      if (target) target.status = 'PROTETTO';
+      saveNetrunnerNodes(nodes);
+      renderNetrunnerConsole();
+      appendNetrunnerLog(`Firewall ICE ripristinato su ${resetId}.`);
+      playCyberFx('ui');
+    }
+  });
+
+  document.getElementById('netrunner-scan-all-btn')?.addEventListener('click', () => {
+    const nodes = getNetrunnerNodes();
+    const protectedCount = nodes.filter(n => n.status !== 'BRECCIATO').length;
+    appendNetrunnerLog(`SCANSIONE RETE COMPLETATA: ${nodes.length} nodi online, ${protectedCount} con ICE attivo.`);
+    playCyberFx('scan');
+  });
+
+  // --- D. CHIMICO: Vasche Muffe/Patogeni, Immunosoppressori & Cavie ---
+  const CHEM_LAB_KEY = 'dive_chem_lab_v1';
+  const DEFAULT_CHEM_LAB = {
+    molds: 2,
+    pathogens: 1,
+    immunoDoses: 1,
+    vats: [
+      { id: 'vat_1', name: 'Vasca A // Muffa Neuro-Fagica M-07', kind: 'muffa', temp: 24.5, ph: 5.8, growth: 78, contam: 8 },
+      { id: 'vat_2', name: 'Vasca B // Patogeno Sinaptico P-19', kind: 'patogeno', temp: 36.8, ph: 7.1, growth: 64, contam: 22 },
+      { id: 'vat_3', name: 'Vasca C // Coltura Simbiotica C-04', kind: 'muffa', temp: 26.2, ph: 6.2, growth: 45, contam: 12 }
+    ],
+    subjects: [
+      { id: 'sub_1', name: 'Cavia #01 (Soggetto K-9)', bpm: 118, toxicity: 28, psych: 62, status: 'AGITATO' },
+      { id: 'sub_2', name: 'Cavia #02 (Runner Esposizione Alta)', bpm: 142, toxicity: 44, psych: 84, status: 'CRITICO' },
+      { id: 'sub_3', name: 'Cavia #03 (Controllo Sinaptico)', bpm: 76, toxicity: 10, psych: 18, status: 'STABILE' }
+    ]
+  };
+
+  function getChemLabState() {
+    try {
+      const raw = localStorage.getItem(CHEM_LAB_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.vats) && Array.isArray(parsed.subjects)) return parsed;
+      }
+    } catch { /* fallback */ }
+    localStorage.setItem(CHEM_LAB_KEY, JSON.stringify(DEFAULT_CHEM_LAB));
+    return JSON.parse(JSON.stringify(DEFAULT_CHEM_LAB));
+  }
+
+  function saveChemLabState(lab) {
+    localStorage.setItem(CHEM_LAB_KEY, JSON.stringify(lab));
+  }
+
+  const chemMoldCount = document.getElementById('chem-mold-count');
+  const chemPathogenCount = document.getElementById('chem-pathogen-count');
+  const chemImmunoCount = document.getElementById('chem-immuno-count');
+  const chemVatsGrid = document.getElementById('chem-vats-grid');
+  const chemSubjectsGrid = document.getElementById('chem-subjects-grid');
+  const chemLabLog = document.getElementById('chem-lab-log');
+
+  function appendChemLog(msg) {
+    if (!chemLabLog) return;
+    const div = document.createElement('div');
+    div.textContent = `> ${msg}`;
+    chemLabLog.prepend(div);
+  }
+
+  function renderChimicoConsole() {
+    if (!chemVatsGrid || !chemSubjectsGrid) return;
+    const lab = getChemLabState();
+    if (chemMoldCount) chemMoldCount.textContent = String(lab.molds);
+    if (chemPathogenCount) chemPathogenCount.textContent = String(lab.pathogens);
+    if (chemImmunoCount) chemImmunoCount.textContent = String(lab.immunoDoses);
+
+    chemVatsGrid.innerHTML = lab.vats.map(v => `
+      <div class="p-3 rounded-sm bg-[#04060A] border ${v.contam >= 30 ? 'border-dive-red/60' : 'border-dive-green/35'} space-y-2 font-mono">
+        <div class="text-[10px] font-bold text-white truncate">${escapeChatText(v.name)}</div>
+        <div class="grid grid-cols-2 gap-1 text-[9px] text-slate-300">
+          <span>TEMP: <strong class="text-dive-cyan">${v.temp.toFixed(1)}°C</strong></span>
+          <span>pH: <strong class="text-dive-purple">${v.ph.toFixed(1)}</strong></span>
+          <span>CRESCITA: <strong class="text-dive-green">${v.growth}%</strong></span>
+          <span>CONTAM: <strong class="${v.contam >= 30 ? 'text-dive-red' : 'text-dive-orange'}">${v.contam}%</strong></span>
+        </div>
+        <div class="w-full h-1.5 bg-white/10 overflow-hidden"><div class="h-full bg-dive-green transition-all" style="width:${v.growth}%"></div></div>
+        <div class="flex flex-wrap gap-1 text-[9px]">
+          <button type="button" data-vat-feed="${v.id}" class="px-1.5 py-1 rounded-sm bg-dive-green/15 border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black font-bold uppercase">NUTRI</button>
+          <button type="button" data-vat-stab="${v.id}" class="px-1.5 py-1 rounded-sm bg-dive-cyan/15 border border-dive-cyan/40 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold uppercase">STABILIZZA</button>
+          <button type="button" data-vat-extract="${v.id}" class="flex-1 px-1.5 py-1 rounded-sm bg-dive-purple/20 border border-dive-purple/50 text-dive-purple hover:bg-dive-purple hover:text-black font-bold uppercase">ESTRAI</button>
+        </div>
+      </div>
+    `).join('');
+
+    chemSubjectsGrid.innerHTML = lab.subjects.map(s => `
+      <div class="p-3 rounded-sm bg-[#04060A] border ${s.psych >= 70 ? 'border-dive-red/60' : 'border-white/15'} space-y-2 font-mono">
+        <div class="flex items-center justify-between text-[10px]">
+          <span class="font-bold text-white truncate">${escapeChatText(s.name)}</span>
+          <span class="px-1.5 py-0.5 text-[8px] font-bold rounded-sm ${s.status === 'CRITICO' ? 'bg-dive-red/20 text-dive-red' : (s.status === 'AGITATO' ? 'bg-dive-orange/20 text-dive-orange' : 'bg-dive-green/20 text-dive-green')}">${escapeChatText(s.status)}</span>
+        </div>
+        <div class="grid grid-cols-3 gap-1 text-[9px] text-slate-300">
+          <span>BPM: <strong class="text-dive-cyan">${s.bpm}</strong></span>
+          <span>TOX: <strong class="text-dive-orange">${s.toxicity}%</strong></span>
+          <span>PSIC: <strong class="text-dive-red">${s.psych}%</strong></span>
+        </div>
+        <div class="flex flex-wrap gap-1 text-[9px]">
+          <button type="button" data-sub-immuno="${s.id}" class="flex-1 px-1.5 py-1 rounded-sm bg-dive-purple text-black hover:bg-white font-bold uppercase">IMMUNOSOPP.</button>
+          <button type="button" data-sub-test="${s.id}" class="px-1.5 py-1 rounded-sm bg-dive-red/15 border border-dive-red/40 text-dive-red hover:bg-dive-red hover:text-black font-bold uppercase">PATOGENO</button>
+          <button type="button" data-sub-stab="${s.id}" class="px-1.5 py-1 rounded-sm bg-dive-green/15 border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black font-bold uppercase">CALMA</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  chemVatsGrid?.addEventListener('click', (e) => {
+    const lab = getChemLabState();
+    const feedId = e.target.closest('[data-vat-feed]')?.getAttribute('data-vat-feed');
+    if (feedId) {
+      const v = lab.vats.find(x => x.id === feedId);
+      if (v) {
+        v.growth = Math.min(100, v.growth + 22);
+        v.contam = Math.min(100, v.contam + 5);
+        v.temp = Number((v.temp + 0.6).toFixed(1));
+        saveChemLabState(lab);
+        renderChimicoConsole();
+        appendChemLog(`${v.name}: coltura nutrita (crescita ${v.growth}%).`);
+        playCyberFx('ui');
+      }
+      return;
+    }
+    const stabId = e.target.closest('[data-vat-stab]')?.getAttribute('data-vat-stab');
+    if (stabId) {
+      const v = lab.vats.find(x => x.id === stabId);
+      if (v) {
+        v.contam = Math.max(2, v.contam - 12);
+        v.ph = v.kind === 'muffa' ? 5.8 : 7.0;
+        v.temp = v.kind === 'muffa' ? 24.5 : 36.5;
+        saveChemLabState(lab);
+        renderChimicoConsole();
+        appendChemLog(`${v.name}: parametri Temp/pH stabilizzati (contam ${v.contam}%).`);
+        playCyberFx('ram');
+      }
+      return;
+    }
+    const extractId = e.target.closest('[data-vat-extract]')?.getAttribute('data-vat-extract');
+    if (extractId) {
+      const v = lab.vats.find(x => x.id === extractId);
+      if (!v) return;
+      if (v.growth < 60) {
+        playCyberFx('denied');
+        appendChemLog(`${v.name}: crescita ${v.growth}% insufficiente (serve >= 60%).`);
+        return;
+      }
+      v.growth = Math.max(15, v.growth - 45);
+      if (v.kind === 'muffa') lab.molds += 1;
+      else lab.pathogens += 1;
+      saveChemLabState(lab);
+      renderChimicoConsole();
+      appendChemLog(`Estratto ceppo da ${v.name} (+1 ${v.kind === 'muffa' ? 'Muffa' : 'Patogeno'}).`);
+      playCyberFx('success');
+    }
+  });
+
+  document.getElementById('chem-synthesize-btn')?.addEventListener('click', () => {
+    const lab = getChemLabState();
+    if (lab.molds < 1 || lab.pathogens < 1) {
+      playCyberFx('denied');
+      appendChemLog('Reagenti insufficienti: estrai almeno 1 Muffa e 1 Patogeno dalle vasche.');
+      return;
+    }
+    lab.molds -= 1;
+    lab.pathogens -= 1;
+    lab.immunoDoses += 1;
+    saveChemLabState(lab);
+    renderChimicoConsole();
+    appendChemLog(`Sintesi completata! +1 Dose Immunosoppressore anti-Cyberpsicosi (totale: ${lab.immunoDoses}).`);
+    playCyberFx('success');
+  });
+
+  chemSubjectsGrid?.addEventListener('click', (e) => {
+    const lab = getChemLabState();
+    const immunoId = e.target.closest('[data-sub-immuno]')?.getAttribute('data-sub-immuno');
+    if (immunoId) {
+      if (lab.immunoDoses < 1) {
+        playCyberFx('denied');
+        appendChemLog('Nessun Immunosoppressore pronto: sintetizza una dose prima del test.');
+        return;
+      }
+      const s = lab.subjects.find(x => x.id === immunoId);
+      if (s) {
+        lab.immunoDoses -= 1;
+        s.psych = Math.max(0, s.psych - 35);
+        s.bpm = Math.max(68, s.bpm - 24);
+        s.status = s.psych >= 70 ? 'CRITICO' : (s.psych >= 40 ? 'AGITATO' : 'STABILE');
+        saveChemLabState(lab);
+        renderChimicoConsole();
+        appendChemLog(`${s.name}: somministrato Immunosoppressore -> Psicosi scesa a ${s.psych}%.`);
+        playCyberFx('success');
+      }
+      return;
+    }
+    const testId = e.target.closest('[data-sub-test]')?.getAttribute('data-sub-test');
+    if (testId) {
+      const s = lab.subjects.find(x => x.id === testId);
+      if (s) {
+        s.toxicity = Math.min(100, s.toxicity + 18);
+        s.psych = Math.min(100, s.psych + 15);
+        s.bpm = Math.min(190, s.bpm + 22);
+        s.status = s.psych >= 70 ? 'CRITICO' : 'AGITATO';
+        saveChemLabState(lab);
+        renderChimicoConsole();
+        appendChemLog(`${s.name}: test patogeno grezzo eseguito (Tox ${s.toxicity}%, Psic ${s.psych}%).`);
+        playCyberFx('alert');
+      }
+      return;
+    }
+    const stabId = e.target.closest('[data-sub-stab]')?.getAttribute('data-sub-stab');
+    if (stabId) {
+      const s = lab.subjects.find(x => x.id === stabId);
+      if (s) {
+        s.toxicity = Math.max(5, s.toxicity - 20);
+        s.bpm = 78;
+        s.status = s.psych >= 70 ? 'CRITICO' : (s.psych >= 40 ? 'AGITATO' : 'STABILE');
+        saveChemLabState(lab);
+        renderChimicoConsole();
+        appendChemLog(`${s.name}: parametri vitali calmati (BPM ${s.bpm}, Tox ${s.toxicity}%).`);
+        playCyberFx('ram');
+      }
+    }
+  });
+
+  function renderActiveRoleConsole() {
+    if (!secRoleConsole) return;
+    const target = activeSheetRunner || player;
+    const kind = getRoleKind(target?.role);
+    if (!kind || activeSheetRunner) {
+      secRoleConsole.classList.add('hidden');
+      return;
+    }
+    secRoleConsole.classList.remove('hidden');
+    [rolePanelRipperdoc, rolePanelFixer, rolePanelNetrunner, rolePanelChimico].forEach(p => {
+      if (p) p.classList.add('hidden');
+    });
+
+    if (kind === 'ripperdoc') {
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'CLINICA CLANDESTINA // MODULO RIPPERDOC';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'MONITOR PAZIENTI & CHIRURGIA';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'RIPPERDOC';
+      if (rolePanelRipperdoc) rolePanelRipperdoc.classList.remove('hidden');
+      renderRipperdocConsole();
+    } else if (kind === 'fixer') {
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'BROKER OPS // CONTRATTI & TAGLIE';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'ANNUNCI QUEST & RISPOSTE PG';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'FIXER';
+      if (rolePanelFixer) rolePanelFixer.classList.remove('hidden');
+      renderFixerConsole();
+    } else if (kind === 'netrunner') {
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'DEEP NET // INTRUSIONE & BREACH';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'CONSOLE NODI RETE & ICE';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'NETRUNNER';
+      if (rolePanelNetrunner) rolePanelNetrunner.classList.remove('hidden');
+      renderNetrunnerConsole();
+    } else if (kind === 'chimico') {
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'BIOTECH LAB // COLTURE & CAVIE';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'VASCHE, PATOGENI & IMMUNOSOPPRESSORI';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'CHIMICO';
+      if (rolePanelChimico) rolePanelChimico.classList.remove('hidden');
+      renderChimicoConsole();
+    }
+  }
 
   // Initialize
   syncPlayerUI();
