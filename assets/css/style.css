@@ -243,6 +243,10 @@ body:not(.ingame-mode) .ingame-site-nav {
   display: none !important;
 }
 
+body.ingame-mode #desktop-game-nav {
+  display: flex !important;
+}
+
 body.ingame-mode {
   --pg-accent: #00FF66;
   --pg-accent-rgb: 0, 255, 102;
