@@ -708,6 +708,27 @@
                 </button>
               </form>
             </div>
+
+            <!-- Rubrica Contatti QR Scansionati -->
+            <div id="sec-rubrica" class="cyber-panel hud-bracket p-4 sm:p-5 space-y-3">
+              <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10">
+                <div>
+                  <div class="text-dive-orange font-mono text-[10px] uppercase tracking-widest font-semibold">
+                    RUBRICA // CONTATTI QR SCANSIONATI
+                  </div>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <h3 class="font-orbitron font-bold text-sm sm:text-base text-white">RUBRICA</h3>
+                    <span id="rubrica-count-badge" class="px-1.5 py-0.5 bg-black border border-dive-orange/40 text-dive-orange font-mono text-[10px] font-bold">0</span>
+                  </div>
+                </div>
+                <button id="rubrica-go-scan-btn" type="button" class="px-2.5 py-1.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-mono text-[10px] uppercase font-bold transition-colors whitespace-nowrap cursor-pointer">
+                  + SCANSIONA QR
+                </button>
+              </div>
+              <div id="social-rubrica-list" class="space-y-2 overflow-y-auto pr-1" style="max-height: 260px;">
+                <!-- Popolato da JS in base ai QR scansionati -->
+              </div>
+            </div>
           </aside>
 
         </div>

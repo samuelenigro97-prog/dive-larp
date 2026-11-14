@@ -278,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ram: raw.ram ?? 8,
       ramMax: raw.ramMax ?? 8,
       traumas: Array.isArray(raw.traumas) ? raw.traumas : [],
+      contacts: Array.isArray(raw.contacts) ? raw.contacts : [],
       transactions: Array.isArray(raw.transactions) ? raw.transactions : [
         { id: 'tx_init', type: 'in', desc: 'Saldo iniziale evento', amount: raw.wallet ?? 1000, time: 'Inizio Evento' }
       ]
@@ -897,6 +898,162 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.setAttribute('class', 'w-full h-full block');
       }
     }
+
+    renderSocialRubrica();
+  }
+
+  function addScannedContact(entry) {
+    if (!entry || !player) return false;
+    const rawId = String(entry.secretId || '').trim();
+    const normId = rawId ? ('#' + rawId.replace(/^#/, '')).toUpperCase() : '';
+    const myId = (player.secretId || '#V-7842').toUpperCase();
+    if (normId && normId === myId) return false;
+
+    const registryMatch = getAccountsRegistry().find(r =>
+      (normId && (r.secretId || '').toUpperCase() === normId) ||
+      (entry.callsign && (r.callsign || '').toUpperCase() === String(entry.callsign).toUpperCase())
+    );
+    const callsign = (registryMatch && registryMatch.callsign) || entry.callsign || '@Runner';
+    const secretId = (registryMatch && registryMatch.secretId) || normId || '#NX-0000';
+    const role = (registryMatch && registryMatch.role) || entry.role || 'RUNNER // CONTATTO QR';
+    const avatar = (registryMatch && registryMatch.avatar) || entry.avatar || 'assets/images/avatars/pg-1.jpg';
+    const nowTime = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+
+    if (!Array.isArray(player.contacts)) player.contacts = [];
+    const existingIdx = player.contacts.findIndex(c =>
+      (c.secretId || '').toUpperCase() === secretId.toUpperCase()
+    );
+
+    const contactObj = { callsign, secretId, role, avatar, scannedAt: nowTime };
+    let isNew = true;
+    if (existingIdx >= 0) {
+      isNew = false;
+      player.contacts.splice(existingIdx, 1);
+    }
+    player.contacts.unshift(contactObj);
+    savePlayerState(player);
+    return isNew;
+  }
+
+  function removeScannedContact(secretId) {
+    if (!player || !Array.isArray(player.contacts)) return;
+    const target = String(secretId || '').toUpperCase();
+    player.contacts = player.contacts.filter(c => (c.secretId || '').toUpperCase() !== target);
+    savePlayerState(player);
+  }
+
+  function syncDmRecipientsWithContacts() {
+    const select = document.getElementById('dm-recipient-select');
+    if (!select || !player) return;
+    const contacts = Array.isArray(player.contacts) ? player.contacts : [];
+    contacts.forEach(c => {
+      if (!c.callsign) return;
+      const exists = Array.from(select.options).some(opt => opt.value.toUpperCase() === c.callsign.toUpperCase());
+      if (!exists) {
+        const opt = document.createElement('option');
+        opt.value = c.callsign;
+        opt.textContent = `${c.callsign} (${c.secretId || 'QR'})`;
+        select.appendChild(opt);
+      }
+    });
+  }
+
+  function renderSocialRubrica() {
+    const listEl = document.getElementById('social-rubrica-list');
+    const countBadge = document.getElementById('rubrica-count-badge');
+    const contacts = Array.isArray(player && player.contacts) ? player.contacts : [];
+    if (countBadge) countBadge.textContent = String(contacts.length);
+    syncDmRecipientsWithContacts();
+    if (!listEl) return;
+
+    const esc = (s) => String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    if (contacts.length === 0) {
+      listEl.innerHTML = `
+        <div class="p-3 rounded-sm bg-[#04060A] border border-dashed border-white/15 text-center font-mono text-[11px] text-slate-400">
+          Nessun contatto in rubrica. Scansiona il QR Code di un Runner con lo Scanner Cyberdeck per salvarlo automaticamente qui.
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = contacts.map(c => `
+      <div class="p-2.5 rounded-sm bg-[#04060A] border border-white/10 hover:border-dive-orange/40 transition-colors flex items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <img src="${esc(c.avatar || 'assets/images/avatars/pg-1.jpg')}" alt="${esc(c.callsign)}" class="w-9 h-9 rounded-sm object-cover border border-white/15 flex-shrink-0">
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="font-orbitron font-bold text-xs text-white truncate">${esc(c.callsign)}</span>
+              <span class="font-mono text-[9px] text-dive-cyan font-bold flex-shrink-0">${esc(c.secretId)}</span>
+            </div>
+            <div class="font-mono text-[9px] text-slate-400 truncate">${esc(c.role || 'RUNNER')} · QR ${esc(c.scannedAt || '')}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0 font-mono text-[9px]">
+          <button type="button" data-rubrica-dm="${esc(c.callsign)}" class="px-2 py-1 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold uppercase transition-colors cursor-pointer" title="Invia DM privato">
+            DM
+          </button>
+          <button type="button" data-rubrica-pay="${esc(c.secretId)}" class="px-2 py-1 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green hover:bg-dive-green hover:text-black font-bold uppercase transition-colors cursor-pointer" title="Trasferisci EuroDollari">
+            €$
+          </button>
+          <button type="button" data-rubrica-remove="${esc(c.secretId)}" class="px-1.5 py-1 rounded-sm border border-white/15 bg-black text-slate-400 hover:text-dive-red hover:border-dive-red/40 font-bold leading-none transition-colors cursor-pointer" title="Rimuovi contatto">
+            ×
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const socialRubricaListEl = document.getElementById('social-rubrica-list');
+  if (socialRubricaListEl) {
+    socialRubricaListEl.addEventListener('click', (e) => {
+      const dmBtn = e.target.closest('[data-rubrica-dm]');
+      if (dmBtn) {
+        const callsign = dmBtn.getAttribute('data-rubrica-dm');
+        const directBtn = document.querySelector('.chat-channel-btn[data-channel="direct"]');
+        if (directBtn) directBtn.click();
+        const select = document.getElementById('dm-recipient-select');
+        if (select && callsign) {
+          syncDmRecipientsWithContacts();
+          select.value = callsign;
+        }
+        const chatInput = document.getElementById('chat-text-input');
+        if (chatInput) chatInput.focus();
+        return;
+      }
+
+      const payBtn = e.target.closest('[data-rubrica-pay]');
+      if (payBtn) {
+        const targetId = payBtn.getAttribute('data-rubrica-pay');
+        switchTab('wallet');
+        const recipientInput = document.getElementById('transfer-recipient-input');
+        const amountInput = document.getElementById('transfer-amount-input');
+        if (recipientInput && targetId) recipientInput.value = targetId;
+        if (amountInput) amountInput.focus();
+        return;
+      }
+
+      const removeBtn = e.target.closest('[data-rubrica-remove]');
+      if (removeBtn) {
+        const targetId = removeBtn.getAttribute('data-rubrica-remove');
+        removeScannedContact(targetId);
+      }
+    });
+  }
+
+  const rubricaGoScanBtn = document.getElementById('rubrica-go-scan-btn');
+  if (rubricaGoScanBtn) {
+    rubricaGoScanBtn.addEventListener('click', () => {
+      switchTab('deck');
+      setTimeout(() => {
+        const codeInput = document.getElementById('manual-code-input');
+        if (codeInput) codeInput.focus();
+      }, 120);
+    });
   }
 
   // --------------------------------------------------------------------------
@@ -1228,10 +1385,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       detectedPlayer = { callsign, secretId };
+      const addedToRubrica = addScannedContact({ callsign, secretId });
 
       scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
       scanBadge.textContent = '[ID] RUNNER';
-      scanOutputText.textContent = `[TARGET ACQUISITO] Rilevato Cyberdeck di ${callsign} (ID: ${secretId}). Scegli se trasferire EuroDollari o avviare l'intrusione clandestina.`;
+      scanOutputText.textContent = `[TARGET ACQUISITO] Rilevato Cyberdeck di ${callsign} (ID: ${secretId}).${addedToRubrica ? ' Contatto salvato in Rubrica Social.' : ' Contatto aggiornato in Rubrica Social.'} Scegli se trasferire EuroDollari o avviare l'intrusione clandestina.`;
       
       if (scanPlayerActions) scanPlayerActions.classList.remove('hidden');
 
@@ -3004,6 +3162,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialPg = new URLSearchParams(window.location.search).get('pg');
   if (initialPg) {
     activeSheetRunner = findRunnerByPgParam(initialPg);
+    if (activeSheetRunner && typeof isPlayerLoggedIn === 'function' ? isPlayerLoggedIn() : Boolean(localStorage.getItem('dive_session_v1'))) {
+      addScannedContact(activeSheetRunner);
+    }
   }
 
   // Eventi sub-tabs (Iscriviti, Guida/Manuale, Setting, Personaggi)
