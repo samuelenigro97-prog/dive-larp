@@ -1183,12 +1183,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputNewCallsign = document.getElementById('input-new-callsign');
   const inputNewRole = document.getElementById('input-new-role');
 
-  if (openProfileBtn && profileEditModal) {
+  if (openProfileBtn) {
     openProfileBtn.addEventListener('click', () => {
-      inputNewCallsign.value = player.callsign;
-      inputNewRole.value = player.role;
-      profileEditModal.classList.remove('hidden', 'pointer-events-none');
-      setTimeout(() => profileEditModal.classList.add('opacity-100'), 10);
+      activeSheetRunner = null;
+      syncPlayerUI();
+      switchTab('profile');
     });
   }
 
