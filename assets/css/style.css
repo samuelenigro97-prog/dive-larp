@@ -121,6 +121,7 @@
   height: 8px;
   border-color: var(--dive-orange);
   pointer-events: none;
+  z-index: 20;
 }
 
 .hud-bracket::before {
