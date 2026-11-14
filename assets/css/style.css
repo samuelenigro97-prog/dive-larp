@@ -377,3 +377,41 @@ body.ingame-mode .ingame-theme-pill {
 body.ingame-mode ::-webkit-scrollbar-thumb:hover {
   background: var(--pg-accent);
 }
+
+/* Estensione tema PG agli accenti interni In-Game */
+body.ingame-mode #tab-profile .text-dive-orange,
+body.ingame-mode #tab-net .text-dive-orange {
+  color: var(--pg-accent) !important;
+}
+
+body.ingame-mode #tab-profile .neon-orange,
+body.ingame-mode #tab-net .neon-orange {
+  text-shadow: 0 0 12px rgba(var(--pg-accent-rgb), 0.55), 0 0 28px rgba(var(--pg-accent-rgb), 0.25) !important;
+}
+
+body.ingame-mode #tab-profile .border-dive-orange\/40,
+body.ingame-mode #tab-profile .border-dive-orange\/50,
+body.ingame-mode #tab-profile .border-dive-orange\/60,
+body.ingame-mode #tab-net .border-dive-orange\/40,
+body.ingame-mode #tab-net .border-dive-orange\/50 {
+  border-color: rgba(var(--pg-accent-rgb), 0.5) !important;
+}
+
+body.ingame-mode #tab-profile .bg-dive-orange\/15,
+body.ingame-mode #tab-net .bg-dive-orange\/15 {
+  background-color: rgba(var(--pg-accent-rgb), 0.16) !important;
+}
+
+body.ingame-mode #tab-profile .bg-dive-orange,
+body.ingame-mode #tab-net .bg-dive-orange {
+  background-color: var(--pg-accent) !important;
+}
+
+body.ingame-mode #sec-cyberware .cyberware-slot {
+  border-color: rgba(var(--pg-accent-rgb), 0.28);
+}
+
+body.ingame-mode #sec-cyberware .cyberware-slot:hover {
+  border-color: var(--pg-accent);
+  background: linear-gradient(135deg, rgba(var(--pg-accent-rgb), 0.1) 0%, rgba(7, 10, 18, 0.98) 100%);
+}
