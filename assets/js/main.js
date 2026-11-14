@@ -1337,9 +1337,58 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 11. Radio Chat (Fixer Contracts, Corp Broadcasts, Direct DMs 1-a-1)
+  // 11. Radio Chat (Fixer Contracts, Corp Broadcasts, Direct DMs & Gruppi)
   // --------------------------------------------------------------------------
   let currentChatChannel = 'fixer';
+  const GROUPS_STORAGE_KEY = 'dive_chat_groups_v1';
+  let activeGroupId = '';
+
+  const INITIAL_CHAT_GROUPS = [
+    {
+      id: 'grp_ciminiere',
+      name: 'Squadra Ciminiere',
+      code: 'GRP-409',
+      creator: '@V_Solo',
+      members: ['@V_Solo', '@Kuro_04', '@Runner_Insolito'],
+      messages: [
+        { author: '@Kuro_04', text: 'ICE perimetrale mappato. Entriamo dal lato nord alle 22:00.', time: '20:10' },
+        { author: '@V_Solo', text: 'Ricevuto. Tengo pronte le munizioni perforanti.', time: '20:12' }
+      ]
+    },
+    {
+      id: 'grp_afterlife',
+      name: 'Canale Afterlife',
+      code: 'GRP-777',
+      creator: '@Nico_Media',
+      members: ['@V_Solo', '@Kuro_04', '@Runner_Insolito', '@CyberRex', '@Nico_Media'],
+      messages: [
+        { author: '@Nico_Media', text: 'Chi ha info sui movimenti Corpo al piano 2 mi scriva qui.', time: '19:45' }
+      ]
+    }
+  ];
+
+  function getChatGroups() {
+    try {
+      const raw = localStorage.getItem(GROUPS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(INITIAL_CHAT_GROUPS));
+    return JSON.parse(JSON.stringify(INITIAL_CHAT_GROUPS));
+  }
+
+  function saveChatGroups(groups) {
+    localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+  }
+
+  function getMyChatGroups() {
+    const groups = getChatGroups();
+    const myCallsign = (player && player.callsign) ? player.callsign.toUpperCase() : '';
+    return groups.filter(g => Array.isArray(g.members) && g.members.some(m => m.toUpperCase() === myCallsign));
+  }
+
   const chatMessagesContainer = document.getElementById('chat-messages-container');
   const chatSendForm = document.getElementById('chat-send-form');
   const chatTextInput = document.getElementById('chat-text-input');
@@ -1348,12 +1397,100 @@ document.addEventListener('DOMContentLoaded', () => {
   const dmRecipientSelect = document.getElementById('dm-recipient-select');
   const chatChannelBtns = document.querySelectorAll('.chat-channel-btn');
 
+  const chatGroupsActions = document.getElementById('chat-groups-actions');
+  const chatGroupsBar = document.getElementById('chat-groups-bar');
+  const chatGroupsList = document.getElementById('chat-groups-list');
+  const chatGroupMeta = document.getElementById('chat-group-meta');
+  const chatGroupMembersLabel = document.getElementById('chat-group-members-label');
+  const chatGroupCodeLabel = document.getElementById('chat-group-code-label');
+  const leaveGroupBtn = document.getElementById('leave-group-btn');
+  const toggleCreateGroupBtn = document.getElementById('toggle-create-group-btn');
+  const toggleJoinGroupBtn = document.getElementById('toggle-join-group-btn');
+  const createGroupForm = document.getElementById('create-group-form');
+  const cancelCreateGroupBtn = document.getElementById('cancel-create-group-btn');
+  const newGroupNameInput = document.getElementById('new-group-name-input');
+  const newGroupMembersChecks = document.getElementById('new-group-members-checks');
+  const joinGroupForm = document.getElementById('join-group-form');
+  const joinGroupCodeInput = document.getElementById('join-group-code-input');
+
+  function renderCreateGroupMemberCheckboxes() {
+    if (!newGroupMembersChecks) return;
+    const pool = getAccountsRegistry().filter(a => a.callsign.toUpperCase() !== player.callsign.toUpperCase());
+    newGroupMembersChecks.innerHTML = pool.map(acc => `
+      <label class="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-black border border-white/15 text-slate-200 cursor-pointer hover:border-dive-purple">
+        <input type="checkbox" value="${acc.callsign}" class="new-group-member-cb accent-dive-purple">
+        <span>${acc.callsign}</span>
+      </label>
+    `).join('');
+  }
+
+  function renderGroupsUI() {
+    if (!chatGroupsList) return;
+    const myGroups = getMyChatGroups();
+    if (!myGroups.some(g => g.id === activeGroupId)) {
+      activeGroupId = myGroups.length > 0 ? myGroups[0].id : '';
+    }
+
+    if (myGroups.length === 0) {
+      chatGroupsList.innerHTML = '<span class="text-slate-500 italic">Nessun gruppo attivo. Creane uno (+ NUOVO) o entra con CODICE.</span>';
+      if (chatGroupMeta) chatGroupMeta.classList.add('hidden');
+      if (currentChatChannel === 'groups' && currentChannelLabel) {
+        currentChannelLabel.textContent = '# GRUPPI CRIPTATI (NESSUNO)';
+      }
+      return;
+    }
+
+    chatGroupsList.innerHTML = myGroups.map(grp => {
+      const isActive = grp.id === activeGroupId;
+      return `
+        <button type="button" class="chat-group-pill px-2.5 py-1 rounded-sm border whitespace-nowrap transition-colors ${isActive ? 'border-dive-purple bg-dive-purple/20 text-white font-bold' : 'border-white/10 bg-[#04060A] text-slate-400 hover:text-white'}" data-group-id="${grp.id}">
+          ${grp.name} (${grp.members.length})
+        </button>
+      `;
+    }).join('');
+
+    chatGroupsList.querySelectorAll('.chat-group-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeGroupId = btn.getAttribute('data-group-id');
+        renderGroupsUI();
+        renderChat();
+        playCyberSound(520, 'sine', 0.04);
+      });
+    });
+
+    const activeGrp = myGroups.find(g => g.id === activeGroupId);
+    if (activeGrp && chatGroupMeta) {
+      chatGroupMeta.classList.remove('hidden');
+      if (chatGroupMembersLabel) chatGroupMembersLabel.textContent = `Membri: ${activeGrp.members.join(', ')}`;
+      if (chatGroupCodeLabel) chatGroupCodeLabel.textContent = `COD: ${activeGrp.code}`;
+      if (currentChatChannel === 'groups' && currentChannelLabel) {
+        currentChannelLabel.textContent = `# GRUPPO: ${activeGrp.name.toUpperCase()}`;
+      }
+    }
+  }
+
   function renderChat() {
     if (!chatMessagesContainer) return;
-    const msgs = player.chatMessages[currentChatChannel] || [];
+    let msgs = [];
+    if (currentChatChannel === 'groups') {
+      const myGroups = getMyChatGroups();
+      const activeGrp = myGroups.find(g => g.id === activeGroupId);
+      if (!activeGrp) {
+        chatMessagesContainer.innerHTML = '<div class="text-center text-slate-500 font-mono text-xs py-8">Crea un nuovo gruppo o inserisci un codice invito per iniziare a chattare in squadra.</div>';
+        return;
+      }
+      msgs = activeGrp.messages || [];
+    } else {
+      msgs = player.chatMessages[currentChatChannel] || [];
+    }
+
+    if (msgs.length === 0) {
+      chatMessagesContainer.innerHTML = '<div class="text-center text-slate-500 font-mono text-xs py-8">Nessun messaggio su questa frequenza.</div>';
+      return;
+    }
 
     chatMessagesContainer.innerHTML = msgs.map(msg => {
-      const isMe = msg.author === player.callsign;
+      const isMe = msg.author === player.callsign || msg.author.startsWith(`${player.callsign} ->`);
       return `
         <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
           <div class="flex items-center gap-1.5 font-mono text-[10px] text-slate-500 mb-0.5">
@@ -1373,14 +1510,21 @@ document.addEventListener('DOMContentLoaded', () => {
   chatChannelBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       chatChannelBtns.forEach(b => {
-        b.className = 'chat-channel-btn px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white whitespace-nowrap';
+        b.className = 'chat-channel-btn px-2.5 py-1.5 rounded-sm border border-white/10 bg-[#080B12] text-slate-400 hover:text-white whitespace-nowrap';
       });
-      btn.className = 'chat-channel-btn active px-3 py-1.5 rounded-lg border border-dive-cyan/40 bg-dive-cyan/15 text-dive-cyan font-semibold whitespace-nowrap';
+      btn.className = 'chat-channel-btn active px-2.5 py-1.5 rounded-sm border border-dive-cyan/50 bg-dive-cyan/15 text-dive-cyan font-semibold whitespace-nowrap';
       currentChatChannel = btn.getAttribute('data-channel');
+
+      const isGroups = currentChatChannel === 'groups';
+      if (chatGroupsActions) chatGroupsActions.classList.toggle('hidden', !isGroups);
+      if (chatGroupsBar) chatGroupsBar.classList.toggle('hidden', !isGroups);
 
       if (currentChatChannel === 'direct') {
         if (dmRecipientWrap) dmRecipientWrap.classList.remove('hidden');
         if (currentChannelLabel) currentChannelLabel.textContent = '# DM DIRETTO PRIVATO';
+      } else if (isGroups) {
+        if (dmRecipientWrap) dmRecipientWrap.classList.add('hidden');
+        renderGroupsUI();
       } else {
         if (dmRecipientWrap) dmRecipientWrap.classList.add('hidden');
         const channelLabels = {
@@ -1395,6 +1539,99 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  if (toggleCreateGroupBtn && createGroupForm) {
+    toggleCreateGroupBtn.addEventListener('click', () => {
+      renderCreateGroupMemberCheckboxes();
+      createGroupForm.classList.toggle('hidden');
+      if (joinGroupForm) joinGroupForm.classList.add('hidden');
+    });
+  }
+
+  if (cancelCreateGroupBtn && createGroupForm) {
+    cancelCreateGroupBtn.addEventListener('click', () => {
+      createGroupForm.classList.add('hidden');
+    });
+  }
+
+  if (toggleJoinGroupBtn && joinGroupForm) {
+    toggleJoinGroupBtn.addEventListener('click', () => {
+      joinGroupForm.classList.toggle('hidden');
+      if (createGroupForm) createGroupForm.classList.add('hidden');
+    });
+  }
+
+  if (createGroupForm && newGroupNameInput) {
+    createGroupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = newGroupNameInput.value.trim();
+      if (!name) return;
+      const selectedMembers = Array.from(document.querySelectorAll('.new-group-member-cb:checked')).map(cb => cb.value);
+      const members = Array.from(new Set([player.callsign, ...selectedMembers]));
+      const code = 'GRP-' + Math.floor(100 + Math.random() * 900);
+      const newGroup = {
+        id: 'grp_' + Date.now(),
+        name,
+        code,
+        creator: player.callsign,
+        members,
+        messages: [
+          { author: 'SISTEMA', text: `Gruppo "${name}" creato da ${player.callsign} (Codice invito: ${code}).`, time: 'Adesso' }
+        ]
+      };
+      const groups = getChatGroups();
+      groups.unshift(newGroup);
+      saveChatGroups(groups);
+      activeGroupId = newGroup.id;
+      createGroupForm.reset();
+      createGroupForm.classList.add('hidden');
+      renderGroupsUI();
+      renderChat();
+      if (typeof playCyberFx === 'function') playCyberFx('success');
+    });
+  }
+
+  if (joinGroupForm && joinGroupCodeInput) {
+    joinGroupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = joinGroupCodeInput.value.trim().toUpperCase();
+      if (!code) return;
+      const groups = getChatGroups();
+      const target = groups.find(g => (g.code || '').toUpperCase() === code);
+      if (!target) {
+        if (typeof playCyberFx === 'function') playCyberFx('denied');
+        alert(`Nessun gruppo trovato con codice ${code}.`);
+        return;
+      }
+      if (!target.members.some(m => m.toUpperCase() === player.callsign.toUpperCase())) {
+        target.members.push(player.callsign);
+        target.messages.push({ author: 'SISTEMA', text: `${player.callsign} è entrato nel gruppo.`, time: 'Adesso' });
+        saveChatGroups(groups);
+      }
+      activeGroupId = target.id;
+      joinGroupForm.reset();
+      joinGroupForm.classList.add('hidden');
+      renderGroupsUI();
+      renderChat();
+      if (typeof playCyberFx === 'function') playCyberFx('success');
+    });
+  }
+
+  if (leaveGroupBtn) {
+    leaveGroupBtn.addEventListener('click', () => {
+      if (!activeGroupId) return;
+      const groups = getChatGroups();
+      const target = groups.find(g => g.id === activeGroupId);
+      if (!target) return;
+      target.members = target.members.filter(m => m.toUpperCase() !== player.callsign.toUpperCase());
+      target.messages.push({ author: 'SISTEMA', text: `${player.callsign} ha lasciato il gruppo.`, time: 'Adesso' });
+      saveChatGroups(groups);
+      activeGroupId = '';
+      renderGroupsUI();
+      renderChat();
+      playCyberSound(360, 'triangle', 0.05);
+    });
+  }
+
   if (chatSendForm && chatTextInput) {
     chatSendForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1403,15 +1640,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      const recipient = (currentChatChannel === 'direct' && dmRecipientSelect) ? ` -> ${dmRecipientSelect.value}` : '';
 
-      if (!player.chatMessages[currentChatChannel]) player.chatMessages[currentChatChannel] = [];
-      player.chatMessages[currentChatChannel].push({
-        author: player.callsign + recipient,
-        text: text,
-        time: timeStr
-      });
-      savePlayerState(player);
+      if (currentChatChannel === 'groups') {
+        const groups = getChatGroups();
+        const target = groups.find(g => g.id === activeGroupId);
+        if (!target) return;
+        target.messages.push({
+          author: player.callsign,
+          text,
+          time: timeStr
+        });
+        saveChatGroups(groups);
+      } else {
+        const recipient = (currentChatChannel === 'direct' && dmRecipientSelect) ? ` -> ${dmRecipientSelect.value}` : '';
+        if (!player.chatMessages[currentChatChannel]) player.chatMessages[currentChatChannel] = [];
+        player.chatMessages[currentChatChannel].push({
+          author: player.callsign + recipient,
+          text: text,
+          time: timeStr
+        });
+        savePlayerState(player);
+      }
+
       chatTextInput.value = '';
       renderChat();
       playCyberSound(620, 'square', 0.05);
@@ -2114,6 +2364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     savePlayerState(player);
     renderRamUI();
     renderSocialFeed();
+    if (typeof renderGroupsUI === 'function') renderGroupsUI();
     renderChat();
     if (typeof syncAuthMenuUI === 'function') syncAuthMenuUI();
     closeLoginModal();
