@@ -893,8 +893,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cyberware: { tab: 'profile', anchor: 'sec-cyberware' },
     cyberdeck: { tab: 'profile', anchor: 'sec-deck' },
     wallet: { tab: 'profile', anchor: 'sec-wallet' },
-    mappa: { tab: 'map', anchor: null },
-    map: { tab: 'map', anchor: null },
     profile: { tab: 'profile', anchor: null },
     comm: { tab: 'net', anchor: 'sec-chat' }
   };
@@ -964,7 +962,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     playCyberSound(450, 'triangle', 0.05);
 
-    if (['net', 'profile', 'map'].includes(effectiveTab) && !getActiveSessionId() && typeof openLoginModal === 'function') {
+    if (['net', 'profile'].includes(effectiveTab) && !getActiveSessionId() && typeof openLoginModal === 'function') {
       openLoginModal(false);
     }
   }
