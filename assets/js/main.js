@@ -736,6 +736,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const appTabs = document.querySelectorAll('.app-tab');
 
   const SECTION_ROUTES = {
+    dossier: { tab: 'profile', anchor: 'sec-scheda' },
+    biomonitor: { tab: 'profile', anchor: 'sec-biomonitor' },
+    cyberware: { tab: 'profile', anchor: 'sec-cyberware' },
     cyberdeck: { tab: 'profile', anchor: 'sec-deck' },
     wallet: { tab: 'profile', anchor: 'sec-wallet' },
     profile: { tab: 'profile', anchor: null },
@@ -767,7 +770,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Desktop Nav
     document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
-      if (btn.getAttribute('data-tab') === effectiveTab) {
+      const btnTab = btn.getAttribute('data-tab');
+      const isSectionTrigger = Boolean(SECTION_ROUTES[btnTab] && SECTION_ROUTES[btnTab].anchor);
+      const isActive = isSectionTrigger ? (btnTab === tabId) : (btnTab === effectiveTab);
+      if (isActive) {
         btn.classList.add('font-bold');
         if (isAuthenticated) {
           btn.classList.add('ingame-nav-active', 'text-white');
