@@ -2855,7 +2855,66 @@ document.addEventListener('DOMContentLoaded', () => {
     purple: { label: 'OS // SYNTHWAVE', metaBg: '#07040C' }
   };
 
+  let matrixRainTimer = null;
+  let matrixRainColor = '#00FF66';
+
+  function startMatrixRain(colorHex) {
+    matrixRainColor = colorHex || '#00FF66';
+    const canvas = document.getElementById('matrix-rain-canvas');
+    if (!canvas || matrixRainTimer) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const chars = '0123456789ABCDEF$#@*アイウエオカキクケコサシスセソタチツテト';
+    const fontSize = 14;
+    let drops = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const cols = Math.max(1, Math.floor(canvas.width / fontSize));
+      drops = Array.from({ length: cols }, () => Math.floor(Math.random() * -30));
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    canvas._matrixResize = resize;
+
+    matrixRainTimer = setInterval(() => {
+      ctx.fillStyle = 'rgba(2, 6, 4, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = matrixRainColor;
+      ctx.font = `${fontSize}px monospace`;
+      for (let i = 0; i < drops.length; i++) {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(ch, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }, 55);
+  }
+
+  function stopMatrixRain() {
+    if (matrixRainTimer) {
+      clearInterval(matrixRainTimer);
+      matrixRainTimer = null;
+    }
+    const canvas = document.getElementById('matrix-rain-canvas');
+    if (canvas && canvas._matrixResize) {
+      window.removeEventListener('resize', canvas._matrixResize);
+      delete canvas._matrixResize;
+    }
+  }
+
   function applyInGameTheme(isAuthenticated, runner) {
+    const matrixPalette = {
+      orange: '#00FF66',
+      cyan: '#00F5D4',
+      green: '#00FF66',
+      red: '#FF2A6D',
+      purple: '#C77DFF'
+    };
     if (isAuthenticated) {
       const rawTheme = (runner && runner.themeColor) ? String(runner.themeColor).toLowerCase() : 'orange';
       const themeKey = PG_THEMES[rawTheme] ? rawTheme : 'orange';
@@ -2867,10 +2926,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ingameOsLabel.textContent = callsign ? `${callsign} • ${themeCfg.label}` : themeCfg.label;
       }
       if (themeColorMeta) themeColorMeta.setAttribute('content', themeCfg.metaBg);
+      startMatrixRain(matrixPalette[themeKey] || '#00FF66');
     } else {
       document.body.classList.remove('ingame-mode');
       document.body.removeAttribute('data-pg-theme');
       if (themeColorMeta) themeColorMeta.setAttribute('content', '#04060A');
+      stopMatrixRain();
     }
   }
 
