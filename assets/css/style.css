@@ -532,3 +532,75 @@ body.ingame-mode #sec-cyberware .cyberware-slot:hover {
   border-color: var(--pg-accent);
   background: rgba(var(--pg-accent-rgb), 0.12) !important;
 }
+
+/* Luminous CRT Phosphor Zones (In-Game Focal Highlights) */
+body.ingame-mode #sec-scheda,
+body.ingame-mode #sec-role-console,
+body.ingame-mode #sec-wallet .cyber-panel {
+  box-shadow:
+    inset 0 0 32px rgba(var(--pg-accent-rgb), 0.1),
+    0 0 18px rgba(var(--pg-accent-rgb), 0.12) !important;
+}
+
+/* Glowing Avatar & QR Sub-Screen */
+body.ingame-mode #card-avatar-frame,
+body.ingame-mode #sheet-qr-container {
+  box-shadow: 0 0 16px rgba(var(--pg-accent-rgb), 0.28);
+  border-color: rgba(var(--pg-accent-rgb), 0.75) !important;
+}
+
+/* Luminous Wallet Balance Readout */
+body.ingame-mode #wallet-balance-display {
+  color: var(--pg-accent) !important;
+  text-shadow: 0 0 14px rgba(var(--pg-accent-rgb), 0.65), 0 0 28px rgba(var(--pg-accent-rgb), 0.25);
+}
+
+/* Illuminated Biometric Scan & Kiroshi Scanner Monitors */
+body.ingame-mode img[alt="Cyberware Anatomy Scan"] {
+  opacity: 0.96;
+}
+
+body.ingame-mode #sec-cyberware .min-h-\[380px\],
+body.ingame-mode #sec-deck #qr-reader,
+body.ingame-mode #sec-deck #camera-placeholder {
+  box-shadow:
+    inset 0 0 34px rgba(var(--pg-accent-rgb), 0.18),
+    0 0 16px rgba(var(--pg-accent-rgb), 0.14);
+}
+
+body.ingame-mode #sec-cyberware .min-h-\[380px\] {
+  border-color: rgba(var(--pg-accent-rgb), 0.75) !important;
+  background: radial-gradient(circle at center, rgba(var(--pg-accent-rgb), 0.16) 0%, #020804 75%) !important;
+}
+
+/* Luminous Active Role Monitor Panels (Bioreactor Vats, Subjects, Ripper Monitor, Fixer Chat) */
+body.ingame-mode #sec-role-console {
+  border-color: rgba(var(--pg-accent-rgb), 0.75) !important;
+  background:
+    radial-gradient(ellipse at top right, rgba(var(--pg-accent-rgb), 0.14) 0%, transparent 55%),
+    var(--pg-panel) !important;
+}
+
+body.ingame-mode #chem-vats-grid > div,
+body.ingame-mode #chem-subjects-grid > div,
+body.ingame-mode #netrunner-nodes-grid > div,
+body.ingame-mode #role-panel-ripperdoc .md\:col-span-7 {
+  box-shadow:
+    inset 0 0 20px rgba(var(--pg-accent-rgb), 0.1),
+    0 0 10px rgba(var(--pg-accent-rgb), 0.08);
+}
+
+/* Luminous Active Chat & Feed Header */
+body.ingame-mode .chat-channel-btn.active,
+body.ingame-mode .feed-filter-btn.active {
+  background-color: rgba(var(--pg-accent-rgb), 0.24) !important;
+  border-color: var(--pg-accent) !important;
+  color: var(--pg-accent) !important;
+  box-shadow: 0 0 14px rgba(var(--pg-accent-rgb), 0.35);
+}
+
+body.ingame-mode #tab-net .cyber-panel {
+  box-shadow:
+    inset 0 0 24px rgba(var(--pg-accent-rgb), 0.09),
+    0 0 14px rgba(var(--pg-accent-rgb), 0.09) !important;
+}
