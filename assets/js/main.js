@@ -253,11 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
     { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', playerName: 'Valerio', playerSurname: 'Rinaldi', email: 'v.solo@dive.larp', playerContact: '+39 340 784 2019', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 8, ramMax: 8, ice: true },
     { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', playerName: 'Elena', playerSurname: 'Moretti', email: 'kuro.04@dive.larp', playerContact: '+39 349 410 9044', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 8, ramMax: 8, ice: false },
     { callsign: '@Doc_Chrome', role: 'TECHIE // RIPPERDOC', secretId: '#D-5510', pin: '1234', playerName: 'Lorenzo', playerSurname: 'De Luca', email: 'doc.chrome@dive.larp', playerContact: '+39 345 551 0088', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'red', hp: 100, psych: 15, fama: 4, wallet: 2200, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@The_Fixer', role: 'FIXER // BROKER', secretId: '#F-3088', pin: '1234', playerName: 'Giulia', playerSurname: 'Sartori', email: 'the.fixer@dive.larp', playerContact: '+39 348 308 8120', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 5, fama: 5, wallet: 4800, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Dr_Vex', role: 'CHIMICO // BIOTECH', secretId: '#B-6420', pin: '1234', playerName: 'Chiara', playerSurname: 'Valenti', email: 'dr.vex@dive.larp', playerContact: '+39 342 642 0199', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'green', hp: 100, psych: 20, fama: 3, wallet: 1750, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'green', hp: 55, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: false, traumas: [{ name: 'Frattura Avambraccio', desc: 'Riduce stabilità arma secondaria.' }] },
-    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 8, ramMax: 8, ice: false }
+    { callsign: '@The_Fixer', role: 'FIXER // BROKER', secretId: '#F-3088', pin: '1234', playerName: 'Giulia', playerSurname: 'Sartori', email: 'the.fixer@dive.larp', playerContact: '+39 348 308 8120', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'orange', hp: 100, psych: 5, fama: 5, wallet: 4800, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Dr_Vex', role: 'CHIMICO // BIOTECH', secretId: '#B-6420', pin: '1234', playerName: 'Chiara', playerSurname: 'Valenti', email: 'dr.vex@dive.larp', playerContact: '+39 342 642 0199', avatar: 'assets/images/avatars/pg-5.jpg', themeColor: 'green', hp: 100, psych: 20, fama: 3, wallet: 1750, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-6.jpg', themeColor: 'green', hp: 55, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: false, traumas: [{ name: 'Frattura Avambraccio', desc: 'Riduce stabilità arma secondaria.' }] },
+    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245', avatar: 'assets/images/avatars/pg-7.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 8, ramMax: 8, ice: true },
+    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410', avatar: 'assets/images/avatars/pg-8.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 8, ramMax: 8, ice: false }
   ];
 
   const ACCOUNTS_STORAGE_KEY = 'dive_accounts_v1';
@@ -2678,7 +2678,11 @@ document.addEventListener('DOMContentLoaded', () => {
         'assets/images/avatars/pg-1.jpg',
         'assets/images/avatars/pg-2.jpg',
         'assets/images/avatars/pg-3.jpg',
-        'assets/images/avatars/pg-4.jpg'
+        'assets/images/avatars/pg-4.jpg',
+        'assets/images/avatars/pg-5.jpg',
+        'assets/images/avatars/pg-6.jpg',
+        'assets/images/avatars/pg-7.jpg',
+        'assets/images/avatars/pg-8.jpg'
       ];
       const prefix = callsign.replace('@', '').charAt(0).toUpperCase() || 'X';
       const num = Math.floor(1000 + Math.random() * 9000);
