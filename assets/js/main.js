@@ -2862,10 +2862,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let matrixRainTimer = null;
-  let matrixRainColor = '#00FF66';
+  let matrixRainColor = '#10B981';
 
   function startMatrixRain(colorHex) {
-    matrixRainColor = colorHex || '#00FF66';
+    matrixRainColor = colorHex || '#10B981';
     const canvas = document.getElementById('matrix-rain-canvas');
     if (!canvas || matrixRainTimer) return;
     const ctx = canvas.getContext('2d');
@@ -2915,9 +2915,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyInGameTheme(isAuthenticated, runner) {
     const matrixPalette = {
-      orange: '#00FF66',
-      cyan: '#00F5D4',
-      green: '#00FF66',
+      orange: '#10B981',
+      cyan: '#00E5FF',
+      green: '#10B981',
       red: '#FF2A6D',
       purple: '#C77DFF'
     };
@@ -2932,7 +2932,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ingameOsLabel.textContent = callsign ? `${callsign} • ${themeCfg.label}` : themeCfg.label;
       }
       if (themeColorMeta) themeColorMeta.setAttribute('content', themeCfg.metaBg);
-      startMatrixRain(matrixPalette[themeKey] || '#00FF66');
+      startMatrixRain(matrixPalette[themeKey] || '#10B981');
     } else {
       document.body.classList.remove('ingame-mode');
       document.body.removeAttribute('data-pg-theme');
