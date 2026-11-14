@@ -336,6 +336,112 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const CYBERWARE_LEFT_SLOTS = [
+    'CORTECCIA FRONTALE',
+    'SISTEMA OCULARE',
+    'SISTEMA CIRCOLATORIO',
+    'SISTEMA IMMUNITARIO',
+    'SISTEMA NERVOSO',
+    'SISTEMA TEGUMENTARIO'
+  ];
+
+  const CYBERWARE_RIGHT_SLOTS = [
+    'SISTEMA OPERATIVO',
+    'SCHELETRO',
+    'MANI',
+    'BRACCIA',
+    'GAMBE'
+  ];
+
+  const CYBERWARE_BY_PG = {
+    '#V-7842': {
+      'SISTEMA OCULARE': { name: 'OTTICHE KIROSHI', tag: 'TIER 2', desc: 'Scansione ottica QR di scena e schede runner.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'cyan' },
+      'SISTEMA NERVOSO': { name: 'GHOST PROTOCOL', tag: 'MEDIA', desc: 'Leak anonimi e moderazione feed The Net.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple' },
+      'SISTEMA TEGUMENTARIO': { name: 'ARMATURA SUBDERMICA', tag: 'PASSIVO', desc: 'Nanotubi di carbonio contro danni e traumi.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange' },
+      'SISTEMA OPERATIVO': { name: 'CYBERDECK PARALINE', tag: 'DECK OS', desc: 'Comandi rapidi 5s (Override) e violazione ICE.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' }
+    },
+    '#K-4109': {
+      'CORTECCIA FRONTALE': { name: 'SELF-ICE NEURALE', tag: 'NET', desc: 'Schermatura sinaptica contro contro-attacchi ICE.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
+      'SISTEMA OCULARE': { name: 'OTTICHE KIROSHI ORACLE', tag: 'TIER 3', desc: 'Decodifica flussi dati e nodi nascosti in AR.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'cyan' },
+      'SISTEMA CIRCOLATORIO': { name: 'BIOMONITOR OVERCLOCK', tag: 'BOOST', desc: 'Raffreddamento rapido RAM durante breach complessi.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'cyan' },
+      'SISTEMA NERVOSO': { name: 'GHOST PROTOCOL V2', tag: 'STEALTH', desc: 'Occultamento tracce e spoofing indirizzo rete.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple' },
+      'SISTEMA OPERATIVO': { name: 'NETWATCH NETDRIVER', tag: 'MK.5', desc: 'Suite di intrusione profonda e controllo daemons.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' }
+    },
+    '#R-9921': {
+      'SISTEMA OCULARE': { name: 'VISORE NOMAD', tag: 'TIER 1', desc: 'Telemetria termica e lettura tracce in esterna.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'green' },
+      'SISTEMA IMMUNITARIO': { name: 'FILTRO TOSSINE', tag: 'BIO', desc: 'Neutralizza gas, scorie e stimolanti sintetici.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green' },
+      'SISTEMA TEGUMENTARIO': { name: 'PLACCATURA KEVLAR', tag: 'PASSIVO', desc: 'Rinforzo dermico anti-taglio e urti da strada.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green' },
+      'GAMBE': { name: 'TENDINI RINFORZATI', tag: 'MOBILITÀ', desc: 'Scatto silenzioso e recupero rapido in fuga.', img: 'assets/images/implants/implant-ghost.jpg', color: 'green' }
+    },
+    '#C-0012': {
+      'CORTECCIA FRONTALE': { name: 'LIMITATORE DOLORE', tag: 'COMBAT', desc: 'Ignora penalità critiche finché resta HP > 10%.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red' },
+      'SISTEMA OCULARE': { name: 'OTTICHE MAELSTROM', tag: 'MIL-SPEC', desc: 'Puntamento multi-bersaglio ad alta frequenza.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'red' },
+      'SISTEMA CIRCOLATORIO': { name: 'POMPA ADRENALINA', tag: 'COMBAT', desc: 'Scarica immediata all’attivazione dello scontro.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red' },
+      'SISTEMA TEGUMENTARIO': { name: 'CORAZZA SUBDERMICA MK.4', tag: 'HEAVY', desc: 'Scaglie composite balistiche sottoepidermiche.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red' },
+      'SISTEMA OPERATIVO': { name: 'SANDEVISTAN MILITECH', tag: 'SANDY', desc: 'Accelerazione riflessi e finestra tattica 5s.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'red' },
+      'BRACCIA': { name: 'LAME MANTIDE', tag: 'MELEE', desc: 'Lame retrattili ad alta vibrazione negli avambracci.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red' }
+    },
+    '#M-3384': {
+      'CORTECCIA FRONTALE': { name: 'MEMORIA OLOGRAFICA', tag: 'REC', desc: 'Registrazione audio/video criptata di ogni scena.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' },
+      'SISTEMA OCULARE': { name: 'OTTICHE BROADCAST 8K', tag: 'STREAM', desc: 'Diretta live su The Net con zoom ottico.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'purple' },
+      'SISTEMA NERVOSO': { name: 'GHOST PROTOCOL LEAK', tag: 'MEDIA', desc: 'Pubblicazione anonima e protezione fonti.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple' },
+      'SISTEMA OPERATIVO': { name: 'CYBERDECK SIGNAL', tag: 'DECK', desc: 'Relay satellitare portatile anti-jamming.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' }
+    }
+  };
+
+  function renderCyberwareSlotHTML(slotName, implant, emptyAccent) {
+    if (!implant) {
+      return `
+        <div class="px-2.5 py-2 bg-[#04060A]/80 border border-dashed border-dive-${emptyAccent}/30 flex items-center justify-between gap-2 font-mono rounded-sm">
+          <div>
+            <span class="text-[9px] text-dive-${emptyAccent} font-bold uppercase block">${slotName}</span>
+            <span class="text-[9px] text-slate-500">Slot libero</span>
+          </div>
+          <span class="w-6 h-6 border border-dive-${emptyAccent}/30 text-dive-${emptyAccent}/70 flex items-center justify-center text-xs">+</span>
+        </div>
+      `;
+    }
+    const c = implant.color || 'cyan';
+    const slotVariant = c === 'purple' ? 'cyberware-slot-purple' : (c === 'orange' ? 'cyberware-slot-orange' : (c === 'red' ? 'cyberware-slot-red' : ''));
+    return `
+      <div class="cyberware-slot ${slotVariant} p-2.5 space-y-1">
+        <div class="flex items-center justify-between font-mono text-[9px]">
+          <span class="text-dive-${c} font-bold uppercase">${slotName}</span>
+          <span class="text-slate-500">${implant.tag || 'ATTIVO'}</span>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 bg-black border border-dive-${c}/40 flex-shrink-0 overflow-hidden">
+            <img src="${implant.img}" alt="${implant.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="min-w-0">
+            <h4 class="font-orbitron font-bold text-[11px] text-white leading-tight">${implant.name}</h4>
+            <p class="font-sans text-[10px] text-slate-400 leading-tight mt-0.5">${implant.desc}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCyberwareGrid(sheetData) {
+    const colLeft = document.getElementById('cyberware-col-left');
+    const colRight = document.getElementById('cyberware-col-right');
+    const countEl = document.getElementById('cyberware-slot-count');
+    if (!colLeft || !colRight) return;
+
+    const idKey = String((sheetData && sheetData.secretId) || '#V-7842').toUpperCase();
+    const loadout = (sheetData && sheetData.cyberware) || CYBERWARE_BY_PG[idKey] || {
+      'SISTEMA OCULARE': CYBERWARE_BY_PG['#V-7842']['SISTEMA OCULARE'],
+      'SISTEMA OPERATIVO': CYBERWARE_BY_PG['#V-7842']['SISTEMA OPERATIVO']
+    };
+    const emptyAccent = (sheetData && sheetData.themeColor) || 'purple';
+
+    colLeft.innerHTML = CYBERWARE_LEFT_SLOTS.map(slot => renderCyberwareSlotHTML(slot, loadout[slot], emptyAccent)).join('');
+    colRight.innerHTML = CYBERWARE_RIGHT_SLOTS.map(slot => renderCyberwareSlotHTML(slot, loadout[slot], emptyAccent)).join('');
+
+    const activeCount = [...CYBERWARE_LEFT_SLOTS, ...CYBERWARE_RIGHT_SLOTS].filter(slot => Boolean(loadout[slot])).length;
+    if (countEl) countEl.textContent = `${activeCount} / 11 SLOT ATTIVI`;
+  }
+
   function syncPlayerUI() {
     const sheetData = activeSheetRunner || player;
     const isViewingOther = Boolean(activeSheetRunner);
@@ -487,6 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderTransactions();
     renderPersonalQR(sheetData);
+    renderCyberwareGrid(sheetData);
     renderRosterSwitcher();
   }
 
