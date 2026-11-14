@@ -3762,8 +3762,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chemPathogenCount) chemPathogenCount.textContent = String(lab.pathogens);
     if (chemImmunoCount) chemImmunoCount.textContent = String(lab.immunoDoses);
 
-    chemVatsGrid.innerHTML = lab.vats.map(v => `
-      <div class="p-3 rounded-sm bg-[#04060A] border ${v.contam >= 30 ? 'border-dive-red/60' : 'border-dive-green/35'} space-y-2 font-mono">
+    const vatImages = [
+      'assets/images/biolab-vat-a.jpg',
+      'assets/images/biolab-vat-b.jpg',
+      'assets/images/biolab-vat-c.jpg'
+    ];
+    chemVatsGrid.innerHTML = lab.vats.map((v, idx) => `
+      <div class="p-3 rounded-sm bg-[#04060A] border ${v.contam >= 30 ? 'border-dive-red/60' : 'border-dive-cyan/35'} space-y-2 font-mono">
+        <div class="relative h-28 w-full rounded-sm overflow-hidden border border-white/10 bg-black">
+          <img src="${vatImages[idx % vatImages.length]}" alt="${escapeChatText(v.name)}" class="w-full h-full object-cover">
+          <div class="hud-scan-line"></div>
+        </div>
         <div class="text-[10px] font-bold text-white truncate">${escapeChatText(v.name)}</div>
         <div class="grid grid-cols-2 gap-1 text-[9px] text-slate-300">
           <span>TEMP: <strong class="text-dive-cyan">${v.temp.toFixed(1)}°C</strong></span>
