@@ -758,7 +758,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
 
           <!-- COLONNA SINISTRA: SCHEDA PG -->
           <div class="lg:col-span-8 flex flex-col gap-4 min-w-0">
@@ -1381,7 +1381,7 @@
                     <span>DATASHARD PAYLOG</span>
                   </div>
 
-                  <div id="transaction-history-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1 font-mono text-xs">
+                  <div id="transaction-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 font-mono text-xs">
                     <!-- Populated via JS -->
                   </div>
                 </div>
@@ -1389,9 +1389,9 @@
             </div>
 
         <!-- SEZIONE VERTICALE 4: CYBERDECK (SCANNER QR & OVERRIDE 5S) -->
-        <div id="sec-deck" class="scroll-mt-20 flex flex-col gap-3">
+        <div id="sec-deck" class="scroll-mt-20 flex-1 flex flex-col gap-3">
 
-      <div class="cyber-panel hud-bracket p-3.5 space-y-2.5">
+      <div class="cyber-panel hud-bracket p-3.5 flex-1 flex flex-col justify-between gap-3">
         <div class="space-y-2.5">
           <div class="pb-2 border-b border-white/10">
             <div class="text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-0.5">
@@ -1416,7 +1416,7 @@
             <span class="flex items-center gap-1.5 text-dive-orange font-semibold"><span class="w-2 h-2 rounded-full bg-dive-orange"></span> Player</span>
           </div>
 
-          <div class="relative w-full h-28 rounded-sm overflow-hidden bg-black border border-white/15 flex items-center justify-center">
+          <div class="relative w-full h-36 rounded-sm overflow-hidden bg-black border border-white/15 flex items-center justify-center">
             <div id="qr-reader" class="absolute inset-0 w-full h-full"></div>
             
             <div id="camera-placeholder" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 p-3 text-center">
