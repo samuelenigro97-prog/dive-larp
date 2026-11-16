@@ -780,33 +780,35 @@
           <div class="flex items-center justify-between gap-2.5 sm:gap-4">
             
             <!-- Dati Anagrafici PG -->
-            <div class="flex items-center gap-2.5 sm:gap-3.5 flex-1 min-w-0">
-              <div id="card-avatar-frame" class="cyber-panel relative w-16 h-20 sm:w-20 sm:h-24 overflow-hidden border border-dive-orange/60 bg-black flex-shrink-0">
-                <img id="card-avatar-img" src="assets/images/avatars/pg-1.jpg" alt="Avatar PG" class="w-full h-full object-cover contrast-110 saturate-110">
-                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
-                <div class="pointer-events-none absolute bottom-1 left-1 right-1 flex items-center justify-between font-mono text-[7px] text-white/80">
-                  <span>RUNNER</span>
-                  <span id="card-avatar-tag" class="text-dive-orange font-bold">SOLO</span>
+            <div class="flex-1 min-w-0 space-y-1">
+              <span class="font-mono text-[9px] text-slate-400 uppercase block">IDENTIFICATIVO RUNNER</span>
+              <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+                <div id="card-avatar-frame" class="cyber-panel relative w-16 h-20 sm:w-20 sm:h-24 overflow-hidden border border-dive-orange/60 bg-black flex-shrink-0">
+                  <img id="card-avatar-img" src="assets/images/avatars/pg-1.jpg" alt="Avatar PG" class="w-full h-full object-cover contrast-110 saturate-110">
+                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+                  <div class="pointer-events-none absolute bottom-1 left-1 right-1 flex items-center justify-between font-mono text-[7px] text-white/80">
+                    <span>RUNNER</span>
+                    <span id="card-avatar-tag" class="text-dive-orange font-bold">SOLO</span>
+                  </div>
                 </div>
-              </div>
-              <div class="flex-1 min-w-0 space-y-0.5">
-                <span class="font-mono text-[9px] text-slate-400 uppercase block">IDENTIFICATIVO RUNNER</span>
-                <h3 id="card-callsign" class="font-orbitron font-black text-base sm:text-xl text-white truncate">@V_Solo</h3>
-                <span id="card-role" class="font-mono text-[10px] sm:text-[11px] text-dive-orange font-bold block truncate">MERCENARIO // SOLO</span>
-                <div class="pt-1 flex flex-wrap items-center gap-1 font-mono text-[9px] sm:text-[10px]">
-                  <button id="card-secret-id-btn" type="button" aria-expanded="false" aria-controls="participant-intro-box" title="Clicca per mostrare o nascondere i dati personali" class="px-1.5 py-0.5 bg-black border border-dive-cyan/40 text-dive-cyan font-bold hover:border-dive-cyan hover:bg-dive-cyan/10 transition-colors cursor-pointer inline-flex items-center gap-1">
-                    <span>ID: <span id="card-secret-id">#V-7842</span></span>
-                    <span id="card-secret-id-chevron" class="text-[9px] opacity-80" aria-hidden="true">▾</span>
-                  </button>
-                  <span class="px-1.5 py-0.5 bg-black border border-white/15 text-dive-orange font-bold">
-                    FAMA 3/5
-                  </span>
-                  <span id="player-ice-status" class="px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold">
-                    ICE ATTIVO (1 HIT)
-                  </span>
-                  <span id="card-immersion-badge" class="px-1.5 py-0.5 bg-black border border-blue-500/50 text-blue-400 font-bold" title="Livello immersivo psicologico della scheda">
-                    潜る MEDIO
-                  </span>
+                <div class="flex-1 min-w-0 space-y-0.5">
+                  <h3 id="card-callsign" class="font-orbitron font-black text-base sm:text-xl text-white truncate">@V_Solo</h3>
+                  <span id="card-role" class="font-mono text-[10px] sm:text-[11px] text-dive-orange font-bold block truncate">MERCENARIO // SOLO</span>
+                  <div class="pt-1 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1 font-mono text-[9px] sm:text-[10px]">
+                    <button id="card-secret-id-btn" type="button" aria-expanded="false" aria-controls="participant-intro-box" title="Clicca per mostrare o nascondere i dati personali" class="px-1.5 py-0.5 bg-black border border-dive-cyan/40 text-dive-cyan font-bold hover:border-dive-cyan hover:bg-dive-cyan/10 transition-colors cursor-pointer inline-flex items-center justify-center sm:justify-start gap-1 truncate">
+                      <span class="truncate">ID: <span id="card-secret-id">#V-7842</span></span>
+                      <span id="card-secret-id-chevron" class="text-[9px] opacity-80 flex-shrink-0" aria-hidden="true">▾</span>
+                    </button>
+                    <span class="px-1.5 py-0.5 bg-black border border-white/15 text-dive-orange font-bold text-center sm:text-left truncate">
+                      FAMA 3/5
+                    </span>
+                    <span id="player-ice-status" class="px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold text-center sm:text-left truncate">
+                      ICE ATTIVO (1 HIT)
+                    </span>
+                    <span id="card-immersion-badge" class="px-1.5 py-0.5 bg-black border border-blue-500/50 text-blue-400 font-bold text-center sm:text-left truncate" title="Livello immersivo psicologico della scheda">
+                      潜る MEDIO
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
