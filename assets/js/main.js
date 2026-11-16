@@ -3319,12 +3319,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function syncAuthMenuUI() {
     const isAuthenticated = Boolean(getActiveSessionId());
+    const loginMenuPgIcon = document.getElementById('login-menu-pg-icon');
     if (loginMenuToggleLabel) {
       loginMenuToggleLabel.textContent = isAuthenticated ? player.callsign : 'LOGIN';
+      loginMenuToggleLabel.classList.toggle('hidden', isAuthenticated);
+    }
+    if (loginMenuPgIcon) {
+      loginMenuPgIcon.classList.toggle('hidden', !isAuthenticated);
     }
     if (loginMenuToggle) {
       loginMenuToggle.setAttribute('aria-haspopup', isAuthenticated ? 'false' : 'true');
-      loginMenuToggle.setAttribute('title', isAuthenticated ? 'Vai alla Scheda PG' : 'Accedi al terminale');
+      loginMenuToggle.setAttribute('title', isAuthenticated ? `${player.callsign} — Vai alla Scheda PG` : 'Accedi al terminale');
+      loginMenuToggle.setAttribute('aria-label', isAuthenticated ? `${player.callsign} — Vai alla Scheda PG` : 'Accedi al terminale');
+      loginMenuToggle.classList.toggle('w-8', isAuthenticated);
+      loginMenuToggle.classList.toggle('h-8', isAuthenticated);
+      loginMenuToggle.classList.toggle('px-3.5', !isAuthenticated);
+      loginMenuToggle.classList.toggle('py-1.5', !isAuthenticated);
     }
     if (loginMenuChevron) {
       loginMenuChevron.classList.toggle('hidden', isAuthenticated);
