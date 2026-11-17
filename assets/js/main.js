@@ -2947,51 +2947,136 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (adminAddPsych) {
-    adminAddPsych.addEventListener('click', () => {
-      player.psych = Math.min(100, (player.psych || 0) + 15);
-      savePlayerState(player);
-      playCyberSound(300, 'sawtooth', 0.1);
+  const adminTargetSelect = document.getElementById('admin-target-pg-select');
+  const adminTargetSummary = document.getElementById('admin-target-stats-summary');
+  const adminCustomMoneyIn = document.getElementById('admin-custom-money');
+  const adminCustomPsychIn = document.getElementById('admin-custom-psych');
+  const adminCustomHpIn = document.getElementById('admin-custom-hp');
+  let selectedAdminTargetSid = (player && player.secretId) || '#V-7842';
+
+  function syncAdminTargetUI() {
+    const roster = getAccountsRegistry();
+    if (!roster.length) return;
+    if (!roster.some(r => (r.secretId || '').toUpperCase() === selectedAdminTargetSid.toUpperCase())) {
+      selectedAdminTargetSid = roster[0].secretId;
+    }
+    if (adminTargetSelect) {
+      adminTargetSelect.innerHTML = roster.map(r =>
+        `<option value="${r.secretId}">${r.callsign} (${r.secretId})</option>`
+      ).join('');
+      adminTargetSelect.value = selectedAdminTargetSid;
+    }
+    const target = roster.find(r => (r.secretId || '').toUpperCase() === selectedAdminTargetSid.toUpperCase());
+    if (target && adminTargetSummary) {
+      adminTargetSummary.textContent = `HP: ${target.hp}% · PSICOSI: ${target.psych}% · €$: ${(target.wallet || 0).toLocaleString()} · ICE: ${target.iceActive ? 'ON' : 'OFF'}`;
+    }
+    if (target && adminToggleIce) {
+      adminToggleIce.textContent = target.iceActive ? 'ICE: ON (DISATTIVA)' : 'ICE: OFF (ATTIVA)';
+    }
+  }
+
+  function applyAdminIntervention(updaterFn, soundFreq = 680) {
+    const accounts = getAccountsRegistry();
+    const sid = (adminTargetSelect ? adminTargetSelect.value : selectedAdminTargetSid).toUpperCase();
+    const idx = accounts.findIndex(a => (a.secretId || '').toUpperCase() === sid);
+    if (idx < 0) return;
+
+    const target = accounts[idx];
+    updaterFn(target);
+    accounts[idx] = normalizeAccount(target);
+    saveAccountsRegistry(accounts);
+    if ((player.secretId || '').toUpperCase() === sid) {
+      player = accounts[idx];
+      localStorage.setItem('dive_player_state_v2', JSON.stringify(player));
+      syncPlayerUI();
+    }
+    renderAdminRoster();
+    playCyberSound(soundFreq, 'sine', 0.1);
+  }
+
+  if (adminTargetSelect) {
+    adminTargetSelect.addEventListener('change', () => {
+      selectedAdminTargetSid = adminTargetSelect.value;
+      syncAdminTargetUI();
+      renderAdminRoster();
     });
   }
 
-  if (adminRemPsych) {
-    adminRemPsych.addEventListener('click', () => {
-      player.psych = Math.max(0, (player.psych || 0) - 15);
-      savePlayerState(player);
-      playCyberSound(600, 'sine', 0.1);
+  const adminMoneyAddBtn = document.getElementById('admin-custom-money-add');
+  const adminMoneySubBtn = document.getElementById('admin-custom-money-sub');
+  const adminPsychAddBtn = document.getElementById('admin-custom-psych-add');
+  const adminPsychSubBtn = document.getElementById('admin-custom-psych-sub');
+  const adminHpSetBtn = document.getElementById('admin-custom-hp-set');
+  const adminHealBtn = document.getElementById('admin-custom-heal');
+
+  if (adminMoneyAddBtn) {
+    adminMoneyAddBtn.addEventListener('click', () => {
+      const amt = Math.max(1, parseInt(adminCustomMoneyIn?.value || '0', 10) || 0);
+      if (!amt) return;
+      applyAdminIntervention((t) => {
+        t.wallet = (t.wallet || 0) + amt;
+        t.transactions = Array.isArray(t.transactions) ? t.transactions : [];
+        t.transactions.unshift({ id: 'tx_' + Date.now(), type: 'in', desc: 'Accredito Regia Master', amount: amt, time: 'Adesso' });
+      }, 880);
     });
   }
 
-  if (adminAddMoney) {
-    adminAddMoney.addEventListener('click', () => {
-      player.wallet += 200;
-      player.transactions.unshift({
-        id: 'tx_' + Date.now(),
-        type: 'in',
-        desc: 'Accredito speciale Regia / Media Sponsor',
-        amount: 200,
-        time: 'Adesso'
-      });
-      savePlayerState(player);
-      playCyberSound(880, 'sine', 0.1);
+  if (adminMoneySubBtn) {
+    adminMoneySubBtn.addEventListener('click', () => {
+      const amt = Math.max(1, parseInt(adminCustomMoneyIn?.value || '0', 10) || 0);
+      if (!amt) return;
+      applyAdminIntervention((t) => {
+        t.wallet = Math.max(0, (t.wallet || 0) - amt);
+        t.transactions = Array.isArray(t.transactions) ? t.transactions : [];
+        t.transactions.unshift({ id: 'tx_' + Date.now(), type: 'out', desc: 'Addebito Regia Master', amount: amt, time: 'Adesso' });
+      }, 420);
+    });
+  }
+
+  if (adminPsychAddBtn) {
+    adminPsychAddBtn.addEventListener('click', () => {
+      const val = Math.max(1, parseInt(adminCustomPsychIn?.value || '0', 10) || 0);
+      if (!val) return;
+      applyAdminIntervention((t) => { t.psych = Math.min(100, (t.psych || 0) + val); }, 300);
+    });
+  }
+
+  if (adminPsychSubBtn) {
+    adminPsychSubBtn.addEventListener('click', () => {
+      const val = Math.max(1, parseInt(adminCustomPsychIn?.value || '0', 10) || 0);
+      if (!val) return;
+      applyAdminIntervention((t) => { t.psych = Math.max(0, (t.psych || 0) - val); }, 600);
+    });
+  }
+
+  if (adminHpSetBtn) {
+    adminHpSetBtn.addEventListener('click', () => {
+      const hpVal = Math.min(100, Math.max(0, parseInt(adminCustomHpIn?.value ?? '100', 10) || 0));
+      applyAdminIntervention((t) => { t.hp = hpVal; }, 650);
+    });
+  }
+
+  if (adminHealBtn) {
+    adminHealBtn.addEventListener('click', () => {
+      applyAdminIntervention((t) => { t.hp = 100; t.traumas = []; }, 780);
     });
   }
 
   if (adminToggleIce) {
     adminToggleIce.addEventListener('click', () => {
-      player.iceActive = !player.iceActive;
-      savePlayerState(player);
-      playCyberSound(player.iceActive ? 750 : 250, 'square', 0.1);
+      applyAdminIntervention((t) => { t.iceActive = !t.iceActive; }, 750);
     });
   }
 
   function renderAdminRoster() {
+    syncAdminTargetUI();
     if (!adminRosterTbody) return;
     const roster = getAccountsRegistry();
 
-    adminRosterTbody.innerHTML = roster.map(r => `
-      <tr class="hover:bg-white/5 transition-colors">
+    adminRosterTbody.innerHTML = roster.map(r => {
+      const isSelected = (r.secretId || '').toUpperCase() === selectedAdminTargetSid.toUpperCase();
+      return `
+      <tr class="hover:bg-white/5 transition-colors ${isSelected ? 'bg-dive-orange/10' : ''}">
         <td class="py-2.5 font-bold text-white whitespace-nowrap">${r.callsign}</td>
         <td class="py-2.5 text-slate-400 text-[11px] whitespace-nowrap">${r.role}</td>
         <td class="py-2.5 text-dive-cyan font-bold whitespace-nowrap">${r.secretId}</td>
@@ -3000,18 +3085,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <td class="py-2.5 text-dive-green whitespace-nowrap">€$ ${(r.wallet || 0).toLocaleString()}</td>
         <td class="py-2.5 font-bold whitespace-nowrap ${r.iceActive ? 'text-dive-green' : 'text-slate-500'}">${r.iceActive ? 'ON' : 'OFF'}</td>
         <td class="py-2.5 text-right whitespace-nowrap">
-          <div class="inline-flex items-center gap-1 font-mono text-[9px]">
-            <button type="button" data-admin-act="addMoney" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-green/15 border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black font-bold cursor-pointer">+200€$</button>
-            <button type="button" data-admin-act="remMoney" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/15 text-slate-300 hover:bg-white hover:text-black font-bold cursor-pointer">-200€$</button>
-            <button type="button" data-admin-act="addPsych" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-red/15 border border-dive-red/40 text-dive-red hover:bg-dive-red hover:text-white font-bold cursor-pointer">+15%Ps</button>
-            <button type="button" data-admin-act="remPsych" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/15 text-slate-300 hover:bg-white hover:text-black font-bold cursor-pointer">-15%Ps</button>
-            <button type="button" data-admin-act="heal" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-cyan/15 border border-dive-cyan/40 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold cursor-pointer">CURA</button>
-            <button type="button" data-admin-act="toggleIce" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-purple/15 border border-dive-purple/40 text-dive-purple hover:bg-dive-purple hover:text-black font-bold cursor-pointer">ICE</button>
+          <div class="inline-flex items-center gap-1.5 font-mono text-[9px]">
+            <button type="button" data-admin-act="selectPg" data-sid="${r.secretId}" class="px-2 py-0.5 rounded-sm ${isSelected ? 'bg-dive-orange text-black border border-dive-orange' : 'bg-white/5 border border-white/15 text-slate-300 hover:border-dive-orange hover:text-dive-orange'} font-bold uppercase cursor-pointer">${isSelected ? 'SELEZIONATO' : 'SELEZIONA'}</button>
             <button type="button" data-admin-act="deletePg" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-black border border-white/15 text-slate-400 hover:text-dive-red hover:border-dive-red/40 font-bold cursor-pointer" title="Elimina PG">×</button>
           </div>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }
 
   if (adminRosterTbody) {
@@ -3022,12 +3103,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const sid = (btn.getAttribute('data-sid') || '').toUpperCase();
       if (!sid) return;
 
-      const accounts = getAccountsRegistry();
-      const idx = accounts.findIndex(a => (a.secretId || '').toUpperCase() === sid);
-      if (idx < 0) return;
+      if (act === 'selectPg') {
+        selectedAdminTargetSid = sid;
+        renderAdminRoster();
+        if (adminTargetSelect) adminTargetSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
 
-      const target = accounts[idx];
       if (act === 'deletePg') {
+        const accounts = getAccountsRegistry();
+        const idx = accounts.findIndex(a => (a.secretId || '').toUpperCase() === sid);
+        if (idx < 0) return;
+        const target = accounts[idx];
         if ((player.secretId || '').toUpperCase() === sid) {
           alert('Non puoi eliminare il PG attualmente in uso.');
           return;
@@ -3037,37 +3124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAccountsRegistry(accounts);
         renderAdminRoster();
         playCyberSound(300, 'square', 0.1);
-        return;
       }
-
-      if (act === 'addMoney') {
-        target.wallet = (target.wallet || 0) + 200;
-        target.transactions = Array.isArray(target.transactions) ? target.transactions : [];
-        target.transactions.unshift({ id: 'tx_' + Date.now(), type: 'in', desc: 'Accredito Regia Master', amount: 200, time: 'Adesso' });
-      } else if (act === 'remMoney') {
-        target.wallet = Math.max(0, (target.wallet || 0) - 200);
-        target.transactions = Array.isArray(target.transactions) ? target.transactions : [];
-        target.transactions.unshift({ id: 'tx_' + Date.now(), type: 'out', desc: 'Addebito Regia Master', amount: 200, time: 'Adesso' });
-      } else if (act === 'addPsych') {
-        target.psych = Math.min(100, (target.psych || 0) + 15);
-      } else if (act === 'remPsych') {
-        target.psych = Math.max(0, (target.psych || 0) - 15);
-      } else if (act === 'heal') {
-        target.hp = 100;
-        target.traumas = [];
-      } else if (act === 'toggleIce') {
-        target.iceActive = !target.iceActive;
-      }
-
-      accounts[idx] = normalizeAccount(target);
-      saveAccountsRegistry(accounts);
-      if ((player.secretId || '').toUpperCase() === sid) {
-        player = accounts[idx];
-        localStorage.setItem('dive_player_state_v2', JSON.stringify(player));
-        syncPlayerUI();
-      }
-      renderAdminRoster();
-      playCyberSound(680, 'sine', 0.08);
     });
   }
 
