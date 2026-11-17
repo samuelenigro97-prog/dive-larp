@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dive-larp-pwa-v0.47.3';
+const CACHE_NAME = 'dive-larp-pwa-v0.48.0';
 const APP_SHELL = [
   './',
   './index.html',
