@@ -2770,7 +2770,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --------------------------------------------------------------------------
   // 13. Admin / Regia Master System (God Mode // PIN: 2077)
   // --------------------------------------------------------------------------
-  const openAdminPinBtn = document.getElementById('open-admin-pin-btn');
+  const appVersionBadge = document.getElementById('app-version-badge');
   const adminPinModal = document.getElementById('admin-pin-modal');
   const closeAdminPinBtn = document.getElementById('close-admin-pin-btn');
   const adminPinForm = document.getElementById('admin-pin-form');
@@ -2789,11 +2789,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminAddMoney = document.getElementById('admin-add-money');
   const adminToggleIce = document.getElementById('admin-toggle-ice');
 
-  if (openAdminPinBtn && adminPinModal) {
-    openAdminPinBtn.addEventListener('click', () => {
-      adminPinModal.classList.remove('hidden', 'pointer-events-none');
-      setTimeout(() => adminPinModal.classList.add('opacity-100'), 10);
-      if (adminPinInput) adminPinInput.focus();
+  if (appVersionBadge && adminPinModal) {
+    let versionTapCount = 0;
+    let versionTapTimer = null;
+    appVersionBadge.addEventListener('click', () => {
+      versionTapCount += 1;
+      clearTimeout(versionTapTimer);
+      if (versionTapCount >= 3) {
+        versionTapCount = 0;
+        adminPinModal.classList.remove('hidden', 'pointer-events-none');
+        setTimeout(() => adminPinModal.classList.add('opacity-100'), 10);
+        if (adminPinInput) adminPinInput.focus();
+      } else {
+        versionTapTimer = setTimeout(() => {
+          versionTapCount = 0;
+        }, 1200);
+      }
     });
   }
 
