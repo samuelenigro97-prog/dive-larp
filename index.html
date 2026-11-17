@@ -1621,7 +1621,8 @@
                 <th class="pb-2">HP</th>
                 <th class="pb-2">Psicosi</th>
                 <th class="pb-2">Eddies</th>
-                <th class="pb-2 text-right">ICE</th>
+                <th class="pb-2">ICE</th>
+                <th class="pb-2 text-right">Azioni PG</th>
               </tr>
             </thead>
             <tbody id="admin-roster-tbody" class="divide-y divide-white/5 font-mono">
@@ -1664,6 +1665,18 @@
             </button>
           </div>
         </form>
+
+        <div class="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2">
+          <span class="text-[10px] text-slate-400">Condividi il link di auto-configurazione ai giocatori così non devono inserire nulla a mano.</span>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="admin-force-pull-btn" type="button" class="px-3 py-1.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold text-[10px] uppercase transition-colors cursor-pointer">
+              SINCRONIZZA ORA
+            </button>
+            <button id="admin-copy-sync-link-btn" type="button" class="px-3 py-1.5 rounded-sm border border-dive-purple/40 bg-dive-purple/10 text-dive-purple hover:bg-dive-purple hover:text-black font-bold text-[10px] uppercase transition-colors cursor-pointer">
+              COPIA LINK SYNC GIOCATORI
+            </button>
+          </div>
+        </div>
       </div>
 
     </section>
