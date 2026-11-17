@@ -311,8 +311,44 @@ document.addEventListener('DOMContentLoaded', () => {
     return seeded;
   }
 
-  function saveAccountsRegistry(accounts) {
+  const BROADCAST_STORAGE_KEY = 'dive_broadcast_v1';
+  let lastCloudSyncedAt = 0;
+
+  function getBroadcastState() {
+    try {
+      const raw = localStorage.getItem(BROADCAST_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : { text: '', active: false, updatedAt: 0 };
+    } catch {
+      return { text: '', active: false, updatedAt: 0 };
+    }
+  }
+
+  function applyBroadcastUI(state) {
+    const banner = document.getElementById('global-broadcast-banner');
+    const textEl = document.getElementById('global-broadcast-text');
+    if (!banner || !textEl) return;
+    if (state && state.active && state.text) {
+      textEl.textContent = state.text;
+      banner.classList.remove('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
+  }
+
+  function saveBroadcastState(state) {
+    const next = {
+      text: String(state?.text || ''),
+      active: Boolean(state?.active),
+      updatedAt: state?.updatedAt || Date.now()
+    };
+    localStorage.setItem(BROADCAST_STORAGE_KEY, JSON.stringify(next));
+    applyBroadcastUI(next);
+    scheduleCloudPush();
+  }
+
+  function saveAccountsRegistry(accounts, skipPush = false) {
     localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
+    if (!skipPush) scheduleCloudPush();
   }
 
   function getActiveSessionId() {
@@ -347,12 +383,65 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!window.DiveSync || window.DiveSync.getConfig().mode === 'local') return;
     clearTimeout(syncPushTimeout);
     syncPushTimeout = setTimeout(() => {
+      const updatedAt = Date.now();
+      lastCloudSyncedAt = updatedAt;
       window.DiveSync.pushSharedState({
         accounts: getAccountsRegistry(),
         posts: typeof getSocialPosts === 'function' ? getSocialPosts() : [],
-        updatedAt: Date.now()
+        groups: typeof getChatGroups === 'function' ? getChatGroups() : [],
+        broadcast: getBroadcastState(),
+        updatedAt
       }).catch(err => console.warn('Cloud push error:', err));
     }, 300);
+  }
+
+  function applySharedState(remote) {
+    if (!remote || typeof remote !== 'object') return false;
+    const remoteTs = Number(remote.updatedAt || 0);
+    if (remoteTs && remoteTs <= lastCloudSyncedAt) return false;
+    lastCloudSyncedAt = remoteTs || Date.now();
+
+    if (Array.isArray(remote.accounts) && remote.accounts.length) {
+      const normalizedAccounts = remote.accounts.map(normalizeAccount);
+      saveAccountsRegistry(normalizedAccounts, true);
+      const currentSid = (getActiveSessionId() || player?.secretId || '').toUpperCase();
+      const updatedMe = normalizedAccounts.find(a => (a.secretId || '').toUpperCase() === currentSid);
+      if (updatedMe) {
+        player = updatedMe;
+        localStorage.setItem('dive_player_state_v2', JSON.stringify(player));
+      }
+    }
+
+    if (Array.isArray(remote.posts)) {
+      localStorage.setItem('dive_social_feed_posts_v3', JSON.stringify(remote.posts));
+    }
+
+    if (Array.isArray(remote.groups)) {
+      localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(remote.groups));
+    }
+
+    if (remote.broadcast && typeof remote.broadcast === 'object') {
+      localStorage.setItem(BROADCAST_STORAGE_KEY, JSON.stringify(remote.broadcast));
+      applyBroadcastUI(remote.broadcast);
+    }
+
+    if (typeof syncPlayerUI === 'function') syncPlayerUI();
+    if (typeof renderSocialFeed === 'function') renderSocialFeed();
+    if (typeof renderChat === 'function') renderChat();
+    if (typeof renderChatGroupsBar === 'function') renderChatGroupsBar();
+    if (typeof renderAdminRoster === 'function') renderAdminRoster();
+    return true;
+  }
+
+  async function pullFromCloud() {
+    if (!window.DiveSync || window.DiveSync.getConfig().mode === 'local') return false;
+    try {
+      const remote = await window.DiveSync.pullSharedState();
+      return applySharedState(remote);
+    } catch (err) {
+      console.warn('Cloud pull error:', err);
+      return false;
+    }
   }
 
   function savePlayerState(state) {
@@ -1853,6 +1942,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function saveChatGroups(groups) {
     localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+    scheduleCloudPush();
   }
 
   function getMyChatGroups() {
@@ -2301,6 +2391,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       localStorage.setItem('dive_social_feed_posts_v3', JSON.stringify(posts));
       renderSocialFeed();
+      scheduleCloudPush();
     } catch (e) {
       console.warn(e);
     }
@@ -2843,11 +2934,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const msg = adminBroadcastInput.value.trim();
       if (!msg) return;
 
-      if (globalBroadcastBanner && globalBroadcastText) {
-        globalBroadcastText.textContent = msg;
-        globalBroadcastBanner.classList.remove('hidden');
-        playCyberSound(950, 'sawtooth', 0.4);
-      }
+      saveBroadcastState({ text: msg, active: true, updatedAt: Date.now() });
+      playCyberSound(950, 'sawtooth', 0.4);
       adminBroadcastInput.value = '';
       alert('[BROADCAST INVIATO]\nAvviso d\'emergenza trasmesso a tutti i runner sul campo.');
     });
@@ -2855,7 +2943,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (closeBroadcastBtn && globalBroadcastBanner) {
     closeBroadcastBtn.addEventListener('click', () => {
-      globalBroadcastBanner.classList.add('hidden');
+      saveBroadcastState({ text: '', active: false, updatedAt: Date.now() });
     });
   }
 
@@ -2904,15 +2992,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adminRosterTbody.innerHTML = roster.map(r => `
       <tr class="hover:bg-white/5 transition-colors">
-        <td class="py-2.5 font-bold text-white">${r.callsign}</td>
-        <td class="py-2.5 text-slate-400 text-[11px]">${r.role}</td>
-        <td class="py-2.5 text-dive-cyan font-bold">${r.secretId}</td>
-        <td class="py-2.5 ${r.hp > 50 ? 'text-dive-green' : 'text-dive-red'}">${r.hp}%</td>
-        <td class="py-2.5 ${r.psych > 60 ? 'text-dive-red' : 'text-dive-cyan'}">${r.psych}%</td>
-        <td class="py-2.5 text-dive-green">€$ ${(r.wallet || 0).toLocaleString()}</td>
-        <td class="py-2.5 text-right font-bold ${r.iceActive ? 'text-dive-green' : 'text-slate-500'}">${r.iceActive ? 'ON' : 'OFF'}</td>
+        <td class="py-2.5 font-bold text-white whitespace-nowrap">${r.callsign}</td>
+        <td class="py-2.5 text-slate-400 text-[11px] whitespace-nowrap">${r.role}</td>
+        <td class="py-2.5 text-dive-cyan font-bold whitespace-nowrap">${r.secretId}</td>
+        <td class="py-2.5 whitespace-nowrap ${r.hp > 50 ? 'text-dive-green' : 'text-dive-red'}">${r.hp}%</td>
+        <td class="py-2.5 whitespace-nowrap ${r.psych > 60 ? 'text-dive-red' : 'text-dive-cyan'}">${r.psych}%</td>
+        <td class="py-2.5 text-dive-green whitespace-nowrap">€$ ${(r.wallet || 0).toLocaleString()}</td>
+        <td class="py-2.5 font-bold whitespace-nowrap ${r.iceActive ? 'text-dive-green' : 'text-slate-500'}">${r.iceActive ? 'ON' : 'OFF'}</td>
+        <td class="py-2.5 text-right whitespace-nowrap">
+          <div class="inline-flex items-center gap-1 font-mono text-[9px]">
+            <button type="button" data-admin-act="addMoney" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-green/15 border border-dive-green/40 text-dive-green hover:bg-dive-green hover:text-black font-bold cursor-pointer">+200€$</button>
+            <button type="button" data-admin-act="remMoney" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/15 text-slate-300 hover:bg-white hover:text-black font-bold cursor-pointer">-200€$</button>
+            <button type="button" data-admin-act="addPsych" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-red/15 border border-dive-red/40 text-dive-red hover:bg-dive-red hover:text-white font-bold cursor-pointer">+15%Ps</button>
+            <button type="button" data-admin-act="remPsych" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/15 text-slate-300 hover:bg-white hover:text-black font-bold cursor-pointer">-15%Ps</button>
+            <button type="button" data-admin-act="heal" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-cyan/15 border border-dive-cyan/40 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold cursor-pointer">CURA</button>
+            <button type="button" data-admin-act="toggleIce" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-dive-purple/15 border border-dive-purple/40 text-dive-purple hover:bg-dive-purple hover:text-black font-bold cursor-pointer">ICE</button>
+            <button type="button" data-admin-act="deletePg" data-sid="${r.secretId}" class="px-1.5 py-0.5 rounded-sm bg-black border border-white/15 text-slate-400 hover:text-dive-red hover:border-dive-red/40 font-bold cursor-pointer" title="Elimina PG">×</button>
+          </div>
+        </td>
       </tr>
     `).join('');
+  }
+
+  if (adminRosterTbody) {
+    adminRosterTbody.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-admin-act]');
+      if (!btn) return;
+      const act = btn.getAttribute('data-admin-act');
+      const sid = (btn.getAttribute('data-sid') || '').toUpperCase();
+      if (!sid) return;
+
+      const accounts = getAccountsRegistry();
+      const idx = accounts.findIndex(a => (a.secretId || '').toUpperCase() === sid);
+      if (idx < 0) return;
+
+      const target = accounts[idx];
+      if (act === 'deletePg') {
+        if ((player.secretId || '').toUpperCase() === sid) {
+          alert('Non puoi eliminare il PG attualmente in uso.');
+          return;
+        }
+        if (!confirm(`Eliminare definitivamente ${target.callsign} (${target.secretId}) dal roster?`)) return;
+        accounts.splice(idx, 1);
+        saveAccountsRegistry(accounts);
+        renderAdminRoster();
+        playCyberSound(300, 'square', 0.1);
+        return;
+      }
+
+      if (act === 'addMoney') {
+        target.wallet = (target.wallet || 0) + 200;
+        target.transactions = Array.isArray(target.transactions) ? target.transactions : [];
+        target.transactions.unshift({ id: 'tx_' + Date.now(), type: 'in', desc: 'Accredito Regia Master', amount: 200, time: 'Adesso' });
+      } else if (act === 'remMoney') {
+        target.wallet = Math.max(0, (target.wallet || 0) - 200);
+        target.transactions = Array.isArray(target.transactions) ? target.transactions : [];
+        target.transactions.unshift({ id: 'tx_' + Date.now(), type: 'out', desc: 'Addebito Regia Master', amount: 200, time: 'Adesso' });
+      } else if (act === 'addPsych') {
+        target.psych = Math.min(100, (target.psych || 0) + 15);
+      } else if (act === 'remPsych') {
+        target.psych = Math.max(0, (target.psych || 0) - 15);
+      } else if (act === 'heal') {
+        target.hp = 100;
+        target.traumas = [];
+      } else if (act === 'toggleIce') {
+        target.iceActive = !target.iceActive;
+      }
+
+      accounts[idx] = normalizeAccount(target);
+      saveAccountsRegistry(accounts);
+      if ((player.secretId || '').toUpperCase() === sid) {
+        player = accounts[idx];
+        localStorage.setItem('dive_player_state_v2', JSON.stringify(player));
+        syncPlayerUI();
+      }
+      renderAdminRoster();
+      playCyberSound(680, 'sine', 0.08);
+    });
   }
 
   // --------------------------------------------------------------------------
@@ -3141,12 +3297,17 @@ document.addEventListener('DOMContentLoaded', () => {
       updateSyncStatusLabels();
       if (nextCfg.mode !== 'local' && nextCfg.endpoint) {
         try {
+          const updatedAt = Date.now();
+          lastCloudSyncedAt = updatedAt;
           await window.DiveSync.pushSharedState({
             accounts: getAccountsRegistry(),
             posts: typeof getSocialPosts === 'function' ? getSocialPosts() : [],
-            updatedAt: Date.now()
+            groups: typeof getChatGroups === 'function' ? getChatGroups() : [],
+            broadcast: getBroadcastState(),
+            updatedAt
           });
           if (typeof playCyberFx === 'function') playCyberFx('success');
+          alert('Cloud Sync attivo e sincronizzato!');
         } catch (err) {
           alert('Connettore salvato, ma test sync fallito: ' + err.message);
         }
@@ -3154,6 +3315,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof playCyberFx === 'function') playCyberFx('ui');
       }
     });
+  }
+
+  const adminForcePullBtn = document.getElementById('admin-force-pull-btn');
+  if (adminForcePullBtn) {
+    adminForcePullBtn.addEventListener('click', async () => {
+      if (!window.DiveSync || window.DiveSync.getConfig().mode === 'local') {
+        alert('Configura prima una modalità Cloud (Cloudflare o Supabase).');
+        return;
+      }
+      lastCloudSyncedAt = 0;
+      const ok = await pullFromCloud();
+      if (typeof playCyberFx === 'function') playCyberFx(ok ? 'success' : 'ui');
+      alert(ok ? 'Stato aggiornato dal Cloud.' : 'Nessun aggiornamento più recente nel Cloud.');
+    });
+  }
+
+  const adminCopySyncLinkBtn = document.getElementById('admin-copy-sync-link-btn');
+  if (adminCopySyncLinkBtn && window.DiveSync) {
+    adminCopySyncLinkBtn.addEventListener('click', async () => {
+      const shareUrl = window.DiveSync.buildShareableSyncUrl();
+      if (!shareUrl) {
+        alert('Salva prima un Endpoint Cloud (Cloudflare o Supabase) con SALVA SYNC.');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        const orig = adminCopySyncLinkBtn.textContent;
+        adminCopySyncLinkBtn.textContent = 'LINK COPIATO!';
+        setTimeout(() => { adminCopySyncLinkBtn.textContent = orig; }, 1600);
+      } catch {
+        prompt('Copia link auto-configurazione per i giocatori:', shareUrl);
+      }
+    });
+  }
+
+  // Initial broadcast & Cloud Sync polling (every 5s when configured)
+  applyBroadcastUI(getBroadcastState());
+  if (window.DiveSync && window.DiveSync.getConfig().mode !== 'local') {
+    pullFromCloud();
+    setInterval(() => { pullFromCloud(); }, 5000);
   }
 
   // Sheet QR copy & return buttons

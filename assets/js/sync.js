@@ -120,12 +120,50 @@
     return { ok: true, account: found, pool };
   }
 
+  function applyUrlSyncConfig() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const syncMode = params.get('sync');
+      const ep = params.get('ep');
+      if (syncMode && (syncMode === 'cloudflare' || syncMode === 'supabase') && ep) {
+        setConfig({
+          mode: syncMode,
+          endpoint: ep.trim(),
+          apiKey: (params.get('key') || '').trim()
+        });
+        params.delete('sync');
+        params.delete('ep');
+        params.delete('key');
+        const nextQuery = params.toString();
+        const nextUrl = window.location.pathname + (nextQuery ? `?${nextQuery}` : '') + window.location.hash;
+        window.history.replaceState({}, '', nextUrl);
+        return true;
+      }
+    } catch {}
+    return false;
+  }
+
+  function buildShareableSyncUrl() {
+    const cfg = getConfig();
+    if (cfg.mode === 'local' || !cfg.endpoint) return '';
+    const base = window.location.origin + window.location.pathname;
+    const params = new URLSearchParams({
+      sync: cfg.mode,
+      ep: cfg.endpoint
+    });
+    if (cfg.apiKey) params.set('key', cfg.apiKey);
+    return `${base}?${params.toString()}`;
+  }
+
+  applyUrlSyncConfig();
+
   global.DiveSync = {
     getConfig,
     setConfig,
     getStatusLabel,
     pullSharedState,
     pushSharedState,
-    loginAccount
+    loginAccount,
+    buildShareableSyncUrl
   };
 })(window);
