@@ -2317,6 +2317,11 @@ document.addEventListener('DOMContentLoaded', () => {
     feedGrid.innerHTML = sortedPosts.map(post => {
       const isNews = post.type === 'news';
       const isAnon = post.isAnonymous;
+      const isOwnPost = Boolean(
+        (post.authorSecretId && player.secretId && post.authorSecretId.toUpperCase() === player.secretId.toUpperCase()) ||
+        (!isAnon && post.author && player.callsign && post.author.toUpperCase() === player.callsign.toUpperCase())
+      );
+      const canDelete = isMediaOrAdmin || isOwnPost;
 
       const badgeClass = isAnon
         ? 'bg-dive-purple/15 border-dive-purple/40 text-dive-purple'
@@ -2341,14 +2346,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
 
-              <!-- Media Powers: Pin and Delete -->
+              <!-- Media Powers & Owner Delete -->
               <div class="flex items-center gap-2">
                 ${isMediaOrAdmin ? `
-                  <button class="media-pin-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-orange hover:border-dive-orange/40" data-id="${post.id}" title="Pinna in alto">
+                  <button class="media-pin-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-orange hover:border-dive-orange/40 cursor-pointer" data-id="${post.id}" title="Pinna in alto">
                     [PIN]
                   </button>
-                  <button class="media-delete-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-red hover:border-dive-red/40" data-id="${post.id}" title="Cancella post">
-                    [DEL]
+                ` : ''}
+                ${canDelete ? `
+                  <button class="media-delete-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-red hover:border-dive-red/40 cursor-pointer" data-id="${post.id}" title="Elimina post">
+                    [ELIMINA]
                   </button>
                 ` : ''}
                 <span class="px-2 py-0.5 rounded-sm border text-[9px] font-mono font-bold uppercase ${badgeClass}">
@@ -2587,6 +2594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id: 'post_' + Date.now(),
         type: 'news',
         author: isAnon ? 'Ghost_Net' : player.callsign,
+        authorSecretId: player.secretId,
         isAnonymous: isAnon,
         isVerified: !isAnon && (player.role.includes('MEDIA') || player.role.includes('CORPO')),
         isPinned: false,
@@ -2673,6 +2681,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id: 'post_' + Date.now(),
         type: 'photos',
         author: player.callsign,
+        authorSecretId: player.secretId,
         location: 'Settore 04 Ciminiere',
         isVerified: player.role.includes('MEDIA'),
         isPinned: false,
@@ -2732,6 +2741,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id: 'post_' + Date.now(),
         type: 'news',
         author: isAnon ? 'Ghost Net' : player.callsign,
+        authorSecretId: player.secretId,
         isAnonymous: isAnon,
         location: 'Settore 04',
         isVerified: player.role.includes('MEDIA') && !isAnon,
