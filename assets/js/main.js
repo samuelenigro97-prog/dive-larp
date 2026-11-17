@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const immCfg = IMMERSION_BADGES[psychProfile.immersion] || IMMERSION_BADGES.normale;
     if (immersionBadgeEl) {
       immersionBadgeEl.textContent = immCfg.label;
-      immersionBadgeEl.className = immCfg.cls;
+      immersionBadgeEl.className = `${immCfg.cls} text-center truncate`;
     }
     const factionEl = document.getElementById('card-faction-label');
     const songEl = document.getElementById('card-song');
@@ -807,8 +807,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playerIceStatus) {
       playerIceStatus.textContent = iceOn ? 'ICE ATTIVO (1 HIT)' : 'ICE BREACHED';
       playerIceStatus.className = iceOn
-        ? 'px-2 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold'
-        : 'px-2 py-0.5 bg-black border border-dive-red/40 text-dive-red font-bold';
+        ? 'px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold text-center truncate'
+        : 'px-1.5 py-0.5 bg-black border border-dive-red/40 text-dive-red font-bold text-center truncate';
     }
 
     // Cyberpsychosis
