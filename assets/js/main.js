@@ -846,7 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cardRole) cardRole.textContent = sheetData.role;
     if (cardSecretId) cardSecretId.textContent = sheetData.secretId || '#V-7842';
 
-    const psychProfile = PG_PSYCH_BY_ID[String(sheetData.secretId || '#V-7842').toUpperCase()] || {
+    const psychProfile = sheetData.psychProfile || PG_PSYCH_BY_ID[String(sheetData.secretId || '#V-7842').toUpperCase()] || {
       faction: 'PORTO FRANCO NAVARRO',
       immersion: 'normale',
       mantra: '"Ogni scelta a Navarro ha un prezzo."',
@@ -3111,6 +3111,32 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => loginModal.classList.add('hidden', 'pointer-events-none'), 300);
   }
 
+  function openPlayerContactModal(requireSetup = false) {
+    const contactModal = document.getElementById('player-contact-modal');
+    if (!contactModal) return;
+    const pgLabel = document.getElementById('contact-modal-pg-label');
+    const nameIn = document.getElementById('contact-input-name');
+    const surnameIn = document.getElementById('contact-input-surname');
+    const emailIn = document.getElementById('contact-input-email');
+    const phoneIn = document.getElementById('contact-input-phone');
+    const closeBtn = document.getElementById('close-contact-modal-btn');
+    if (pgLabel) pgLabel.textContent = `${player.callsign} (${player.secretId})`;
+    if (nameIn) nameIn.value = player.playerName || '';
+    if (surnameIn) surnameIn.value = player.playerSurname || '';
+    if (emailIn) emailIn.value = player.email || '';
+    if (phoneIn) phoneIn.value = player.playerContact || '';
+    if (closeBtn) closeBtn.classList.toggle('hidden', requireSetup);
+    contactModal.classList.remove('hidden', 'pointer-events-none');
+    setTimeout(() => contactModal.classList.add('opacity-100'), 10);
+  }
+
+  function closePlayerContactModal() {
+    const contactModal = document.getElementById('player-contact-modal');
+    if (!contactModal) return;
+    contactModal.classList.remove('opacity-100');
+    setTimeout(() => contactModal.classList.add('hidden', 'pointer-events-none'), 250);
+  }
+
   function activateAccount(account) {
     player = normalizeAccount(account);
     setActiveSessionId(player.secretId);
@@ -3124,6 +3150,15 @@ document.addEventListener('DOMContentLoaded', () => {
     closeLoginModal();
     if (typeof switchTab === 'function') switchTab('profile');
     if (typeof playCyberFx === 'function') playCyberFx('success');
+
+    const missingContact = Boolean(player.needsContactSetup) ||
+      !String(player.playerName || '').trim() ||
+      !String(player.playerSurname || '').trim() ||
+      !String(player.email || '').trim() ||
+      !String(player.playerContact || '').trim();
+    if (missingContact) {
+      setTimeout(() => openPlayerContactModal(true), 200);
+    }
   }
 
   if (openLoginBtn) {
@@ -3201,26 +3236,69 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (registerErrorEl) registerErrorEl.classList.add('hidden');
-      const rawCallsign = document.getElementById('reg-callsign')?.value.trim() || '';
-      const role = document.getElementById('reg-role')?.value || 'MERCENARIO // SOLO';
-      const themeColor = document.getElementById('reg-color')?.value || 'orange';
-      const pin = document.getElementById('reg-pin')?.value.trim() || '1234';
+  const playerContactForm = document.getElementById('player-contact-form');
+  const closeContactModalBtn = document.getElementById('close-contact-modal-btn');
+  const editPlayerContactBtn = document.getElementById('edit-player-contact-btn');
 
+  if (closeContactModalBtn) {
+    closeContactModalBtn.addEventListener('click', closePlayerContactModal);
+  }
+  if (editPlayerContactBtn) {
+    editPlayerContactBtn.addEventListener('click', () => openPlayerContactModal(false));
+  }
+  if (playerContactForm) {
+    playerContactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const firstName = document.getElementById('contact-input-name')?.value.trim() || '';
+      const lastName = document.getElementById('contact-input-surname')?.value.trim() || '';
+      const email = document.getElementById('contact-input-email')?.value.trim() || '';
+      const phone = document.getElementById('contact-input-phone')?.value.trim() || '';
+      if (!firstName || !lastName || !email || !phone) return;
+
+      player.playerName = firstName;
+      player.playerSurname = lastName;
+      player.email = email;
+      player.playerContact = phone;
+      player.needsContactSetup = false;
+      savePlayerState(player);
+      closePlayerContactModal();
+      if (typeof playCyberFx === 'function') playCyberFx('success');
+    });
+  }
+
+  const adminCreatePgForm = document.getElementById('admin-create-pg-form');
+  if (adminCreatePgForm) {
+    adminCreatePgForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const rawCallsign = document.getElementById('admin-pg-callsign')?.value.trim() || '';
       if (!rawCallsign) return;
       const callsign = rawCallsign.startsWith('@') ? rawCallsign : `@${rawCallsign}`;
       const accounts = getAccountsRegistry();
-      if (accounts.some(a => a.callsign.toUpperCase() === callsign.toUpperCase())) {
-        if (registerErrorEl) {
-          registerErrorEl.textContent = 'Callsign già registrato. Scegli un altro nome o accedi.';
-          registerErrorEl.classList.remove('hidden');
-        }
-        if (typeof playCyberFx === 'function') playCyberFx('denied');
+      if (accounts.some(a => (a.callsign || '').toUpperCase() === callsign.toUpperCase())) {
+        alert('Callsign già esistente nel Roster.');
         return;
       }
+
+      const role = document.getElementById('admin-pg-role')?.value || 'MERCENARIO // SOLO';
+      const themeColor = document.getElementById('admin-pg-theme')?.value || 'orange';
+      const immersion = document.getElementById('admin-pg-immersion')?.value || 'medio';
+      const pin = document.getElementById('admin-pg-pin')?.value.trim() || '1234';
+      const wallet = Math.max(0, parseInt(document.getElementById('admin-pg-wallet')?.value || '1500', 10) || 0);
+      const fama = Math.min(5, Math.max(1, parseInt(document.getElementById('admin-pg-fama')?.value || '3', 10) || 3));
+      const ramMax = Math.min(16, Math.max(4, parseInt(document.getElementById('admin-pg-ram')?.value || '8', 10) || 8));
+      const faction = document.getElementById('admin-pg-faction')?.value.trim() || 'PORTO FRANCO NAVARRO';
+      const iceActive = Boolean(document.getElementById('admin-pg-ice')?.checked);
+      const mantra = document.getElementById('admin-pg-mantra')?.value.trim() || '"Ogni scelta a Navarro ha un prezzo."';
+      const song = document.getElementById('admin-pg-song')?.value.trim() || 'Nightcall — Kavinsky';
+      const thought = document.getElementById('admin-pg-thought')?.value.trim() || '"Scheda precompilata dai Master."';
+      const archetype = document.getElementById('admin-pg-archetype')?.value.trim() || 'Neutrale // Flessibile';
+      const traumaCore = document.getElementById('admin-pg-trauma')?.value.trim() || 'Passato da chiarire';
+      const reaction = document.getElementById('admin-pg-reaction')?.value.trim() || 'Prudenza / Osservazione';
+      const motivation = document.getElementById('admin-pg-motivation')?.value.trim() || 'Sopravvivere a Navarro';
+      const rawConcepts = document.getElementById('admin-pg-concepts')?.value.trim() || '';
+      const keyConcepts = rawConcepts
+        ? rawConcepts.split(',').map(s => s.trim()).filter(Boolean).slice(0, 6)
+        : ['Indipendente', 'Sopravvivenza', 'Adattamento', 'Contatti', 'Segreti', 'Nuovo inizio'];
 
       const avatars = [
         'assets/images/avatars/pg-1.jpg',
@@ -3234,25 +3312,52 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
       const prefix = callsign.replace('@', '').charAt(0).toUpperCase() || 'X';
       const num = Math.floor(1000 + Math.random() * 9000);
+      const secretId = `#${prefix}-${num}`;
+
       const newAccount = normalizeAccount({
         callsign,
         role,
-        secretId: `#${prefix}-${num}`,
+        secretId,
         pin,
+        playerName: '',
+        playerSurname: '',
+        email: '',
+        playerContact: '',
+        needsContactSetup: true,
         avatar: avatars[accounts.length % avatars.length],
         themeColor,
         hp: 100,
         psych: 0,
-        fama: 1,
-        wallet: 1000,
-        ram: 8,
-        ramMax: 8,
-        iceActive: true
+        fama,
+        wallet,
+        ram: ramMax,
+        ramMax,
+        iceActive,
+        psychProfile: {
+          faction,
+          immersion,
+          mantra,
+          song,
+          thought,
+          keyConcepts,
+          archetype,
+          traumaCore,
+          reaction,
+          motivation
+        }
       });
 
       accounts.push(newAccount);
       saveAccountsRegistry(accounts);
-      activateAccount(newAccount);
+      renderAdminRoster();
+
+      const resBox = document.getElementById('admin-create-pg-result');
+      if (resBox) {
+        resBox.innerHTML = `Scheda creata: <strong>${callsign}</strong> · ID: <strong>${secretId}</strong> · PIN: <strong>${pin}</strong>. Il giocatore compilerà Nome, Cognome, Email e Telefono al primo login.`;
+        resBox.classList.remove('hidden');
+      }
+      adminCreatePgForm.reset();
+      if (typeof playCyberFx === 'function') playCyberFx('success');
     });
   }
 
