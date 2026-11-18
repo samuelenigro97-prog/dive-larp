@@ -828,7 +828,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cardAvatarImg.alt = sheetData.callsign;
     }
     if (cardAvatarFrame) {
-      cardAvatarFrame.className = `cyber-panel relative w-16 h-20 sm:w-20 sm:h-24 overflow-hidden border ${avatarTheme.border} bg-black flex-shrink-0`;
+      cardAvatarFrame.className = `cyber-panel relative w-16 sm:w-20 overflow-hidden border ${avatarTheme.border} bg-black flex-shrink-0`;
     }
     if (cardAvatarTag) {
       const roleShort = (sheetData.role || 'SOLO').split('//')[0].trim().slice(0, 8);
@@ -896,8 +896,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playerIceStatus) {
       playerIceStatus.textContent = iceOn ? 'ICE ATTIVO (1 HIT)' : 'ICE BREACHED';
       playerIceStatus.className = iceOn
-        ? 'px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold text-center truncate'
-        : 'px-1.5 py-0.5 bg-black border border-dive-red/40 text-dive-red font-bold text-center truncate';
+        ? 'px-1 sm:px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold text-center truncate'
+        : 'px-1 sm:px-1.5 py-0.5 bg-black border border-dive-red/40 text-dive-red font-bold text-center truncate';
     }
 
     // Cyberpsychosis
@@ -1166,6 +1166,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const PUBLIC_TABS = ['home', 'eventi', 'gallery', 'premesse'];
 
+  function getSocialActivityTotal() {
+    const posts = typeof getSocialPosts === 'function' ? getSocialPosts() : [];
+    const postAndComments = posts.reduce((acc, p) => acc + 1 + (Array.isArray(p.comments) ? p.comments.length : 0), 0);
+    const chatObj = (player && player.chatMessages) || {};
+    const channelMsgs = ['fixer', 'blackmarket', 'corp', 'direct'].reduce((acc, ch) => acc + (Array.isArray(chatObj[ch]) ? chatObj[ch].length : 0), 0);
+    const myGroups = typeof getMyChatGroups === 'function' ? getMyChatGroups() : [];
+    const groupMsgs = myGroups.reduce((acc, g) => acc + (Array.isArray(g.messages) ? g.messages.length : 0), 0);
+    return postAndComments + channelMsgs + groupMsgs;
+  }
+
+  function getSocialSeenKey() {
+    const sid = (player && player.secretId) ? player.secretId.toUpperCase() : '#V-7842';
+    return `dive_social_seen_v1_${sid}`;
+  }
+
+  function markSocialAsSeen() {
+    const total = getSocialActivityTotal();
+    localStorage.setItem(getSocialSeenKey(), String(total));
+    updateSocialNotificationBadges();
+  }
+
+  function updateSocialNotificationBadges() {
+    const navBadge = document.getElementById('nav-social-badge');
+    const mobileBadge = document.getElementById('mobile-social-badge');
+    const netTab = document.getElementById('tab-net');
+    const isOnNet = Boolean(netTab && !netTab.classList.contains('hidden'));
+    const total = getSocialActivityTotal();
+    const key = getSocialSeenKey();
+    const stored = localStorage.getItem(key);
+
+    if (stored === null || isOnNet) {
+      localStorage.setItem(key, String(total));
+      if (navBadge) navBadge.classList.add('hidden');
+      if (mobileBadge) mobileBadge.classList.add('hidden');
+      return;
+    }
+
+    const seen = parseInt(stored, 10);
+    const unread = Number.isFinite(seen) ? Math.max(0, total - seen) : 0;
+    const label = unread > 99 ? '99+' : String(unread);
+    [navBadge, mobileBadge].forEach(el => {
+      if (!el) return;
+      el.textContent = label;
+      el.classList.toggle('hidden', unread <= 0);
+    });
+  }
+
   function switchTab(tabId) {
     const isAuthenticated = Boolean(getActiveSessionId());
     const route = SECTION_ROUTES[tabId];
@@ -1186,6 +1233,10 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.classList.remove('active');
       }
     });
+
+    if (effectiveTab === 'net') {
+      markSocialAsSeen();
+    }
 
     // Desktop Nav
     document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
@@ -2124,6 +2175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
 
     chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+    if (typeof updateSocialNotificationBadges === 'function') updateSocialNotificationBadges();
   }
 
   if (chatMessagesContainer) {
@@ -2517,6 +2569,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (feedCountEl) feedCountEl.textContent = posts.length;
     bindSocialPostEvents();
     if (typeof applyFeedFilters === 'function') applyFeedFilters();
+    if (typeof updateSocialNotificationBadges === 'function') updateSocialNotificationBadges();
   }
 
   function bindSocialPostEvents() {
