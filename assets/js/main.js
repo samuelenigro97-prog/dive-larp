@@ -1375,7 +1375,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const ramMaxEl = document.getElementById('ram-max');
   const ramStatusEl = document.getElementById('ram-status-text');
   const ramCellsEl = document.getElementById('ram-cells');
-  const ramResetBtn = document.getElementById('ram-reset-btn');
   const ramAlertEl = document.getElementById('quickhack-ram-alert');
   const RAM_REGEN_SECONDS = 10;
 
@@ -1453,20 +1452,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       renderRamUI();
     }, 1000);
-  }
-
-  if (ramResetBtn) {
-    ramResetBtn.addEventListener('click', () => {
-      player.ram = player.ramMax || 5;
-      if (ramRegenInterval) {
-        clearInterval(ramRegenInterval);
-        ramRegenInterval = null;
-      }
-      if (ramAlertEl) ramAlertEl.classList.add('hidden');
-      savePlayerState(player);
-      renderRamUI();
-      playCyberFx('ram');
-    });
   }
 
   renderRamUI();
