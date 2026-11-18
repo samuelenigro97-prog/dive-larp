@@ -735,9 +735,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (countEl) countEl.textContent = `${activeCount} / 11 SLOT ATTIVI`;
   }
 
+  let biomonitorTargetRunner = null;
+
   function syncPlayerUI() {
     const sheetData = activeSheetRunner || player;
     const isViewingOther = Boolean(activeSheetRunner);
+    const isRipperdoc = typeof getRoleKind === 'function' && getRoleKind(player.role) === 'ripperdoc';
+    const bioTarget = activeSheetRunner || (isRipperdoc ? (biomonitorTargetRunner || sheetData) : sheetData);
+    const isBioOther = Boolean(bioTarget && bioTarget.secretId && bioTarget.secretId !== player.secretId);
+
+    const secBiomonitor = document.getElementById('sec-biomonitor');
+    const navBiomonitorBtn = document.querySelector('nav button[data-tab="biomonitor"]');
+    if (secBiomonitor) secBiomonitor.classList.toggle('hidden', !isRipperdoc);
+    if (navBiomonitorBtn) navBiomonitorBtn.classList.toggle('hidden', !isRipperdoc);
+
+    const bioTargetLabel = document.getElementById('biomonitor-target-label');
+    if (bioTargetLabel) {
+      bioTargetLabel.textContent = isBioOther
+        ? `PAZIENTE: ${bioTarget.callsign} (${bioTarget.secretId})`
+        : 'TELEMETRIA LIVE';
+    }
 
     // Header (sempre del player loggato)
     const headerCallsign = document.getElementById('header-player-callsign');
@@ -804,7 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     if (medControls) {
-      if (isViewingOther) medControls.classList.add('hidden');
+      if (isViewingOther || isBioOther) medControls.classList.add('hidden');
       else medControls.classList.remove('hidden');
     }
 
@@ -845,6 +862,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cardCallsign) cardCallsign.textContent = sheetData.callsign;
     if (cardRole) cardRole.textContent = sheetData.role;
     if (cardSecretId) cardSecretId.textContent = sheetData.secretId || '#V-7842';
+    const cardFameLabel = document.getElementById('card-fame-label');
+    if (cardFameLabel) cardFameLabel.textContent = `FAMA ${sheetData.fame ?? 3}/5`;
 
     const psychProfile = sheetData.psychProfile || PG_PSYCH_BY_ID[String(sheetData.secretId || '#V-7842').toUpperCase()] || {
       faction: 'PORTO FRANCO NAVARRO',
@@ -892,10 +911,11 @@ document.addEventListener('DOMContentLoaded', () => {
         conceptsEl.innerHTML = '<span class="col-span-2 text-slate-500 italic">Vuoto — compilabile solo dai Master.</span>';
       }
     }
-    if (playerHpText) playerHpText.textContent = `${sheetData.hp}% ${sheetData.hp > 75 ? 'NOMINALE' : (sheetData.hp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
+    const bioHp = typeof bioTarget.hp === 'number' ? bioTarget.hp : 100;
+    if (playerHpText) playerHpText.textContent = `${bioHp}% ${bioHp > 75 ? 'NOMINALE' : (bioHp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
     if (playerHpBar) {
-      playerHpBar.style.width = `${sheetData.hp}%`;
-      playerHpBar.className = 'h-full bg-dive-green transition-all duration-500';
+      playerHpBar.style.width = `${bioHp}%`;
+      playerHpBar.className = bioHp > 50 ? 'h-full bg-dive-green transition-all duration-500' : (bioHp > 25 ? 'h-full bg-dive-orange transition-all duration-500' : 'h-full bg-dive-red transition-all duration-500');
     }
 
     const iceOn = isViewingOther ? sheetData.iceActive : player.iceActive;
@@ -908,7 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cyberpsychosis
     if (playerPsychText && playerPsychBar && playerPsychDesc) {
-      const p = sheetData.psych || 0;
+      const p = bioTarget.psych || 0;
       playerPsychBar.style.width = `${Math.min(100, p)}%`;
       playerPsychText.className = p >= 85 ? 'text-dive-red font-black animate-pulse' : 'text-dive-red font-bold';
       playerPsychBar.className = p >= 85
@@ -932,10 +952,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Traumas
     const traumasList = document.getElementById('traumas-list');
     if (traumasList) {
-      if (!sheetData.traumas || sheetData.traumas.length === 0) {
+      if (!bioTarget.traumas || bioTarget.traumas.length === 0) {
         traumasList.innerHTML = `<span class="text-slate-500 italic block">Nessun danno critico rilevato.</span>`;
       } else {
-        traumasList.innerHTML = sheetData.traumas.map(t => `
+        traumasList.innerHTML = bioTarget.traumas.map(t => `
           <div class="px-2.5 py-1 rounded-sm bg-dive-red/10 border border-dive-red/30 text-dive-red font-mono text-[10px] flex items-center justify-between">
             <span>[!] ${t.name}</span>
             <span class="text-[9px] text-slate-400">${t.desc}</span>
@@ -1258,9 +1278,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function switchTab(tabId) {
     const isAuthenticated = Boolean(getActiveSessionId());
-    const route = SECTION_ROUTES[tabId];
+    const isRipperdoc = typeof getRoleKind === 'function' && getRoleKind(player.role) === 'ripperdoc';
+    const safeTabId = (tabId === 'biomonitor' && !isRipperdoc) ? 'profile' : tabId;
+    const route = SECTION_ROUTES[safeTabId];
     const scrollTargetId = route ? route.anchor : null;
-    let effectiveTab = route ? route.tab : tabId;
+    let effectiveTab = route ? route.tab : safeTabId;
 
     // Se il PG è loggato, la Home pubblica non è visibile: resta nella sezione In-Game
     if (isAuthenticated && PUBLIC_TABS.includes(effectiveTab)) {
@@ -1573,10 +1595,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
       detectedPlayer = { callsign, secretId };
       const addedToRubrica = addScannedContact({ callsign, secretId });
+      const isRipperdoc = typeof getRoleKind === 'function' && getRoleKind(player.role) === 'ripperdoc';
+      const scanBiomonitorBtn = document.getElementById('scan-action-biomonitor-btn');
 
       scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-orange/20 text-dive-orange border border-dive-orange/40';
       scanBadge.textContent = '[ID] RUNNER';
-      scanOutputText.textContent = `[TARGET ACQUISITO] Rilevato Cyberdeck di ${callsign} (ID: ${secretId}).${addedToRubrica ? ' Contatto salvato in Rubrica Social.' : ' Contatto aggiornato in Rubrica Social.'} Scegli se trasferire EuroDollari o avviare l'intrusione clandestina.`;
+
+      if (isRipperdoc) {
+        const fullTarget = (typeof findRunnerByPgParam === 'function' ? findRunnerByPgParam(secretId) : null)
+          || { callsign, secretId, hp: 100, psych: 0, traumas: [] };
+        biomonitorTargetRunner = fullTarget;
+        selectedPatientId = fullTarget.secretId;
+        if (typeof renderRipperdocConsole === 'function') renderRipperdocConsole();
+        syncPlayerUI();
+        expandSectionById('sec-biomonitor');
+        if (scanBiomonitorBtn) scanBiomonitorBtn.classList.remove('hidden');
+        scanOutputText.textContent = `[BIOMONITOR] ${callsign} (${secretId}) — Carico Cyberpsicosi: ${fullTarget.psych || 0}% · Stato Vitale: ${typeof fullTarget.hp === 'number' ? fullTarget.hp : 100}% HP.`;
+      } else {
+        if (scanBiomonitorBtn) scanBiomonitorBtn.classList.add('hidden');
+        scanOutputText.textContent = `[TARGET ACQUISITO] Rilevato Cyberdeck di ${callsign} (ID: ${secretId}).${addedToRubrica ? ' Contatto salvato in Rubrica Social.' : ' Contatto aggiornato in Rubrica Social.'} Scegli se trasferire EuroDollari o avviare l'intrusione clandestina.`;
+      }
       
       if (scanPlayerActions) scanPlayerActions.classList.remove('hidden');
 
@@ -1614,6 +1652,14 @@ document.addEventListener('DOMContentLoaded', () => {
       scanBadge.textContent = 'DATASHARD GENERICO';
       scanOutputText.textContent = `Codice [${code}] decifrato: Log archiviato nel dataspace locale.`;
     }
+  }
+
+  const scanBiomonitorBtn = document.getElementById('scan-action-biomonitor-btn');
+  if (scanBiomonitorBtn) {
+    scanBiomonitorBtn.addEventListener('click', () => {
+      if (!detectedPlayer) return;
+      switchTab('biomonitor');
+    });
   }
 
   if (scanPayBtn) {
@@ -4067,7 +4113,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = e.target.closest('[data-patient-id]');
       if (!btn) return;
       selectedPatientId = btn.getAttribute('data-patient-id');
+      biomonitorTargetRunner = findRunnerByPgParam(selectedPatientId);
       renderRipperdocConsole();
+      syncPlayerUI();
       playCyberFx('ui');
     });
   }
@@ -4082,6 +4130,10 @@ document.addEventListener('DOMContentLoaded', () => {
       player = normalizeAccount(accounts[idx]);
       savePlayerState(player);
     } else {
+      if (biomonitorTargetRunner && biomonitorTargetRunner.secretId === accounts[idx].secretId) {
+        biomonitorTargetRunner = normalizeAccount(accounts[idx]);
+        syncPlayerUI();
+      }
       renderRipperdocConsole();
     }
     appendRipperLog(`${accounts[idx].callsign}: ${logMsg}`);
@@ -4736,6 +4788,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (initialPg || getActiveSessionId()) {
     switchTab('profile');
+    if (initialPg && typeof getRoleKind === 'function' && getRoleKind(player.role) === 'ripperdoc') {
+      expandSectionById('sec-biomonitor');
+    }
   }
 
   // --------------------------------------------------------------------------
