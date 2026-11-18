@@ -83,12 +83,6 @@
           <span>DIVE SOCIAL</span>
           <span id="nav-social-badge" class="hidden px-1.5 py-0.5 rounded-full bg-dive-red text-white font-mono text-[9px] font-bold leading-none">0</span>
         </button>
-        <span class="ingame-site-nav hidden md:inline-block w-px h-3.5 bg-white/15 mx-1 flex-shrink-0" aria-hidden="true"></span>
-        <button class="ingame-site-nav nav-tab-trigger px-1.5 xl:px-2 py-1.5 border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap" data-tab="dossier">DOSSIER &amp; QR</button>
-        <button class="hidden ingame-site-nav nav-tab-trigger px-1.5 xl:px-2 py-1.5 border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap" data-tab="biomonitor">BIOMONITOR</button>
-        <button class="ingame-site-nav nav-tab-trigger px-1.5 xl:px-2 py-1.5 border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap" data-tab="cyberware">CYBERWARE</button>
-        <button class="ingame-site-nav nav-tab-trigger px-1.5 xl:px-2 py-1.5 border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap" data-tab="cyberdeck">DECK</button>
-        <button class="ingame-site-nav nav-tab-trigger px-1.5 xl:px-2 py-1.5 border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap" data-tab="wallet">WALLET</button>
       </nav>
 
       <!-- Login Menu (In-Game Sections + Player HUD) & Hardware Controls -->
@@ -742,7 +736,7 @@
     <section id="tab-profile" class="app-tab hidden">
       <div class="w-full space-y-4">
 
-        <!-- Header Scheda Verticale -->
+        <!-- Header Scheda Verticale + Tasti Shortcut Sezioni -->
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div class="flex-shrink-0">
             <div class="text-dive-orange font-mono text-[10px] uppercase tracking-widest font-semibold">
@@ -751,6 +745,14 @@
             <h2 class="font-orbitron font-bold text-lg sm:text-xl text-white">
               DOSSIER RUNNER &amp; QR
             </h2>
+          </div>
+
+          <div id="profile-section-shortcuts" class="flex flex-wrap items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider">
+            <button type="button" class="nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="dossier">DOSSIER &amp; QR</button>
+            <button type="button" class="hidden nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green hover:bg-dive-green hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="biomonitor">BIOMONITOR</button>
+            <button type="button" class="nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-orange/40 bg-dive-orange/10 text-dive-orange hover:bg-dive-orange hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberware">CYBERWARE</button>
+            <button type="button" class="nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-purple/40 bg-dive-purple/10 text-dive-purple hover:bg-dive-purple hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberdeck">DECK</button>
+            <button type="button" class="nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green hover:bg-dive-green hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="wallet">WALLET</button>
           </div>
         </div>
 
