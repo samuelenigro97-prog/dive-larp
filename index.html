@@ -37,13 +37,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.61.0">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.62.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.61.0">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.62.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -997,10 +997,10 @@
           <div data-collapse-toggle="sec-role-console" role="button" tabindex="0" aria-expanded="false" class="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10 cursor-pointer select-none hover:border-white/25 transition-colors">
             <div>
               <div id="role-console-eyebrow" class="text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-1">
-                MODULO OPERATIVO // RUOLO SPECIALISTICO
+                MODULO OPERATIVO // MESTIERE
               </div>
               <h2 id="role-console-title" class="font-orbitron font-bold text-lg sm:text-xl text-white">
-                CONSOLE DI RUOLO
+                CONSOLE MESTIERE
               </h2>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
@@ -1704,7 +1704,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
           <div>
             <span class="text-dive-cyan font-bold uppercase block">CREA SCHEDA PG PRECOMPILATA (MASTER)</span>
-            <span class="text-[10px] text-slate-400">Precompila stats, ruolo e background del PG. Al primo accesso il giocatore inserirà solo Nome, Cognome, Email e Telefono.</span>
+            <span class="text-[10px] text-slate-400">Precompila stats, mestiere e background del PG. Al primo accesso il giocatore inserirà solo Nome, Cognome, Email e Telefono.</span>
           </div>
           <span class="px-2 py-0.5 bg-dive-cyan/10 border border-dive-cyan/40 text-dive-cyan text-[10px] font-bold w-fit">REGIA MASTER</span>
         </div>
@@ -1716,7 +1716,7 @@
               <input type="text" id="admin-pg-callsign" placeholder="es. @Viper_07" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan" required>
             </div>
             <div>
-              <label class="block text-slate-400 mb-1 text-[10px]">RUOLO*</label>
+              <label class="block text-slate-400 mb-1 text-[10px]">MESTIERE*</label>
               <select id="admin-pg-role" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
                 <option value="MERCENARIO // SOLO">MERCENARIO // SOLO</option>
                 <option value="NETRUNNER // HACKER">NETRUNNER // HACKER</option>
@@ -1835,7 +1835,7 @@
             <thead>
               <tr class="text-slate-500 border-b border-white/10 text-[10px] uppercase">
                 <th class="pb-2">Callsign</th>
-                <th class="pb-2">Ruolo</th>
+                <th class="pb-2">Mestiere</th>
                 <th class="pb-2">Codice Univoco</th>
                 <th class="pb-2">HP</th>
                 <th class="pb-2">Psicosi</th>
@@ -2012,7 +2012,7 @@
         </div>
 
         <div>
-          <label class="block text-slate-300 mb-1">Ruolo:</label>
+          <label class="block text-slate-300 mb-1">Mestiere:</label>
           <select id="input-new-role" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-mono text-xs outline-none focus:border-dive-orange">
             <option value="MERCENARIO // SOLO">MERCENARIO // SOLO</option>
             <option value="NETRUNNER // HACKER">NETRUNNER // HACKER</option>
@@ -2044,7 +2044,7 @@
           <span id="login-sync-mode-label" class="font-mono text-[10px] text-dive-cyan">MODALITÀ: DEMO LOCALE</span>
         </div>
         <div class="flex items-center gap-2">
-          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.61.0</span>
+          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.62.0</span>
           <button id="close-login-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs hover:bg-white/20">X</button>
         </div>
       </div>
@@ -2219,12 +2219,12 @@
 
   <!-- Floating Version Badge (Bottom-Right, 3x click = Regia Master) -->
   <div id="app-version-badge" class="fixed bottom-[calc(3.75rem+0.75rem+env(safe-area-inset-bottom))] md:bottom-3 right-3 z-30 cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.61.0
+    v0.62.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.61.0"></script>
-  <script src="assets/js/main.js?v=0.61.0"></script>
+  <script src="assets/js/sync.js?v=0.62.0"></script>
+  <script src="assets/js/main.js?v=0.62.0"></script>
 </body>
 </html>
