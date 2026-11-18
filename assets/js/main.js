@@ -1267,6 +1267,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateSocialNotificationBadges() {
     const navBadge = document.getElementById('nav-social-badge');
     const mobileBadge = document.getElementById('mobile-social-badge');
+    const headerSocialBadge = document.getElementById('header-social-badge');
     const netTab = document.getElementById('tab-net');
     const isOnNet = Boolean(netTab && !netTab.classList.contains('hidden'));
     const total = getSocialActivityTotal();
@@ -1277,13 +1278,14 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem(key, String(total));
       if (navBadge) navBadge.classList.add('hidden');
       if (mobileBadge) mobileBadge.classList.add('hidden');
+      if (headerSocialBadge) headerSocialBadge.classList.add('hidden');
       return;
     }
 
     const seen = parseInt(stored, 10);
     const unread = Number.isFinite(seen) ? Math.max(0, total - seen) : 0;
     const label = unread > 99 ? '99+' : String(unread);
-    [navBadge, mobileBadge].forEach(el => {
+    [navBadge, mobileBadge, headerSocialBadge].forEach(el => {
       if (!el) return;
       el.textContent = label;
       el.classList.toggle('hidden', unread <= 0);
@@ -3936,6 +3938,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (isAuthenticated) {
       setLoginMenuOpen(false);
+    }
+    const headerSocialBtn = document.getElementById('header-social-btn');
+    if (headerSocialBtn) {
+      headerSocialBtn.classList.toggle('hidden', !isAuthenticated);
     }
     if (headerQuickLogoutBtn) {
       headerQuickLogoutBtn.classList.toggle('hidden', !isAuthenticated);
