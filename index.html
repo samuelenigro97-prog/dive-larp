@@ -922,7 +922,7 @@
           <!-- BIOMONITOR, CYBERPSICOSI & TRAUMI (solo Ripperdoc su scansione PG) -->
           <div id="sec-biomonitor" class="hidden scroll-mt-20 pt-4 border-t border-white/10 space-y-4">
             <div data-collapse-toggle="sec-biomonitor" role="button" tabindex="0" aria-expanded="false" class="flex items-center justify-between gap-2 pb-2 border-b border-white/10 font-mono text-xs cursor-pointer select-none hover:border-white/25 transition-colors">
-              <span class="text-dive-green font-bold uppercase tracking-widest">BIOMONITOR // STATO VITALE</span>
+              <span class="text-dive-red font-bold uppercase tracking-widest">BIOMONITOR // STATO VITALE</span>
               <span class="flex items-center gap-2 text-slate-500"><span id="biomonitor-target-label">TELEMETRIA LIVE</span><span data-collapse-chevron class="text-slate-400">▾</span></span>
             </div>
 
@@ -982,7 +982,7 @@
         <div id="sec-role-console" class="hidden scroll-mt-20 cyber-panel hud-bracket p-4 sm:p-5 space-y-4">
           <div data-collapse-toggle="sec-role-console" role="button" tabindex="0" aria-expanded="false" class="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10 cursor-pointer select-none hover:border-white/25 transition-colors">
             <div>
-              <div id="role-console-eyebrow" class="text-dive-cyan font-mono text-xs uppercase tracking-widest font-semibold mb-1">
+              <div id="role-console-eyebrow" class="font-mono text-xs uppercase tracking-widest font-semibold mb-1" style="color: #FACC15;">
                 MODULO OPERATIVO // MESTIERE
               </div>
               <h2 id="role-console-title" class="font-orbitron font-bold text-lg sm:text-xl text-white">
@@ -990,7 +990,7 @@
               </h2>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
-              <span id="role-console-badge" class="font-mono text-[10px] px-2 py-0.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan uppercase font-bold">
+              <span id="role-console-badge" class="font-mono text-[10px] px-2 py-0.5 rounded-sm border uppercase font-bold" style="border-color: rgba(250,204,21,0.45); background: rgba(250,204,21,0.12); color: #FACC15;">
                 ATTIVO
               </span>
               <span data-collapse-chevron class="font-mono text-xs text-slate-400">▾</span>
@@ -2188,11 +2188,11 @@
       <button class="public-site-nav md:hidden nav-tab-trigger mobile-dock-item active px-2.5 py-1.5 rounded-sm border border-dive-orange/40 bg-dive-orange/10 text-dive-orange font-bold whitespace-nowrap" data-tab="home">HOME</button>
       <button class="public-site-nav md:hidden nav-tab-trigger mobile-dock-item px-2.5 py-1.5 rounded-sm border border-white/15 bg-white/5 hover:text-white whitespace-nowrap" data-tab="eventi">EVENTI</button>
 
-      <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="dossier">DOSSIER &amp; QR</button>
-      <button type="button" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green hover:bg-dive-green hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="biomonitor">BIOMONITOR</button>
-      <button type="button" id="shortcut-role-console-btn" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="roleconsole">NODI RETE &amp; ICE</button>
+      <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-white/35 bg-white/10 text-white hover:bg-white hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="dossier">DOSSIER</button>
+      <button type="button" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-red/40 bg-dive-red/10 text-dive-red hover:bg-dive-red hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="biomonitor">BIOMONITOR</button>
+      <button type="button" id="shortcut-role-console-btn" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border font-bold transition-colors cursor-pointer whitespace-nowrap" style="border-color: rgba(250,204,21,0.45); background: rgba(250,204,21,0.12); color: #FACC15;" data-tab="roleconsole">NODI RETE &amp; ICE</button>
       <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-orange/40 bg-dive-orange/10 text-dive-orange hover:bg-dive-orange hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberware">CYBERWARE</button>
-      <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-purple/40 bg-dive-purple/10 text-dive-purple hover:bg-dive-purple hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberdeck">DECK</button>
+      <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberdeck">DECK</button>
       <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green hover:bg-dive-green hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="wallet">WALLET</button>
     </div>
   </nav>
