@@ -659,3 +659,53 @@ body.ingame-mode .hud-bracket::after {
     height: 5rem;
   }
 }
+
+/* Modalità Mobile automatica su desktop per la Web App in-game (esclusa Regia Master) */
+@media (min-width: 500px) {
+  body.ingame-mode:not(.admin-wide-mode) > header > div,
+  body.ingame-mode:not(.admin-wide-mode) > main,
+  body.ingame-mode:not(.admin-wide-mode) > #global-broadcast-banner > div,
+  body.ingame-mode:not(.admin-wide-mode) > #mobile-game-dock {
+    max-width: 440px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) > header > div {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) > main {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-top: 1.25rem !important;
+    padding-bottom: 5rem !important;
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) #desktop-game-nav {
+    display: none !important;
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) #tab-profile .lg\:grid-cols-12,
+  body.ingame-mode:not(.admin-wide-mode) #tab-net .lg\:grid-cols-12 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) #tab-profile .lg\:col-span-8,
+  body.ingame-mode:not(.admin-wide-mode) #tab-profile .lg\:col-span-4,
+  body.ingame-mode:not(.admin-wide-mode) #tab-net .lg\:col-span-7,
+  body.ingame-mode:not(.admin-wide-mode) #tab-net .lg\:col-span-5 {
+    grid-column: span 1 / span 1 !important;
+    position: static !important;
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) > #mobile-game-dock {
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) #app-version-badge {
+    right: calc(50% - 220px + 0.75rem) !important;
+  }
+}

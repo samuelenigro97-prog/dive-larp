@@ -4,6 +4,13 @@
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Auto-ridimensiona la finestra PWA standalone su desktop in formato mobile
+  try {
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches && window.innerWidth > 480) {
+      const targetHeight = Math.min(900, (window.screen && window.screen.availHeight) ? window.screen.availHeight - 40 : 860);
+      window.resizeTo(430, targetHeight);
+    }
+  } catch {}
 
   // --------------------------------------------------------------------------
   // 1. Cyberpunk Web Audio Synthesizer (Zero external dependencies)
@@ -1318,6 +1325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (effectiveTab === 'net') {
       markSocialAsSeen();
     }
+    document.body.classList.toggle('admin-wide-mode', effectiveTab === 'admin');
 
     // Desktop Nav
     document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
