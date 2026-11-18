@@ -108,7 +108,7 @@
               </div>
               <form id="dropdown-login-form" class="space-y-2">
                 <input id="dropdown-login-identifier" type="text" placeholder="Email (es. v.solo@dive.larp)" class="w-full px-2.5 py-1.5 rounded-sm bg-[#04060A] border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple" required>
-                <input id="dropdown-login-pin" type="password" inputmode="numeric" placeholder="PIN (es. 1234)" class="w-full px-2.5 py-1.5 rounded-sm bg-[#04060A] border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple" required>
+                <input id="dropdown-login-pin" type="password" placeholder="Password" class="w-full px-2.5 py-1.5 rounded-sm bg-[#04060A] border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple" required>
                 <p id="dropdown-login-error" class="hidden text-[10px] text-dive-red"></p>
                 <button type="submit" class="w-full py-2 px-3 rounded-sm border border-dive-purple/50 bg-dive-purple text-black hover:bg-white font-bold text-[10px] uppercase tracking-wider transition-colors">
                   INSERISCI CREDENZIALI
@@ -1989,7 +1989,7 @@
       </div>
 
       <p class="text-[11px] font-sans text-slate-300 leading-relaxed">
-        Inserisci la tua <strong class="text-white">Email</strong> e il tuo <strong class="text-white">PIN</strong>. Al primo accesso potrai completare i tuoi dati di contatto.
+        Inserisci la tua <strong class="text-white">Email</strong> e la tua <strong class="text-white">Password</strong>. Al primo accesso potrai completare i tuoi dati di contatto.
       </p>
 
       <!-- Form Login -->
@@ -2000,8 +2000,8 @@
         </div>
 
         <div>
-          <label class="block text-slate-300 mb-1">PIN Personale (Demo: 1234):</label>
-          <input type="password" id="login-pin" placeholder="1234" value="1234" maxlength="8" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-mono text-xs tracking-widest outline-none focus:border-dive-orange" required>
+          <label class="block text-slate-300 mb-1">Password:</label>
+          <input type="password" id="login-pin" placeholder="••••" maxlength="16" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white font-mono text-xs tracking-widest outline-none focus:border-dive-orange" required>
         </div>
 
         <p id="login-error" class="hidden text-[11px] text-dive-red font-semibold"></p>
