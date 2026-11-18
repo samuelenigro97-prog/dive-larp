@@ -2001,7 +2001,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --------------------------------------------------------------------------
   // 10. Personal QR Fullscreen Modal
   // --------------------------------------------------------------------------
-  const openMyQrTrigger = document.getElementById('sheet-qr-container');
+  const openMyQrTrigger = document.getElementById('header-qr-btn');
   const myQrModal = document.getElementById('my-qr-modal');
   const closeMyQrBtn = document.getElementById('close-my-qr-btn');
 
@@ -3938,6 +3938,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (isAuthenticated) {
       setLoginMenuOpen(false);
+    }
+    const headerQrBtn = document.getElementById('header-qr-btn');
+    if (headerQrBtn) {
+      headerQrBtn.classList.toggle('hidden', !isAuthenticated);
     }
     const headerSocialBtn = document.getElementById('header-social-btn');
     if (headerSocialBtn) {
