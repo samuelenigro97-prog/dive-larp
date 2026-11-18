@@ -2933,14 +2933,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminAddMoney = document.getElementById('admin-add-money');
   const adminToggleIce = document.getElementById('admin-toggle-ice');
 
-  if (appVersionBadge && adminPinModal) {
+  const loginModalVersionBadge = document.getElementById('login-modal-version-badge');
+  [appVersionBadge, loginModalVersionBadge].filter(Boolean).forEach(badgeEl => {
+    if (!adminPinModal) return;
     let versionTapCount = 0;
     let versionTapTimer = null;
-    appVersionBadge.addEventListener('click', () => {
+    badgeEl.addEventListener('click', () => {
       versionTapCount += 1;
       clearTimeout(versionTapTimer);
       if (versionTapCount >= 3) {
         versionTapCount = 0;
+        if (typeof closeLoginModal === 'function') closeLoginModal();
         adminPinModal.classList.remove('hidden', 'pointer-events-none');
         setTimeout(() => adminPinModal.classList.add('opacity-100'), 10);
         if (adminPinInput) adminPinInput.focus();
@@ -2950,7 +2953,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1200);
       }
     });
-  }
+  });
 
   if (closeAdminPinBtn && adminPinModal) {
     closeAdminPinBtn.addEventListener('click', () => {
