@@ -1192,8 +1192,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const PUBLIC_TABS = ['home', 'eventi', 'gallery', 'premesse'];
 
+  function collapseAllSections(exceptId = null) {
+    document.querySelectorAll('[data-collapse-toggle]').forEach(toggle => {
+      const otherId = toggle.getAttribute('data-collapse-toggle');
+      if (otherId && otherId !== exceptId) {
+        setSectionCollapsed(otherId, true);
+      }
+    });
+  }
+
   function setSectionCollapsed(secId, collapsed) {
     if (!secId) return;
+    if (!collapsed) {
+      collapseAllSections(secId);
+    }
     const section = document.getElementById(secId);
     if (!section) return;
     const body = section.querySelector('[data-collapse-body]');
@@ -1336,7 +1348,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (scrollTargetId) {
-      expandSectionById(scrollTargetId);
+      if (scrollTargetId === 'sec-scheda') {
+        collapseAllSections();
+      } else {
+        expandSectionById(scrollTargetId);
+      }
       const targetEl = document.getElementById(scrollTargetId);
       if (targetEl) {
         setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
