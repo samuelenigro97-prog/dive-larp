@@ -1172,6 +1172,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const PUBLIC_TABS = ['home', 'eventi', 'gallery', 'premesse'];
 
+  function setSectionCollapsed(secId, collapsed) {
+    if (!secId) return;
+    const section = document.getElementById(secId);
+    if (!section) return;
+    const body = section.querySelector('[data-collapse-body]');
+    if (!body) return;
+    body.classList.toggle('hidden', collapsed);
+    const toggle = section.querySelector(`[data-collapse-toggle="${secId}"]`);
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', String(!collapsed));
+      const chevron = toggle.querySelector('[data-collapse-chevron]');
+      if (chevron) chevron.textContent = collapsed ? '▾' : '▴';
+    }
+  }
+
+  function expandSectionById(secId) {
+    setSectionCollapsed(secId, false);
+  }
+
+  document.querySelectorAll('[data-collapse-toggle]').forEach(toggle => {
+    const secId = toggle.getAttribute('data-collapse-toggle');
+    const handleToggle = () => {
+      const section = secId ? document.getElementById(secId) : null;
+      const body = section ? section.querySelector('[data-collapse-body]') : null;
+      if (!body) return;
+      setSectionCollapsed(secId, !body.classList.contains('hidden'));
+      if (typeof playClick === 'function') playClick();
+    };
+    toggle.addEventListener('click', handleToggle);
+    toggle.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleToggle();
+      }
+    });
+  });
+
   function getSocialActivityTotal() {
     const posts = typeof getSocialPosts === 'function' ? getSocialPosts() : [];
     const postAndComments = posts.reduce((acc, p) => acc + 1 + (Array.isArray(p.comments) ? p.comments.length : 0), 0);
@@ -1277,6 +1314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (scrollTargetId) {
+      expandSectionById(scrollTargetId);
       const targetEl = document.getElementById(scrollTargetId);
       if (targetEl) {
         setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
