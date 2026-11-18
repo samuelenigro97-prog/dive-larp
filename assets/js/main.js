@@ -630,11 +630,11 @@ document.addEventListener('DOMContentLoaded', () => {
       motivation: 'Ritrovare un legame & Sopravvivere'
     },
     '#K-4109': {
-      faction: 'CARAVIGLIARDI // LA STELLA',
+      faction: 'CARAVAN YARD // LA STELLA',
       immersion: 'difficile',
       mantra: '"Ogni sistema ha una crepa. Io ci vivo dentro."',
       song: 'Resonance — HOME',
-      thought: '"I Caravigliardi si fidano solo dei Tarocchi e del codice. Se salto un nodo stasera, salta l\'intera copertura."',
+      thought: '"Quelli di Caravan Yard si fidano solo dei Tarocchi e del codice. Se salto un nodo stasera, salta l\'intera copertura."',
       keyConcepts: ['Oracolo: La Stella', 'Infiltrazione', 'Paranoia lucida', 'Debito Neptun', 'Segreti', 'Net-ghost'],
       archetype: 'Architetto // INTJ',
       traumaCore: 'Tradimento intellettuale',
@@ -658,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
       immersion: 'difficile',
       mantra: '"There\'s no good ending in cyberpunk."',
       song: 'After Dark — Mr.Kitty',
-      thought: '"Tutti credono che il Fixer muova i fili, ma basta un contratto sbagliato tra Nyoka Circle e Caravigliardi per bruciare tutto."',
+      thought: '"Tutti credono che il Fixer muova i fili, ma basta un contratto sbagliato tra Nyoka Circle e Caravan Yard per bruciare tutto."',
       keyConcepts: ['Nyoka Circle', 'Doppio gioco', 'Informazioni', 'Taglie Black Market', 'Carisma', 'Rischio'],
       archetype: 'Comandante // ENTJ',
       traumaCore: 'Sospeso con vecchio socio',
@@ -702,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
       motivation: 'Dimostrare la supremazia KK'
     },
     '#M-3384': {
-      faction: 'CARAVIGLIARDI // L\'EREMITA',
+      faction: 'CARAVAN YARD // L\'EREMITA',
       immersion: 'vivibile',
       mantra: '"Quello che non va in onda non è mai esistito."',
       song: 'Midnight City — M83',
