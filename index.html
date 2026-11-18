@@ -809,6 +809,10 @@
                     <span id="card-immersion-badge" class="px-1 sm:px-1.5 py-0.5 bg-black border border-blue-500/50 text-blue-400 font-bold text-center truncate" title="Livello immersivo psicologico della scheda">
                       潜る MEDIO
                     </span>
+                    <button id="pg-core-folder-btn" type="button" aria-expanded="false" aria-controls="pg-core-folder-panel" title="Apri Cartella PG (compilabile solo dai Master)" class="col-span-2 sm:col-span-1 px-1.5 py-0.5 bg-black border border-dive-purple/40 text-dive-purple font-bold hover:border-dive-purple hover:bg-dive-purple/10 transition-colors cursor-pointer inline-flex items-center justify-center gap-1 truncate">
+                      <span>CARTELLA PG</span>
+                      <span id="pg-core-folder-chevron" class="text-[9px] opacity-80 flex-shrink-0" aria-hidden="true">▾</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -865,57 +869,68 @@
             </p>
           </div>
 
-          <!-- Profilo Psicologico, Mantra & 6 Concetti Chiave -->
-          <div id="pg-psychology-panel" class="pt-3.5 border-t border-white/10 space-y-3">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-              <div class="md:col-span-7 p-3 rounded-sm bg-[#04060A] border border-white/10 space-y-1.5">
-                <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[10px]">
-                  <span class="text-dive-purple font-bold uppercase tracking-wider">MANTRA // <span id="card-faction-label" class="text-dive-cyan">PORTO FRANCO NAVARRO</span></span>
-                  <span class="inline-flex items-center gap-2 text-slate-400">
-                    <span class="inline-flex items-end gap-[2px] h-3" aria-hidden="true">
-                      <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0s"></span>
-                      <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0.18s"></span>
-                      <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0.34s"></span>
-                      <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0.1s"></span>
-                    </span>
-                    <span id="card-song" class="text-dive-orange font-semibold">Nightcall — Kavinsky</span>
-                  </span>
-                </div>
-                <div id="card-mantra" class="font-orbitron text-xs sm:text-sm text-white font-bold italic">
-                  "There's no good ending in cyberpunk."
-                </div>
-                <p id="card-thought" class="text-[11px] font-sans text-slate-300 leading-relaxed">
-                  "Non credevo di poter arrivare fino a qui, sono così vicino a lei. Se i miei calcoli sono giusti, tra qualche giorno potrò raggiungerla."
-                </p>
+          <!-- Cartella Core PG (Nascosta di default, compilabile solo dai Master) -->
+          <div id="pg-core-folder-panel" class="hidden pt-3.5 border-t border-white/10 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono text-[10px] text-dive-purple uppercase tracking-[0.18em] font-bold">
+                CARTELLA CORE PG // COMPILABILE SOLO DAI MASTER
+              </span>
+              <button id="pg-core-folder-close-btn" type="button" title="Chiudi cartella PG" aria-label="Chiudi cartella PG" class="px-1.5 py-0.5 rounded-sm border border-white/15 bg-black/60 text-slate-400 hover:text-white hover:border-white/30 font-mono text-[10px] leading-none transition-colors cursor-pointer">
+                ×
+              </button>
+            </div>
+
+            <div class="p-3 rounded-sm bg-[#04060A] border border-white/10 space-y-2">
+              <div class="flex items-center justify-between font-mono text-[10px]">
+                <span class="text-dive-cyan font-bold uppercase tracking-wider">6 CONCETTI CHIAVE</span>
+                <span class="text-slate-500 uppercase">CORE PG</span>
               </div>
-              <div class="md:col-span-5 p-3 rounded-sm bg-[#04060A] border border-white/10 space-y-2">
-                <div class="flex items-center justify-between font-mono text-[10px]">
-                  <span class="text-dive-cyan font-bold uppercase tracking-wider">6 CONCETTI CHIAVE</span>
-                  <span class="text-slate-500 uppercase">CORE PG</span>
-                </div>
-                <div id="card-key-concepts" class="grid grid-cols-2 gap-1.5 font-mono text-[10px]">
-                  <!-- Popolato da JS -->
-                </div>
+              <div id="card-key-concepts" class="grid grid-cols-2 gap-1.5 font-mono text-[10px]">
+                <!-- Popolato da JS solo se compilato dai Master -->
               </div>
             </div>
 
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 font-mono text-[10px]">
               <div class="p-2.5 rounded-sm bg-[#04060A] border border-white/10">
                 <div class="text-[9px] text-slate-500 uppercase mb-0.5">Archetipo &amp; Carattere</div>
-                <div id="card-archetype" class="text-slate-200 font-semibold">Ribelle // ISTP</div>
+                <div id="card-archetype" class="text-slate-200 font-semibold">—</div>
               </div>
               <div class="p-2.5 rounded-sm bg-[#04060A] border border-white/10">
                 <div class="text-[9px] text-slate-500 uppercase mb-0.5">Trauma &amp; Sospesi</div>
-                <div id="card-trauma-core" class="text-dive-red font-semibold">Fallimento pubblico</div>
+                <div id="card-trauma-core" class="text-dive-red font-semibold">—</div>
               </div>
               <div class="p-2.5 rounded-sm bg-[#04060A] border border-white/10">
                 <div class="text-[9px] text-slate-500 uppercase mb-0.5">Reazione &amp; Emozione</div>
-                <div id="card-reaction" class="text-dive-orange font-semibold">Freddezza / Rabbia</div>
+                <div id="card-reaction" class="text-dive-orange font-semibold">—</div>
               </div>
               <div class="p-2.5 rounded-sm bg-[#04060A] border border-white/10">
                 <div class="text-[9px] text-slate-500 uppercase mb-0.5">Motivazione &amp; Outfit</div>
-                <div id="card-motivation" class="text-dive-cyan font-semibold">Vendetta &amp; Sopravvivenza</div>
+                <div id="card-motivation" class="text-dive-cyan font-semibold">—</div>
               </div>
+            </div>
+          </div>
+
+          <!-- Profilo Psicologico: Mantra & Brano -->
+          <div id="pg-psychology-panel" class="pt-3.5 border-t border-white/10 space-y-3">
+            <div class="p-3 rounded-sm bg-[#04060A] border border-white/10 space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[10px]">
+                <span class="text-dive-purple font-bold uppercase tracking-wider">MANTRA // <span id="card-faction-label" class="text-dive-cyan">PORTO FRANCO NAVARRO</span></span>
+                <span class="inline-flex items-center gap-2 text-slate-400">
+                  <span class="inline-flex items-end gap-[2px] h-3" aria-hidden="true">
+                    <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0s"></span>
+                    <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0.18s"></span>
+                    <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0.34s"></span>
+                    <span class="song-eq-bar w-[2px] bg-dive-orange" style="animation-delay:0.1s"></span>
+                  </span>
+                  <span id="card-song" class="text-dive-orange font-semibold">Nightcall — Kavinsky</span>
+                </span>
+              </div>
+              <div id="card-mantra" class="font-orbitron text-xs sm:text-sm text-white font-bold italic">
+                "There's no good ending in cyberpunk."
+              </div>
+              <p id="card-thought" class="text-[11px] font-sans text-slate-300 leading-relaxed">
+                "Non credevo di poter arrivare fino a qui, sono così vicino a lei. Se i miei calcoli sono giusti, tra qualche giorno potrò raggiungerla."
+              </p>
             </div>
           </div>
 
@@ -1634,6 +1649,23 @@
               </div>
             </div>
           </div>
+
+          <!-- Cartella Core PG compilabile solo dai Master -->
+          <form id="admin-core-folder-form" class="pt-3 border-t border-white/10 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-dive-purple font-bold uppercase text-[10px]">COMPILA CARTELLA PG (SOLO MASTER):</span>
+              <button type="submit" class="px-3 py-1 rounded-sm bg-dive-purple text-black font-bold text-[10px] uppercase hover:bg-white transition-colors cursor-pointer">
+                SALVA CARTELLA PG
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+              <input type="text" id="admin-folder-archetype" placeholder="Archetipo &amp; Carattere..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple">
+              <input type="text" id="admin-folder-trauma" placeholder="Trauma &amp; Sospesi..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple">
+              <input type="text" id="admin-folder-reaction" placeholder="Reazione &amp; Emozione..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple">
+              <input type="text" id="admin-folder-motivation" placeholder="Motivazione &amp; Outfit..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple">
+            </div>
+            <input type="text" id="admin-folder-concepts" placeholder="6 Concetti Chiave separati da virgola..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple">
+          </form>
         </div>
 
       </div>
