@@ -4763,7 +4763,7 @@ document.addEventListener('DOMContentLoaded', () => {
         netrunner: 'NODI RETE & ICE',
         chimico: 'BIOLAB CHIMICO'
       };
-      shortcutRoleBtn.textContent = roleShortcutLabels[kind] || 'CONSOLE RUOLO';
+      shortcutRoleBtn.textContent = roleShortcutLabels[kind] || 'CONSOLE MESTIERE';
     }
     [rolePanelRipperdoc, rolePanelFixer, rolePanelNetrunner, rolePanelChimico].forEach(p => {
       if (p) p.classList.add('hidden');
