@@ -873,18 +873,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const traumaCoreEl = document.getElementById('card-trauma-core');
     const reactionEl = document.getElementById('card-reaction');
     const motivationEl = document.getElementById('card-motivation');
+    const coreFolder = sheetData.coreFolder || {};
     if (factionEl) factionEl.textContent = psychProfile.faction;
     if (songEl) songEl.textContent = psychProfile.song;
     if (mantraEl) mantraEl.textContent = psychProfile.mantra;
     if (thoughtEl) thoughtEl.textContent = psychProfile.thought;
-    if (archEl) archEl.textContent = psychProfile.archetype;
-    if (traumaCoreEl) traumaCoreEl.textContent = psychProfile.traumaCore;
-    if (reactionEl) reactionEl.textContent = psychProfile.reaction;
-    if (motivationEl) motivationEl.textContent = psychProfile.motivation;
+    if (archEl) archEl.textContent = coreFolder.archetype || '—';
+    if (traumaCoreEl) traumaCoreEl.textContent = coreFolder.traumaCore || '—';
+    if (reactionEl) reactionEl.textContent = coreFolder.reaction || '—';
+    if (motivationEl) motivationEl.textContent = coreFolder.motivation || '—';
     if (conceptsEl) {
-      conceptsEl.innerHTML = (psychProfile.keyConcepts || []).slice(0, 6).map(c =>
-        `<span class="px-2 py-1 rounded-sm bg-black/70 border border-dive-cyan/30 text-slate-200 truncate" title="${c}">${c}</span>`
-      ).join('');
+      const folderConcepts = Array.isArray(coreFolder.keyConcepts) ? coreFolder.keyConcepts.filter(Boolean).slice(0, 6) : [];
+      if (folderConcepts.length) {
+        conceptsEl.innerHTML = folderConcepts.map(c =>
+          `<span class="px-2 py-1 rounded-sm bg-black/70 border border-dive-cyan/30 text-slate-200 truncate" title="${c}">${c}</span>`
+        ).join('');
+      } else {
+        conceptsEl.innerHTML = '<span class="col-span-2 text-slate-500 italic">Vuoto — compilabile solo dai Master.</span>';
+      }
     }
     if (playerHpText) playerHpText.textContent = `${sheetData.hp}% ${sheetData.hp > 75 ? 'NOMINALE' : (sheetData.hp > 30 ? 'FERITO' : 'CRITICO / FLATLINE')}`;
     if (playerHpBar) {
@@ -1848,8 +1854,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // 9b. Toggle Personal Details on ID Badge Click
+  // 9b. Toggle Personal Details on ID Badge Click & Core PG Folder Toggle
   // --------------------------------------------------------------------------
+  const coreFolderBtn = document.getElementById('pg-core-folder-btn');
+  const coreFolderPanel = document.getElementById('pg-core-folder-panel');
+  const coreFolderCloseBtn = document.getElementById('pg-core-folder-close-btn');
+  const coreFolderChevron = document.getElementById('pg-core-folder-chevron');
+
+  const setCoreFolderOpen = (open) => {
+    if (!coreFolderPanel) return;
+    coreFolderPanel.dataset.isOpen = open ? '1' : '0';
+    coreFolderPanel.classList.toggle('hidden', !open);
+    if (coreFolderBtn) coreFolderBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (coreFolderChevron) coreFolderChevron.textContent = open ? '▴' : '▾';
+  };
+
+  if (coreFolderBtn && coreFolderPanel) {
+    coreFolderBtn.addEventListener('click', () => {
+      setCoreFolderOpen(coreFolderPanel.dataset.isOpen !== '1');
+    });
+  }
+  if (coreFolderCloseBtn) {
+    coreFolderCloseBtn.addEventListener('click', () => setCoreFolderOpen(false));
+  }
+
   const secretIdToggleBtn = document.getElementById('card-secret-id-btn');
   const participantIntroBox = document.getElementById('participant-intro-box');
   const participantIntroCloseBtn = document.getElementById('participant-intro-close-btn');
@@ -3029,6 +3057,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (target && adminToggleIce) {
       adminToggleIce.textContent = target.iceActive ? 'ICE: ON (DISATTIVA)' : 'ICE: OFF (ATTIVA)';
     }
+    if (target) {
+      const f = target.coreFolder || {};
+      const archIn = document.getElementById('admin-folder-archetype');
+      const traumaIn = document.getElementById('admin-folder-trauma');
+      const reactIn = document.getElementById('admin-folder-reaction');
+      const motivIn = document.getElementById('admin-folder-motivation');
+      const concIn = document.getElementById('admin-folder-concepts');
+      if (archIn) archIn.value = f.archetype || '';
+      if (traumaIn) traumaIn.value = f.traumaCore || '';
+      if (reactIn) reactIn.value = f.reaction || '';
+      if (motivIn) motivIn.value = f.motivation || '';
+      if (concIn) concIn.value = Array.isArray(f.keyConcepts) ? f.keyConcepts.join(', ') : '';
+    }
   }
 
   function applyAdminIntervention(updaterFn, soundFreq = 680) {
@@ -3121,6 +3162,26 @@ document.addEventListener('DOMContentLoaded', () => {
   if (adminToggleIce) {
     adminToggleIce.addEventListener('click', () => {
       applyAdminIntervention((t) => { t.iceActive = !t.iceActive; }, 750);
+    });
+  }
+
+  const adminCoreFolderForm = document.getElementById('admin-core-folder-form');
+  if (adminCoreFolderForm) {
+    adminCoreFolderForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const archetype = document.getElementById('admin-folder-archetype')?.value.trim() || '';
+      const traumaCore = document.getElementById('admin-folder-trauma')?.value.trim() || '';
+      const reaction = document.getElementById('admin-folder-reaction')?.value.trim() || '';
+      const motivation = document.getElementById('admin-folder-motivation')?.value.trim() || '';
+      const rawConcepts = document.getElementById('admin-folder-concepts')?.value.trim() || '';
+      const keyConcepts = rawConcepts
+        ? rawConcepts.split(',').map(s => s.trim()).filter(Boolean).slice(0, 6)
+        : [];
+      applyAdminIntervention((t) => {
+        t.coreFolder = { archetype, traumaCore, reaction, motivation, keyConcepts };
+      }, 820);
+      if (typeof playCyberFx === 'function') playCyberFx('success');
+      alert('Cartella PG salvata e sincronizzata.');
     });
   }
 
