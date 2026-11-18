@@ -1183,6 +1183,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const SECTION_ROUTES = {
     dossier: { tab: 'profile', anchor: 'sec-scheda' },
     biomonitor: { tab: 'profile', anchor: 'sec-biomonitor' },
+    roleconsole: { tab: 'profile', anchor: 'sec-role-console' },
     cyberware: { tab: 'profile', anchor: 'sec-cyberware' },
     cyberdeck: { tab: 'profile', anchor: 'sec-deck' },
     deck: { tab: 'profile', anchor: 'sec-deck' },
@@ -4747,11 +4748,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!secRoleConsole) return;
     const target = activeSheetRunner || player;
     const kind = getRoleKind(target?.role);
+    const shortcutRoleBtn = document.getElementById('shortcut-role-console-btn');
     if (!kind || activeSheetRunner) {
       secRoleConsole.classList.add('hidden');
+      if (shortcutRoleBtn) shortcutRoleBtn.classList.add('hidden');
       return;
     }
     secRoleConsole.classList.remove('hidden');
+    if (shortcutRoleBtn) {
+      shortcutRoleBtn.classList.remove('hidden');
+      const roleShortcutLabels = {
+        ripperdoc: 'CLINICA RIPPERDOC',
+        fixer: 'BROKER FIXER',
+        netrunner: 'NODI RETE & ICE',
+        chimico: 'BIOLAB CHIMICO'
+      };
+      shortcutRoleBtn.textContent = roleShortcutLabels[kind] || 'CONSOLE RUOLO';
+    }
     [rolePanelRipperdoc, rolePanelFixer, rolePanelNetrunner, rolePanelChimico].forEach(p => {
       if (p) p.classList.add('hidden');
     });
