@@ -644,3 +644,18 @@ body.ingame-mode .hud-bracket::before {
 body.ingame-mode .hud-bracket::after {
   border-color: var(--pg-accent-2) !important;
 }
+
+.qr-meta-desktop {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .qr-meta-desktop {
+    display: block;
+  }
+
+  #sheet-qr-container {
+    width: 5rem;
+    height: 5rem;
+  }
+}
