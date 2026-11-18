@@ -1299,7 +1299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function switchTab(tabId) {
+  function switchTab(tabId, { allowToggle = false } = {}) {
     const isAuthenticated = Boolean(getActiveSessionId());
     const isRipperdoc = typeof getRoleKind === 'function' && getRoleKind(player.role) === 'ripperdoc';
     const safeTabId = (tabId === 'biomonitor' && !isRipperdoc) ? 'profile' : tabId;
@@ -1311,6 +1311,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isAuthenticated && PUBLIC_TABS.includes(effectiveTab)) {
       effectiveTab = 'profile';
     }
+
+    const profileTabEl = document.getElementById('tab-profile');
+    const wasOnProfile = Boolean(profileTabEl && !profileTabEl.classList.contains('hidden'));
 
     appTabs.forEach(tab => {
       if (tab.id === `tab-${effectiveTab}`) {
@@ -1328,7 +1331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.toggle('admin-wide-mode', effectiveTab === 'admin');
 
     // Desktop Nav
-    document.querySelectorAll('nav button.nav-tab-trigger').forEach(btn => {
+    document.querySelectorAll('#desktop-game-nav button.nav-tab-trigger').forEach(btn => {
       const btnTab = btn.getAttribute('data-tab');
       const isSectionTrigger = Boolean(SECTION_ROUTES[btnTab] && SECTION_ROUTES[btnTab].anchor);
       const isActive = isSectionTrigger ? (btnTab === tabId) : (btnTab === effectiveTab);
@@ -1360,14 +1363,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (scrollTargetId) {
+      const targetEl = document.getElementById(scrollTargetId);
+      const targetBody = targetEl ? targetEl.querySelector('[data-collapse-body]') : null;
+      const isAlreadyOpen = Boolean(targetBody && !targetBody.classList.contains('hidden'));
       if (scrollTargetId === 'sec-scheda') {
         collapseAllSections();
+        if (targetEl) {
+          setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+        }
+      } else if (allowToggle && wasOnProfile && targetBody && isAlreadyOpen) {
+        setSectionCollapsed(scrollTargetId, true);
       } else {
         expandSectionById(scrollTargetId);
-      }
-      const targetEl = document.getElementById(scrollTargetId);
-      if (targetEl) {
-        setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+        if (targetEl) {
+          setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+        }
       }
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1384,7 +1394,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const tabId = btn.getAttribute('data-tab');
       if (tabId) {
         e.preventDefault();
-        switchTab(tabId);
+        switchTab(tabId, { allowToggle: Boolean(btn.closest('#mobile-game-dock')) });
       }
     });
   });
