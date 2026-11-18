@@ -745,9 +745,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const isBioOther = Boolean(bioTarget && bioTarget.secretId && bioTarget.secretId !== player.secretId);
 
     const secBiomonitor = document.getElementById('sec-biomonitor');
-    const navBiomonitorBtn = document.querySelector('nav button[data-tab="biomonitor"]');
     if (secBiomonitor) secBiomonitor.classList.toggle('hidden', !isRipperdoc);
-    if (navBiomonitorBtn) navBiomonitorBtn.classList.toggle('hidden', !isRipperdoc);
+    document.querySelectorAll('[data-tab="biomonitor"]').forEach(btn => {
+      btn.classList.toggle('hidden', !isRipperdoc);
+    });
 
     const bioTargetLabel = document.getElementById('biomonitor-target-label');
     if (bioTargetLabel) {
