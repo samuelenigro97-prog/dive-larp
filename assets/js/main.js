@@ -228,8 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
     psych: 10,
     fama: 3,
     wallet: 1500,
-    ram: 8,
-    ramMax: 8,
+    ram: 5,
+    ramMax: 5,
     iceActive: true,
     traumas: [],
     transactions: [
@@ -255,14 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const ROSTER_SEED = [
-    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', playerName: 'Valerio', playerSurname: 'Rinaldi', email: 'v.solo@dive.larp', playerContact: '+39 340 784 2019', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', playerName: 'Elena', playerSurname: 'Moretti', email: 'kuro.04@dive.larp', playerContact: '+39 349 410 9044', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 8, ramMax: 8, ice: false },
-    { callsign: '@Doc_Chrome', role: 'TECHIE // RIPPERDOC', secretId: '#D-5510', pin: '1234', playerName: 'Lorenzo', playerSurname: 'De Luca', email: 'doc.chrome@dive.larp', playerContact: '+39 345 551 0088', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'red', hp: 100, psych: 15, fama: 4, wallet: 2200, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@The_Fixer', role: 'FIXER // BROKER', secretId: '#F-3088', pin: '1234', playerName: 'Giulia', playerSurname: 'Sartori', email: 'the.fixer@dive.larp', playerContact: '+39 348 308 8120', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'orange', hp: 100, psych: 5, fama: 5, wallet: 4800, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Dr_Vex', role: 'CHIMICO // BIOTECH', secretId: '#B-6420', pin: '1234', playerName: 'Chiara', playerSurname: 'Valenti', email: 'dr.vex@dive.larp', playerContact: '+39 342 642 0199', avatar: 'assets/images/avatars/pg-5.jpg', themeColor: 'green', hp: 100, psych: 20, fama: 3, wallet: 1750, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-6.jpg', themeColor: 'green', hp: 55, psych: 45, fama: 2, wallet: 320, ram: 8, ramMax: 8, ice: false, traumas: [{ name: 'Frattura Avambraccio', desc: 'Riduce stabilità arma secondaria.' }] },
-    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245', avatar: 'assets/images/avatars/pg-7.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 8, ramMax: 8, ice: true },
-    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410', avatar: 'assets/images/avatars/pg-8.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 8, ramMax: 8, ice: false }
+    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', playerName: 'Valerio', playerSurname: 'Rinaldi', email: 'v.solo@dive.larp', playerContact: '+39 340 784 2019', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 5, ramMax: 5, ice: true },
+    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', playerName: 'Elena', playerSurname: 'Moretti', email: 'kuro.04@dive.larp', playerContact: '+39 349 410 9044', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 5, ramMax: 5, ice: false },
+    { callsign: '@Doc_Chrome', role: 'TECHIE // RIPPERDOC', secretId: '#D-5510', pin: '1234', playerName: 'Lorenzo', playerSurname: 'De Luca', email: 'doc.chrome@dive.larp', playerContact: '+39 345 551 0088', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'red', hp: 100, psych: 15, fama: 4, wallet: 2200, ram: 5, ramMax: 5, ice: true },
+    { callsign: '@The_Fixer', role: 'FIXER // BROKER', secretId: '#F-3088', pin: '1234', playerName: 'Giulia', playerSurname: 'Sartori', email: 'the.fixer@dive.larp', playerContact: '+39 348 308 8120', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'orange', hp: 100, psych: 5, fama: 5, wallet: 4800, ram: 5, ramMax: 5, ice: true },
+    { callsign: '@Dr_Vex', role: 'CHIMICO // BIOTECH', secretId: '#B-6420', pin: '1234', playerName: 'Chiara', playerSurname: 'Valenti', email: 'dr.vex@dive.larp', playerContact: '+39 342 642 0199', avatar: 'assets/images/avatars/pg-5.jpg', themeColor: 'green', hp: 100, psych: 20, fama: 3, wallet: 1750, ram: 5, ramMax: 5, ice: true },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-6.jpg', themeColor: 'green', hp: 55, psych: 45, fama: 2, wallet: 320, ram: 5, ramMax: 5, ice: false, traumas: [{ name: 'Frattura Avambraccio', desc: 'Riduce stabilità arma secondaria.' }] },
+    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245', avatar: 'assets/images/avatars/pg-7.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 5, ramMax: 5, ice: true },
+    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410', avatar: 'assets/images/avatars/pg-8.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 5, ramMax: 5, ice: false }
   ];
 
   const ACCOUNTS_STORAGE_KEY = 'dive_accounts_v1';
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
       iceActive: raw.iceActive !== undefined ? raw.iceActive : Boolean(raw.ice),
       pin: raw.pin || '1234',
       ram: raw.ram ?? 8,
-      ramMax: raw.ramMax ?? 8,
+      ramMax: raw.ramMax ?? 5,
       traumas: Array.isArray(raw.traumas) ? raw.traumas : [],
       contacts: Array.isArray(raw.contacts) ? raw.contacts : [],
       transactions: Array.isArray(raw.transactions) ? raw.transactions : [
@@ -1384,7 +1384,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let ramRegenInterval = null;
 
   function renderRamUI() {
-    const max = Number(player.ramMax) || 8;
+    const max = Number(player.ramMax) || 5;
     const current = Math.max(0, Math.min(max, Number(player.ram ?? max)));
     player.ram = current;
     player.ramMax = max;
@@ -1403,6 +1403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (ramCellsEl) {
+      ramCellsEl.style.gridTemplateColumns = `repeat(${max}, minmax(0, 1fr))`;
       ramCellsEl.innerHTML = '';
       for (let i = 0; i < max; i++) {
         const cell = document.createElement('div');
@@ -1431,10 +1432,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function ensureRamRegenRunning() {
-    if (ramRegenInterval || player.ram >= (player.ramMax || 8)) return;
+    if (ramRegenInterval || player.ram >= (player.ramMax || 5)) return;
     ramRegenCountdown = RAM_REGEN_SECONDS;
     ramRegenInterval = setInterval(() => {
-      if (player.ram >= (player.ramMax || 8)) {
+      if (player.ram >= (player.ramMax || 5)) {
         clearInterval(ramRegenInterval);
         ramRegenInterval = null;
         renderRamUI();
@@ -1442,10 +1443,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       ramRegenCountdown -= 1;
       if (ramRegenCountdown <= 0) {
-        player.ram = Math.min(player.ramMax || 8, (player.ram || 0) + 1);
+        player.ram = Math.min(player.ramMax || 5, (player.ram || 0) + 1);
         ramRegenCountdown = RAM_REGEN_SECONDS;
         savePlayerState(player);
-        if (player.ram >= (player.ramMax || 8)) {
+        if (player.ram >= (player.ramMax || 5)) {
           clearInterval(ramRegenInterval);
           ramRegenInterval = null;
         }
@@ -1456,7 +1457,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (ramResetBtn) {
     ramResetBtn.addEventListener('click', () => {
-      player.ram = player.ramMax || 8;
+      player.ram = player.ramMax || 5;
       if (ramRegenInterval) {
         clearInterval(ramRegenInterval);
         ramRegenInterval = null;
@@ -3543,7 +3544,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const pin = document.getElementById('admin-pg-pin')?.value.trim() || '1234';
       const wallet = Math.max(0, parseInt(document.getElementById('admin-pg-wallet')?.value || '1500', 10) || 0);
       const fama = Math.min(5, Math.max(1, parseInt(document.getElementById('admin-pg-fama')?.value || '3', 10) || 3));
-      const ramMax = Math.min(16, Math.max(4, parseInt(document.getElementById('admin-pg-ram')?.value || '8', 10) || 8));
+      const ramMax = Math.min(16, Math.max(4, parseInt(document.getElementById('admin-pg-ram')?.value || '5', 10) || 5));
       const faction = document.getElementById('admin-pg-faction')?.value.trim() || 'PORTO FRANCO NAVARRO';
       const iceActive = Boolean(document.getElementById('admin-pg-ice')?.checked);
       const mantra = document.getElementById('admin-pg-mantra')?.value.trim() || '"Ogni scelta a Navarro ha un prezzo."';
