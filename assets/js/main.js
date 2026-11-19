@@ -1992,12 +1992,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const participantIntroBox = document.getElementById('participant-intro-box');
   const participantIntroCloseBtn = document.getElementById('participant-intro-close-btn');
   const secretIdToggleChevron = document.getElementById('card-secret-id-chevron');
+  const idPersonalDetailsBtn = document.getElementById('id-personal-details-btn');
+  const idPersonalDetailsPanel = document.getElementById('id-personal-details-panel');
+  const idPersonalDetailsChevron = document.getElementById('id-personal-details-chevron');
+
+  const setNestedPersonalDataOpen = (open) => {
+    if (!idPersonalDetailsPanel) return;
+    idPersonalDetailsPanel.dataset.isOpen = open ? '1' : '0';
+    idPersonalDetailsPanel.classList.toggle('hidden', !open);
+    if (idPersonalDetailsBtn) {
+      idPersonalDetailsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    if (idPersonalDetailsChevron) {
+      idPersonalDetailsChevron.textContent = open ? '▴' : '▾';
+    }
+  };
+
+  if (idPersonalDetailsBtn && idPersonalDetailsPanel) {
+    idPersonalDetailsBtn.addEventListener('click', () => {
+      setNestedPersonalDataOpen(idPersonalDetailsPanel.dataset.isOpen !== '1');
+    });
+  }
 
   const setPersonalDetailsOpen = (open) => {
     if (!participantIntroBox) return;
     if (open && participantIntroBox.dataset.canReveal !== '1') return;
     participantIntroBox.dataset.isOpen = open ? '1' : '0';
     participantIntroBox.classList.toggle('hidden', !open);
+    if (!open) setNestedPersonalDataOpen(false);
     if (secretIdToggleBtn) {
       secretIdToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
