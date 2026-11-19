@@ -1368,21 +1368,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const isAlreadyOpen = Boolean(targetBody && !targetBody.classList.contains('hidden'));
       if (scrollTargetId === 'sec-scheda') {
         collapseAllSections();
-        if (targetEl) {
-          setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
-        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (allowToggle && wasOnProfile && targetBody && isAlreadyOpen) {
         setSectionCollapsed(scrollTargetId, true);
       } else {
         expandSectionById(scrollTargetId);
         if (targetEl) {
-          setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+          setTimeout(() => {
+            try {
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch {}
+          }, 40);
         }
       }
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    playCyberSound(450, 'triangle', 0.05);
+    try { playCyberSound(450, 'triangle', 0.05); } catch {}
 
     if (['net', 'profile'].includes(effectiveTab) && !getActiveSessionId() && typeof openLoginModal === 'function') {
       openLoginModal(false);
