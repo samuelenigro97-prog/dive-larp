@@ -645,6 +645,47 @@ body.ingame-mode .hud-bracket::after {
   border-color: var(--pg-accent-2) !important;
 }
 
+/* Un colore univoco per bordo e angoli HUD di ogni singola sezione */
+body.ingame-mode #sec-scheda.cyber-panel {
+  border-color: rgba(226, 232, 240, 0.45) !important;
+}
+body.ingame-mode #sec-scheda.hud-bracket::before,
+body.ingame-mode #sec-scheda.hud-bracket::after {
+  border-color: #E2E8F0 !important;
+}
+
+body.ingame-mode #sec-role-console.cyber-panel {
+  border-color: rgba(250, 204, 21, 0.5) !important;
+}
+body.ingame-mode #sec-role-console.hud-bracket::before,
+body.ingame-mode #sec-role-console.hud-bracket::after {
+  border-color: #FACC15 !important;
+}
+
+body.ingame-mode #sec-cyberware.cyber-panel {
+  border-color: rgba(255, 107, 0, 0.5) !important;
+}
+body.ingame-mode #sec-cyberware.hud-bracket::before,
+body.ingame-mode #sec-cyberware.hud-bracket::after {
+  border-color: #FF6B00 !important;
+}
+
+body.ingame-mode #sec-wallet .cyber-panel {
+  border-color: rgba(0, 255, 102, 0.45) !important;
+}
+body.ingame-mode #sec-wallet .hud-bracket::before,
+body.ingame-mode #sec-wallet .hud-bracket::after {
+  border-color: #00FF66 !important;
+}
+
+body.ingame-mode #sec-deck .cyber-panel {
+  border-color: rgba(0, 240, 255, 0.5) !important;
+}
+body.ingame-mode #sec-deck .hud-bracket::before,
+body.ingame-mode #sec-deck .hud-bracket::after {
+  border-color: #00F0FF !important;
+}
+
 .qr-meta-desktop {
   display: none;
 }
