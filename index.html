@@ -37,13 +37,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.70.3">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.70.4">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.70.3">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.70.4">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -892,7 +892,7 @@
                     <span id="card-role" class="font-mono text-[10px] sm:text-[11px] text-dive-orange font-bold block truncate">MERCENARIO // SOLO</span>
                   </div>
                   <div class="pt-1 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1 font-mono text-[9px] sm:text-[10px]">
-                    <button id="card-secret-id-btn" type="button" aria-expanded="false" aria-controls="participant-intro-box" title="Clicca per mostrare o nascondere i dati personali" class="px-1 sm:px-1.5 py-0.5 bg-black border border-dive-cyan/40 text-dive-cyan font-bold hover:border-dive-cyan hover:bg-dive-cyan/10 transition-colors cursor-pointer inline-flex items-center justify-center gap-1 truncate">
+                    <button id="card-secret-id-btn" type="button" aria-expanded="false" aria-controls="participant-intro-box" title="Clicca per mostrare o nascondere i dati utente" class="px-1 sm:px-1.5 py-0.5 bg-black border border-dive-cyan/40 text-dive-cyan font-bold hover:border-dive-cyan hover:bg-dive-cyan/10 transition-colors cursor-pointer inline-flex items-center justify-center gap-1 truncate">
                       <span class="truncate">ID: <span id="card-secret-id">#V-7842</span></span>
                       <span id="card-secret-id-chevron" class="text-[9px] opacity-80 flex-shrink-0" aria-hidden="true">▾</span>
                     </button>
@@ -918,13 +918,13 @@
           <div id="participant-intro-box" class="hidden pt-3.5 border-t border-white/10 space-y-2.5">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <span id="intro-player-pg-tag" class="font-mono text-[10px] text-dive-orange font-bold">@V_Solo (#V-7842)</span>
-              <button id="participant-intro-close-btn" type="button" title="Chiudi dati personali" aria-label="Chiudi dati personali" class="px-1.5 py-0.5 rounded-sm border border-white/15 bg-black/60 text-slate-400 hover:text-white hover:border-white/30 font-mono text-[10px] leading-none transition-colors cursor-pointer">
+              <button id="participant-intro-close-btn" type="button" title="Chiudi dati utente" aria-label="Chiudi dati utente" class="px-1.5 py-0.5 rounded-sm border border-white/15 bg-black/60 text-slate-400 hover:text-white hover:border-white/30 font-mono text-[10px] leading-none transition-colors cursor-pointer">
                 ×
               </button>
             </div>
             <div>
               <button id="id-personal-details-btn" type="button" aria-expanded="false" aria-controls="id-personal-details-panel" class="px-2.5 py-1 bg-black border border-dive-cyan/40 text-dive-cyan font-mono text-[10px] font-bold uppercase tracking-wider hover:border-dive-cyan hover:bg-dive-cyan/10 transition-colors cursor-pointer inline-flex items-center gap-1.5">
-                <span>DATI PERSONALI</span>
+                <span>DATI UTENTE</span>
                 <span id="id-personal-details-chevron" class="text-[9px] opacity-80" aria-hidden="true">▾</span>
               </button>
             </div>
@@ -2042,7 +2042,7 @@
           <span id="login-sync-mode-label" class="font-mono text-[10px] text-dive-cyan">MODALITÀ: DEMO LOCALE</span>
         </div>
         <div class="flex items-center gap-2">
-          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.70.3</span>
+          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.70.4</span>
           <button id="close-login-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs hover:bg-white/20">X</button>
         </div>
       </div>
@@ -2097,7 +2097,7 @@
       </div>
 
       <p class="text-[11px] font-sans text-slate-300 leading-relaxed">
-        La tua scheda PG è già stata precompilata dai Master. Inserisci solo i tuoi dati personali di partecipazione:
+        La tua scheda PG è già stata precompilata dai Master. Inserisci solo i tuoi dati utente di partecipazione:
       </p>
 
       <form id="player-contact-form" class="space-y-3 font-mono text-xs">
@@ -2205,12 +2205,12 @@
 
   <!-- Floating Version Badge (Bottom-Right, 3x click = Regia Master) -->
   <div id="app-version-badge" class="fixed bottom-[calc(3.25rem+0.75rem+env(safe-area-inset-bottom))] right-3 z-30 cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.70.3
+    v0.70.4
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.70.3"></script>
-  <script src="assets/js/main.js?v=0.70.3"></script>
+  <script src="assets/js/sync.js?v=0.70.4"></script>
+  <script src="assets/js/main.js?v=0.70.4"></script>
 </body>
 </html>
