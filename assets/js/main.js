@@ -4234,6 +4234,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (headerSocialBtn) {
       headerSocialBtn.classList.toggle('hidden', !isAuthenticated);
     }
+    const headerChatBtn = document.getElementById('header-chat-btn');
+    if (headerChatBtn) {
+      headerChatBtn.classList.toggle('hidden', !isAuthenticated);
+    }
     if (headerQuickLogoutBtn) {
       headerQuickLogoutBtn.classList.toggle('hidden', !isAuthenticated);
     }
@@ -5105,6 +5109,248 @@ document.addEventListener('DOMContentLoaded', () => {
       expandSectionById('sec-biomonitor');
     }
   }
+
+  // --------------------------------------------------------------------------
+  // 15b. Direct PG Chat (WhatsApp / Telegram Style)
+  // --------------------------------------------------------------------------
+  const DM_STORAGE_KEY = 'dive_dm_threads_v1';
+  const dmStartForm = document.getElementById('dm-start-form');
+  const dmNumberInput = document.getElementById('dm-number-input');
+  const dmStartError = document.getElementById('dm-start-error');
+  const dmSearchInput = document.getElementById('dm-search-input');
+  const dmThreadsList = document.getElementById('dm-threads-list');
+  const dmEmptyState = document.getElementById('dm-empty-state');
+  const dmActiveView = document.getElementById('dm-active-view');
+  const dmSidebarCol = document.getElementById('dm-sidebar-col');
+  const dmConversationCol = document.getElementById('dm-conversation-col');
+  const dmMobileBackBtn = document.getElementById('dm-mobile-back-btn');
+  const dmPeerAvatar = document.getElementById('dm-peer-avatar');
+  const dmPeerCallsign = document.getElementById('dm-peer-callsign');
+  const dmPeerId = document.getElementById('dm-peer-id');
+  const dmPeerNumber = document.getElementById('dm-peer-number');
+  const dmMessagesList = document.getElementById('dm-messages-list');
+  const dmSendForm = document.getElementById('dm-send-form');
+  const dmMessageInput = document.getElementById('dm-message-input');
+  const headerChatBtnTrigger = document.getElementById('header-chat-btn');
+
+  let activeDmPeerId = null;
+
+  function loadDmThreads() {
+    try {
+      const raw = localStorage.getItem(DM_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') return parsed;
+      }
+    } catch {}
+    return {};
+  }
+
+  function saveDmThreads(threads) {
+    try {
+      localStorage.setItem(DM_STORAGE_KEY, JSON.stringify(threads));
+    } catch {}
+  }
+
+  function dmThreadKey(idA, idB) {
+    return [String(idA || '').toUpperCase(), String(idB || '').toUpperCase()].sort().join('|');
+  }
+
+  function normPhoneDigits(str) {
+    return String(str || '').replace(/\D/g, '');
+  }
+
+  function findAccountForDm(query) {
+    const q = String(query || '').trim();
+    if (!q) return null;
+    const qLower = q.toLowerCase();
+    const qDigits = normPhoneDigits(q);
+    const qId = ('#' + q.replace(/^#/, '')).toUpperCase();
+    const myId = String(player.secretId || '#V-7842').toUpperCase();
+
+    return getAccountsRegistry().find(acc => {
+      if ((acc.secretId || '').toUpperCase() === myId) return false;
+      if ((acc.secretId || '').toUpperCase() === qId) return true;
+      if ((acc.callsign || '').toLowerCase() === qLower) return true;
+      if (qDigits.length >= 4) {
+        const accDigits = normPhoneDigits(acc.playerContact);
+        if (accDigits === qDigits || accDigits.endsWith(qDigits)) return true;
+      }
+      return false;
+    }) || null;
+  }
+
+  function renderDmMessages() {
+    if (!dmMessagesList || !activeDmPeerId) return;
+    const threads = loadDmThreads();
+    const key = dmThreadKey(player.secretId, activeDmPeerId);
+    const msgs = Array.isArray(threads[key]) ? threads[key] : [];
+    const myId = String(player.secretId || '').toUpperCase();
+
+    if (!msgs.length) {
+      dmMessagesList.innerHTML = `<div class="text-center text-slate-500 font-mono text-[11px] py-8">Nessun messaggio. Scrivi per iniziare la conversazione.</div>`;
+      return;
+    }
+
+    dmMessagesList.innerHTML = msgs.map(m => {
+      const isMine = String(m.fromId || '').toUpperCase() === myId;
+      return `
+        <div class="flex ${isMine ? 'justify-end' : 'justify-start'}">
+          <div class="max-w-[78%] px-3 py-2 rounded-sm border ${isMine
+            ? 'bg-dive-green/15 border-dive-green/40 text-white'
+            : 'bg-[#080B12] border-white/15 text-slate-200'} space-y-1">
+            <p class="leading-relaxed break-words">${escapeChatText(m.text)}</p>
+            <div class="text-[9px] font-mono ${isMine ? 'text-dive-green/80 text-right' : 'text-slate-500'}">${escapeChatText(m.time || '')}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    dmMessagesList.scrollTop = dmMessagesList.scrollHeight;
+  }
+
+  function openDmConversation(peerAccount) {
+    if (!peerAccount) return;
+    activeDmPeerId = peerAccount.secretId;
+    if (dmEmptyState) dmEmptyState.classList.add('hidden');
+    if (dmActiveView) dmActiveView.classList.remove('hidden');
+    if (dmPeerAvatar) dmPeerAvatar.src = peerAccount.avatar || 'assets/images/avatars/pg-2.jpg';
+    if (dmPeerCallsign) dmPeerCallsign.textContent = peerAccount.callsign;
+    if (dmPeerId) dmPeerId.textContent = peerAccount.secretId;
+    if (dmPeerNumber) dmPeerNumber.textContent = peerAccount.playerContact || 'Numero riservato';
+
+    // Su mobile mostra solo la conversazione attiva
+    if (window.innerWidth < 1024 && dmSidebarCol && dmConversationCol) {
+      dmSidebarCol.classList.add('hidden');
+      dmConversationCol.classList.remove('hidden');
+    }
+
+    renderDmThreads();
+    renderDmMessages();
+    if (dmMessageInput) dmMessageInput.focus();
+  }
+
+  function renderDmThreads() {
+    if (!dmThreadsList) return;
+    const threads = loadDmThreads();
+    const myId = String(player.secretId || '').toUpperCase();
+    const filterQ = String(dmSearchInput ? dmSearchInput.value : '').trim().toLowerCase();
+    const accounts = getAccountsRegistry().filter(a => (a.secretId || '').toUpperCase() !== myId);
+
+    const items = accounts
+      .map(acc => {
+        const key = dmThreadKey(myId, acc.secretId);
+        const msgs = Array.isArray(threads[key]) ? threads[key] : [];
+        return { acc, msgs, last: msgs[msgs.length - 1] || null };
+      })
+      .filter(it => it.msgs.length > 0 || (activeDmPeerId && it.acc.secretId.toUpperCase() === activeDmPeerId.toUpperCase()))
+      .filter(it => {
+        if (!filterQ) return true;
+        return (it.acc.callsign || '').toLowerCase().includes(filterQ)
+          || (it.acc.playerContact || '').toLowerCase().includes(filterQ)
+          || (it.acc.secretId || '').toLowerCase().includes(filterQ);
+      })
+      .sort((a, b) => (b.last?.ts || 0) - (a.last?.ts || 0));
+
+    if (!items.length) {
+      dmThreadsList.innerHTML = `<div class="p-4 text-center font-mono text-[11px] text-slate-500">Nessuna chat attiva. Inserisci il numero di un PG in alto per iniziare.</div>`;
+      return;
+    }
+
+    dmThreadsList.innerHTML = items.map(({ acc, last }) => {
+      const isActive = activeDmPeerId && acc.secretId.toUpperCase() === activeDmPeerId.toUpperCase();
+      return `
+        <button type="button" data-dm-peer="${acc.secretId}" class="w-full text-left px-3 py-2.5 flex items-center gap-2.5 transition-colors cursor-pointer ${isActive ? 'bg-dive-green/15 border-l-2 border-dive-green' : 'hover:bg-white/5'}">
+          <img src="${acc.avatar || 'assets/images/avatars/pg-1.jpg'}" alt="${escapeChatText(acc.callsign)}" class="w-9 h-9 rounded-full object-cover border border-white/20 flex-shrink-0">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center justify-between gap-1">
+              <span class="font-orbitron font-bold text-xs text-white truncate">${escapeChatText(acc.callsign)}</span>
+              <span class="font-mono text-[9px] text-slate-500 flex-shrink-0">${last ? escapeChatText(last.time || '') : ''}</span>
+            </div>
+            <div class="font-mono text-[9px] text-dive-cyan truncate">${escapeChatText(acc.playerContact || acc.secretId)}</div>
+            <div class="font-sans text-[11px] text-slate-400 truncate">${last ? escapeChatText(last.text) : 'Nuova conversazione'}</div>
+          </div>
+        </button>
+      `;
+    }).join('');
+  }
+
+  if (dmThreadsList) {
+    dmThreadsList.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-dm-peer]');
+      if (!btn) return;
+      const peerId = btn.getAttribute('data-dm-peer');
+      const acc = getAccountsRegistry().find(a => (a.secretId || '').toUpperCase() === String(peerId || '').toUpperCase());
+      if (acc) openDmConversation(acc);
+    });
+  }
+
+  if (dmSearchInput) {
+    dmSearchInput.addEventListener('input', renderDmThreads);
+  }
+
+  if (dmMobileBackBtn) {
+    dmMobileBackBtn.addEventListener('click', () => {
+      if (dmSidebarCol) dmSidebarCol.classList.remove('hidden');
+      if (dmConversationCol) dmConversationCol.classList.add('hidden');
+    });
+  }
+
+  if (dmStartForm) {
+    dmStartForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (dmStartError) dmStartError.classList.add('hidden');
+      const query = dmNumberInput ? dmNumberInput.value.trim() : '';
+      const target = findAccountForDm(query);
+      if (!target) {
+        if (dmStartError) {
+          dmStartError.textContent = 'Nessun PG trovato con questo numero, codice ID o callsign.';
+          dmStartError.classList.remove('hidden');
+        }
+        return;
+      }
+      if (dmNumberInput) dmNumberInput.value = '';
+      openDmConversation(target);
+    });
+  }
+
+  if (dmSendForm) {
+    dmSendForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!activeDmPeerId || !dmMessageInput) return;
+      const text = dmMessageInput.value.trim();
+      if (!text) return;
+      const threads = loadDmThreads();
+      const key = dmThreadKey(player.secretId, activeDmPeerId);
+      if (!Array.isArray(threads[key])) threads[key] = [];
+      const nowTime = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+      threads[key].push({
+        id: 'dm_' + Date.now(),
+        fromId: player.secretId,
+        toId: activeDmPeerId,
+        text,
+        time: nowTime,
+        ts: Date.now()
+      });
+      saveDmThreads(threads);
+      dmMessageInput.value = '';
+      renderDmMessages();
+      renderDmThreads();
+      playCyberSound(620, 'sine', 0.03);
+    });
+  }
+
+  if (headerChatBtnTrigger) {
+    headerChatBtnTrigger.addEventListener('click', () => {
+      if (window.innerWidth < 1024 && !activeDmPeerId && dmSidebarCol && dmConversationCol) {
+        dmSidebarCol.classList.remove('hidden');
+        dmConversationCol.classList.add('hidden');
+      }
+      renderDmThreads();
+      if (activeDmPeerId) renderDmMessages();
+    });
+  }
+
+  renderDmThreads();
 
   // --------------------------------------------------------------------------
   // 16. PWA Service Worker & Install Prompt
