@@ -663,11 +663,11 @@ body.ingame-mode #sec-role-console.hud-bracket::after {
 }
 
 body.ingame-mode #sec-cyberware.cyber-panel {
-  border-color: rgba(255, 107, 0, 0.5) !important;
+  border-color: rgba(255, 42, 84, 0.5) !important;
 }
 body.ingame-mode #sec-cyberware.hud-bracket::before,
 body.ingame-mode #sec-cyberware.hud-bracket::after {
-  border-color: #FF6B00 !important;
+  border-color: #FF2A54 !important;
 }
 
 body.ingame-mode #sec-wallet .cyber-panel {

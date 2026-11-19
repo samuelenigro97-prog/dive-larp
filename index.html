@@ -1067,7 +1067,7 @@
           <!-- BIOMONITOR, CYBERPSICOSI & TRAUMI (solo Ripperdoc su scansione PG) -->
           <div id="sec-biomonitor" class="hidden scroll-mt-20 pt-4 border-t border-white/10 space-y-4">
             <div data-collapse-toggle="sec-biomonitor" role="button" tabindex="0" aria-expanded="false" class="flex items-center justify-between gap-2 pb-2 border-b border-white/10 font-mono text-xs cursor-pointer select-none hover:border-white/25 transition-colors">
-              <span class="text-dive-red font-bold uppercase tracking-widest">BIOMONITOR // STATO VITALE</span>
+              <span class="font-bold uppercase tracking-widest" style="color: #EC4899;">BIOMONITOR // STATO VITALE</span>
               <span class="flex items-center gap-2 text-slate-500"><span id="biomonitor-target-label">TELEMETRIA LIVE</span><span data-collapse-chevron class="text-slate-400">▾</span></span>
             </div>
 
@@ -1319,10 +1319,10 @@
         <div id="sec-cyberware" class="scroll-mt-20 cyber-panel hud-bracket p-4 sm:p-6 flex flex-col gap-4 lg:flex-1">
           <div data-collapse-toggle="sec-cyberware" role="button" tabindex="0" aria-expanded="false" class="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10 cursor-pointer select-none hover:border-white/25 transition-colors">
             <div class="min-w-0">
-              <h2 class="font-orbitron font-bold text-base sm:text-lg text-dive-orange">
+              <h2 class="font-orbitron font-bold text-base sm:text-lg text-dive-red">
                 CYBERWARE // IMPIANTI
               </h2>
-              <span id="cyberware-slot-count" class="block mt-0.5 font-mono text-[10px] sm:text-xs text-dive-orange/85 font-semibold">4 / 11 SLOT ATTIVI</span>
+              <span id="cyberware-slot-count" class="block mt-0.5 font-mono text-[10px] sm:text-xs text-dive-red/85 font-semibold">4 / 11 SLOT ATTIVI</span>
             </div>
             <span data-collapse-chevron class="font-mono text-xs text-slate-400 flex-shrink-0">▾</span>
           </div>
@@ -2195,9 +2195,9 @@
       <button class="public-site-nav md:hidden nav-tab-trigger mobile-dock-item px-2.5 py-1.5 rounded-sm border border-white/15 bg-white/5 hover:text-white whitespace-nowrap" data-tab="eventi">EVENTI</button>
 
       <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-white/35 bg-white/10 text-white hover:bg-white hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="dossier">DOSSIER</button>
-      <button type="button" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-red/40 bg-dive-red/10 text-dive-red hover:bg-dive-red hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="biomonitor">BIOMONITOR</button>
+      <button type="button" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border font-bold transition-colors cursor-pointer whitespace-nowrap" style="border-color: rgba(236,72,153,0.45); background: rgba(236,72,153,0.12); color: #EC4899;" data-tab="biomonitor">BIOMONITOR</button>
       <button type="button" id="shortcut-role-console-btn" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border font-bold transition-colors cursor-pointer whitespace-nowrap" style="border-color: rgba(250,204,21,0.45); background: rgba(250,204,21,0.12); color: #FACC15;" data-tab="roleconsole">NODI RETE &amp; ICE</button>
-      <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-orange/40 bg-dive-orange/10 text-dive-orange hover:bg-dive-orange hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberware">CYBERWARE</button>
+      <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-red/40 bg-dive-red/10 text-dive-red hover:bg-dive-red hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberware">CYBERWARE</button>
       <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="cyberdeck">DECK</button>
       <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green hover:bg-dive-green hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="wallet">WALLET</button>
     </div>
