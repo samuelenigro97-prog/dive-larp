@@ -37,13 +37,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.68.5">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.69.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.68.5">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.69.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -89,6 +89,10 @@
       <div class="order-3 h-14 sm:h-16 flex items-center gap-1.5 sm:gap-2 font-mono text-xs flex-shrink-0">
         <button id="header-qr-btn" type="button" title="Apri QR Code Scheda PG" aria-label="Apri QR Code Scheda PG" class="hidden w-8 h-8 rounded-sm border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan hover:bg-dive-cyan hover:text-black flex items-center justify-center transition-colors cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 3h6v6H3V3zm12 0h6v6h-6V3zM3 15h6v6H3v-6zm12 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-4 4h2v2h-2v-2zm4 0h2v2h-2v-2zm-2-2h2v2h-2v-2z"></path></svg>
+        </button>
+
+        <button id="header-clinical-qr-btn" type="button" title="Apri QR Code Scheda Clinica (Healthcare)" aria-label="Apri QR Code Scheda Clinica" class="hidden w-8 h-8 rounded-sm border border-dive-red/45 bg-dive-red/10 text-dive-red hover:bg-dive-red hover:text-black flex items-center justify-center transition-colors cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"></path></svg>
         </button>
 
         <div class="relative" id="login-menu-wrapper">
@@ -798,9 +802,10 @@
                       <span class="truncate">ID: <span id="card-secret-id">#V-7842</span></span>
                       <span id="card-secret-id-chevron" class="text-[9px] opacity-80 flex-shrink-0" aria-hidden="true">▾</span>
                     </button>
-                    <span id="player-ice-status" class="px-1 sm:px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold text-center truncate">
-                      ICE ATTIVO (1 HIT)
-                    </span>
+                    <button id="player-ice-status" type="button" aria-expanded="false" aria-controls="ice-status-panel" title="Clicca per visualizzare livello ICE e stato hacking" class="px-1 sm:px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold hover:border-dive-green hover:bg-dive-green/10 transition-colors cursor-pointer inline-flex items-center justify-center gap-1 truncate">
+                      <span id="player-ice-status-label" class="truncate">ICE ATTIVO (1 HIT)</span>
+                      <span id="player-ice-chevron" class="text-[9px] opacity-80 flex-shrink-0" aria-hidden="true">▾</span>
+                    </button>
                     <span id="card-immersion-badge" class="px-1 sm:px-1.5 py-0.5 bg-black border border-blue-500/50 text-blue-400 font-bold text-center truncate" title="Livello immersivo psicologico della scheda">
                       潜る MEDIO
                     </span>
@@ -854,6 +859,50 @@
                   MODIFICA DATI
                 </button>
               </div>
+            </div>
+          </div>
+
+          <!-- Pannello Stato ICE & Livello Protezione (Nascosto di default, aperto al click su ICE ATTIVO) -->
+          <div id="ice-status-panel" class="hidden pt-3.5 border-t border-white/10 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-mono text-[10px] text-dive-green uppercase tracking-[0.18em] font-bold">
+                SICUREZZA CYBERDECK // STATO ICE
+              </span>
+              <div class="flex items-center gap-2">
+                <span id="ice-tier-badge" class="px-2 py-0.5 rounded-sm font-mono text-[9px] font-bold uppercase border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan">
+                  LIVELLO: STANDARD
+                </span>
+                <button id="ice-status-close-btn" type="button" title="Chiudi pannello ICE" aria-label="Chiudi pannello ICE" class="px-1.5 py-0.5 rounded-sm border border-white/15 bg-black/60 text-slate-400 hover:text-white hover:border-white/30 font-mono text-[10px] leading-none transition-colors cursor-pointer">
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-sm bg-[#04060A] border border-white/10 space-y-2.5 font-mono text-[10px]">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span id="ice-hack-state-label" class="font-bold text-dive-green uppercase">
+                  ● ICE INTEGRO — NESSUNA INTRUSIONE
+                </span>
+                <span id="ice-resistance-label" class="text-slate-400">
+                  RESISTENZA: 65%
+                </span>
+              </div>
+
+              <!-- Barra / Grafico Integrità e Livello ICE -->
+              <div class="space-y-1">
+                <div class="w-full h-3 rounded-sm bg-black border border-white/15 overflow-hidden p-[2px]">
+                  <div id="ice-integrity-bar" class="h-full rounded-[1px] bg-dive-green transition-all duration-300" style="width: 65%;"></div>
+                </div>
+                <div class="flex items-center justify-between text-[9px] text-slate-500 uppercase">
+                  <span>FACILMENTE HACKERABILE (BASIC)</span>
+                  <span>STANDARD</span>
+                  <span>ALTO LIVELLO (PREMIUM)</span>
+                </div>
+              </div>
+
+              <p id="ice-tier-desc" class="font-sans text-[11px] text-slate-300 leading-relaxed">
+                ICE di livello medio: offre una protezione standard contro i tentativi di intrusione rapida.
+              </p>
             </div>
           </div>
 
@@ -1192,181 +1241,39 @@
           </div>
 
           <div data-collapse-body class="hidden flex-1 flex flex-col gap-4">
-          <!-- 6 Slot a Sinistra + Corpo Centrale + 5 Slot a Destra (Layout HUD Cyberware) -->
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-stretch flex-1">
-
-            <!-- Colonna Sinistra: Corteccia, Oculare, Circolatorio, Immunitario, Nervoso, Tegumentario -->
-            <div id="cyberware-col-left" class="md:col-span-4 flex flex-col justify-between gap-2">
-
-              <!-- 1. Corteccia Frontale (Vuoto) -->
-              <div class="px-2.5 py-2 bg-[#04060A]/80 border border-dashed border-dive-purple/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-                <div>
-                  <span class="text-[9px] text-dive-purple font-bold uppercase block">CORTECCIA FRONTALE</span>
-                  <span class="text-[9px] text-slate-500">Slot libero</span>
-                </div>
-                <span class="w-6 h-6 border border-dive-purple/30 text-dive-purple/70 flex items-center justify-center text-xs">+</span>
+            <!-- Sistema Operativo -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between font-mono text-[10px]">
+                <span class="text-dive-cyan font-bold uppercase tracking-wider">SISTEMA OPERATIVO</span>
+                <span class="text-slate-500 uppercase">CORE DECK OS</span>
               </div>
-
-              <!-- 2. Sistema Oculare: Ottiche Kiroshi -->
-              <div class="cyberware-slot p-2.5 space-y-1">
-                <div class="flex items-center justify-between font-mono text-[9px]">
-                  <span class="text-dive-cyan font-bold uppercase">SISTEMA OCULARE</span>
-                  <span class="text-slate-500">TIER 2</span>
-                </div>
-                <div class="flex items-center gap-2.5">
-                  <div class="w-10 h-10 bg-black border border-dive-cyan/40 flex-shrink-0 overflow-hidden">
-                    <img src="assets/images/implants/implant-kiroshi.jpg" alt="Ottiche Kiroshi" class="w-full h-full object-cover">
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="font-orbitron font-bold text-[11px] text-white leading-tight">OTTICHE KIROSHI</h4>
-                    <p class="font-sans text-[10px] text-slate-400 leading-tight mt-0.5">
-                      Scansione ottica QR di scena e schede runner.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3. Sistema Circolatorio (Vuoto) -->
-              <div class="px-2.5 py-2 bg-[#04060A]/80 border border-dashed border-dive-purple/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-                <div>
-                  <span class="text-[9px] text-dive-purple font-bold uppercase block">SISTEMA CIRCOLATORIO</span>
-                  <span class="text-[9px] text-slate-500">Slot libero</span>
-                </div>
-                <span class="w-6 h-6 border border-dive-purple/30 text-dive-purple/70 flex items-center justify-center text-xs">+</span>
-              </div>
-
-              <!-- 4. Sistema Immunitario (Vuoto) -->
-              <div class="px-2.5 py-2 bg-[#04060A]/80 border border-dashed border-dive-purple/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-                <div>
-                  <span class="text-[9px] text-dive-purple font-bold uppercase block">SISTEMA IMMUNITARIO</span>
-                  <span class="text-[9px] text-slate-500">Slot libero</span>
-                </div>
-                <span class="w-6 h-6 border border-dive-purple/30 text-dive-purple/70 flex items-center justify-center text-xs">+</span>
-              </div>
-
-              <!-- 5. Sistema Nervoso: Ghost Protocol -->
-              <div class="cyberware-slot cyberware-slot-purple p-2.5 space-y-1">
-                <div class="flex items-center justify-between font-mono text-[9px]">
-                  <span class="text-dive-purple font-bold uppercase">SISTEMA NERVOSO</span>
-                  <span class="text-slate-500">MEDIA</span>
-                </div>
-                <div class="flex items-center gap-2.5">
-                  <div class="w-10 h-10 bg-black border border-dive-purple/40 flex-shrink-0 overflow-hidden">
-                    <img src="assets/images/implants/implant-ghost.jpg" alt="Media Ghost Protocol" class="w-full h-full object-cover">
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="font-orbitron font-bold text-[11px] text-white leading-tight">GHOST PROTOCOL</h4>
-                    <p class="font-sans text-[10px] text-slate-400 leading-tight mt-0.5">
-                      Leak anonimi e moderazione feed The Net.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 6. Sistema Tegumentario: Armatura Subdermica -->
-              <div class="cyberware-slot cyberware-slot-orange p-2.5 space-y-1">
-                <div class="flex items-center justify-between font-mono text-[9px]">
-                  <span class="text-dive-orange font-bold uppercase">SISTEMA TEGUMENTARIO</span>
-                  <span class="text-slate-500">PASSIVO</span>
-                </div>
-                <div class="flex items-center gap-2.5">
-                  <div class="w-10 h-10 bg-black border border-dive-orange/40 flex-shrink-0 overflow-hidden">
-                    <img src="assets/images/implants/implant-subdermal.jpg" alt="Armatura Subdermica" class="w-full h-full object-cover">
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="font-orbitron font-bold text-[11px] text-white leading-tight">ARMATURA SUBDERMICA</h4>
-                    <p class="font-sans text-[10px] text-slate-400 leading-tight mt-0.5">
-                      Nanotubi di carbonio contro danni e traumi.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Colonna Centrale: Scansione Anatomica Corpo Intero -->
-            <div class="md:col-span-4 flex items-stretch">
-              <div class="relative w-full min-h-[380px] bg-[#04060A] border border-dive-cyan/30 overflow-hidden flex items-center justify-center rounded-sm">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.14),transparent_70%)] pointer-events-none"></div>
-                <img src="assets/images/implants/cyberware-body.jpg" alt="Cyberware Anatomy Scan" class="w-full h-full object-cover object-center mix-blend-lighten contrast-125 brightness-110 pointer-events-none select-none">
-                <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/60 via-transparent to-[#04060A]/80 pointer-events-none"></div>
-
-                <div class="absolute top-2 left-2 right-2 flex items-center justify-between font-mono text-[9px] text-slate-300">
-                  <span class="px-1.5 py-0.5 bg-black/75 border border-white/10 text-dive-orange uppercase">BIOMETRIC SCAN</span>
-                  <span class="flex items-center gap-1 px-1.5 py-0.5 bg-black/75 border border-dive-green/30 text-dive-green">
-                    <span class="w-1.5 h-1.5 rounded-full bg-dive-green animate-pulse"></span> SYNC
-                  </span>
-                </div>
-                <div class="hud-scan-line"></div>
-
-                <div class="absolute bottom-2 left-2 right-2 flex justify-between font-mono text-[9px] text-dive-cyan bg-black/80 px-2 py-0.5 border border-dive-cyan/30">
-                  <span>SCAN // 100%</span>
-                  <span>BIO-LINK OK</span>
-                </div>
+              <div id="cyberware-os-slot">
+                <!-- Popolato da JS -->
               </div>
             </div>
 
-            <!-- Colonna Destra: Sistema Operativo, Scheletro, Mani, Braccia, Gambe -->
-            <div id="cyberware-col-right" class="md:col-span-4 flex flex-col justify-between gap-2">
-
-              <!-- 7. Sistema Operativo: Cyberdeck Paraline -->
-              <div class="cyberware-slot p-2.5 space-y-1">
-                <div class="flex items-center justify-between font-mono text-[9px]">
-                  <span class="text-dive-cyan font-bold uppercase">SISTEMA OPERATIVO</span>
-                  <span class="text-slate-500">DECK OS</span>
+            <!-- Suddivisione Impianti: Attivi vs Disattivati -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-start flex-1">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono text-[10px] pb-1 border-b border-dive-green/30">
+                  <span class="text-dive-green font-bold uppercase tracking-wider">IMPIANTI ATTIVI</span>
+                  <span id="cyberware-active-count" class="text-dive-green font-bold">0</span>
                 </div>
-                <div class="flex items-center gap-2.5">
-                  <div class="w-10 h-10 bg-black border border-dive-cyan/40 flex-shrink-0 overflow-hidden">
-                    <img src="assets/images/implants/implant-cyberdeck.jpg" alt="Cyberdeck Paraline" class="w-full h-full object-cover">
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="font-orbitron font-bold text-[11px] text-white leading-tight">CYBERDECK PARALINE</h4>
-                    <p class="font-sans text-[10px] text-slate-400 leading-tight mt-0.5">
-                      Comandi rapidi 5s (Override) e violazione ICE.
-                    </p>
-                  </div>
+                <div id="cyberware-active-list" class="flex flex-col gap-2">
+                  <!-- Popolato da JS -->
                 </div>
               </div>
 
-              <!-- 8. Scheletro (Vuoto) -->
-              <div class="px-2.5 py-2.5 bg-[#04060A]/80 border border-dashed border-dive-orange/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-                <div>
-                  <span class="text-[9px] text-dive-orange font-bold uppercase block">SCHELETRO</span>
-                  <span class="text-[9px] text-slate-500">Slot libero</span>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono text-[10px] pb-1 border-b border-slate-600/40">
+                  <span class="text-slate-400 font-bold uppercase tracking-wider">IMPIANTI DISATTIVATI</span>
+                  <span id="cyberware-disabled-count" class="text-slate-400 font-bold">0</span>
                 </div>
-                <span class="w-6 h-6 border border-dive-orange/30 text-dive-orange/70 flex items-center justify-center text-xs">+</span>
-              </div>
-
-              <!-- 9. Mani (Vuoto) -->
-              <div class="px-2.5 py-2.5 bg-[#04060A]/80 border border-dashed border-dive-orange/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-                <div>
-                  <span class="text-[9px] text-dive-orange font-bold uppercase block">MANI</span>
-                  <span class="text-[9px] text-slate-500">Slot libero</span>
+                <div id="cyberware-disabled-list" class="flex flex-col gap-2">
+                  <!-- Popolato da JS -->
                 </div>
-                <span class="w-6 h-6 border border-dive-orange/30 text-dive-orange/70 flex items-center justify-center text-xs">+</span>
               </div>
-
-              <!-- 10. Braccia (Vuoto) -->
-              <div class="px-2.5 py-2.5 bg-[#04060A]/80 border border-dashed border-dive-orange/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-                <div>
-                  <span class="text-[9px] text-dive-orange font-bold uppercase block">BRACCIA</span>
-                  <span class="text-[9px] text-slate-500">Slot libero</span>
-                </div>
-                <span class="w-6 h-6 border border-dive-orange/30 text-dive-orange/70 flex items-center justify-center text-xs">+</span>
-              </div>
-
-              <!-- 11. Gambe (Vuoto) -->
-              <div class="px-2.5 py-2.5 bg-[#04060A]/80 border border-dashed border-dive-orange/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-                <div>
-                  <span class="text-[9px] text-dive-orange font-bold uppercase block">GAMBE</span>
-                  <span class="text-[9px] text-slate-500">Slot libero</span>
-                </div>
-                <span class="w-6 h-6 border border-dive-orange/30 text-dive-orange/70 flex items-center justify-center text-xs">+</span>
-              </div>
-
             </div>
-
-          </div>
           </div>
         </div>
 
@@ -1411,7 +1318,12 @@
                 <div class="pt-2.5 border-t border-white/10 space-y-2">
                   <div class="flex items-center justify-between font-mono text-xs text-slate-400">
                     <span class="text-white font-bold">ESTRATTO CONTO // MOVIMENTI</span>
-                    <span>DATASHARD PAYLOG</span>
+                    <span id="wallet-chart-delta" class="text-[10px] font-bold text-dive-green">0 €$</span>
+                  </div>
+
+                  <!-- Grafico Azionario Andamento Saldo / Movimenti -->
+                  <div id="wallet-chart-container" class="p-2 rounded-sm bg-[#04060A] border border-white/10">
+                    <!-- Popolato da JS (SVG stock chart) -->
                   </div>
 
                   <div id="transaction-history-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 font-mono text-xs">
@@ -1921,6 +1833,28 @@
     </div>
   </div>
 
+  <!-- MODAL: QR SCHEDA CLINICA (HEALTHCARE) -->
+  <div id="clinical-qr-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden flex flex-col items-center justify-center p-6 text-center transition-all duration-300 opacity-0 pointer-events-none">
+    <div class="relative max-w-sm w-full bg-[#080B12] border border-dive-red/60 p-6 sm:p-8 space-y-5 cyber-panel">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <span class="font-mono text-xs text-dive-red font-bold uppercase tracking-wider">SCHEDA CLINICA // HEALTHCARE</span>
+        <button id="close-clinical-qr-btn" type="button" class="w-8 h-8 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs cursor-pointer">X</button>
+      </div>
+
+      <div class="flex flex-col items-center justify-center p-4 bg-white text-black mx-auto aspect-square w-56 h-56">
+        <div id="clinical-qr-svg-container" class="w-full h-full flex items-center justify-center"></div>
+      </div>
+
+      <div class="p-3 rounded-sm bg-[#04060A] border border-dive-red/30 space-y-1 font-mono">
+        <div class="text-[9px] text-slate-500 uppercase tracking-widest">COPERTURA SANITARIA ATTIVA</div>
+        <div id="clinical-qr-provider" class="text-xs text-white font-bold uppercase">TRAUMA TEAM INTERNATIONAL</div>
+        <div id="clinical-qr-plan" class="inline-block px-2.5 py-0.5 rounded-sm bg-dive-red/15 border border-dive-red/40 text-dive-red text-xs font-black uppercase tracking-wider">
+          PIANO PREMIUM
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: PIN REGIA MASTER -->
   <div id="admin-pin-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
     <div class="relative max-w-xs w-full bg-[#080B12] border border-dive-red p-6 space-y-4 cyber-panel">
@@ -2037,7 +1971,7 @@
           <span id="login-sync-mode-label" class="font-mono text-[10px] text-dive-cyan">MODALITÀ: DEMO LOCALE</span>
         </div>
         <div class="flex items-center gap-2">
-          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.68.5</span>
+          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.69.0</span>
           <button id="close-login-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs hover:bg-white/20">X</button>
         </div>
       </div>
@@ -2200,12 +2134,12 @@
 
   <!-- Floating Version Badge (Bottom-Right, 3x click = Regia Master) -->
   <div id="app-version-badge" class="fixed bottom-[calc(3.25rem+0.75rem+env(safe-area-inset-bottom))] right-3 z-30 cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.68.5
+    v0.69.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.68.5"></script>
-  <script src="assets/js/main.js?v=0.68.5"></script>
+  <script src="assets/js/sync.js?v=0.69.0"></script>
+  <script src="assets/js/main.js?v=0.69.0"></script>
 </body>
 </html>

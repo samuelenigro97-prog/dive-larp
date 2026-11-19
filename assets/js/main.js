@@ -238,10 +238,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ram: 5,
     ramMax: 5,
     iceActive: true,
+    iceTier: 'standard',
+    iceHacked: false,
+    healthcareProvider: 'TRAUMA TEAM INTERNATIONAL',
+    healthcarePlan: 'PIANO PREMIUM',
     traumas: [],
-    transactions: [
-      { id: 'tx_1', type: 'in', desc: 'Ingaggio iniziale corporativo', amount: 1500, time: 'Inizio Evento' }
-    ],
+    transactions: [],
     chatMessages: {
       fixer: [
         { author: '@The_Fixer', text: '[TAGLIA] Cerco qualcuno per estrarre il datashard dal terminale blu al piano inferiore. Paga: 400 €$.', time: '19:00' },
@@ -262,33 +264,38 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const ROSTER_SEED = [
-    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', playerName: 'Valerio', playerSurname: 'Rinaldi', email: 'v.solo@dive.larp', playerContact: '+39 340 784 2019', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 5, ramMax: 5, ice: true },
-    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', playerName: 'Elena', playerSurname: 'Moretti', email: 'kuro.04@dive.larp', playerContact: '+39 349 410 9044', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 5, ramMax: 5, ice: false },
-    { callsign: '@Doc_Chrome', role: 'TECHIE // RIPPERDOC', secretId: '#D-5510', pin: '1234', playerName: 'Lorenzo', playerSurname: 'De Luca', email: 'doc.chrome@dive.larp', playerContact: '+39 345 551 0088', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'red', hp: 100, psych: 15, fama: 4, wallet: 2200, ram: 5, ramMax: 5, ice: true },
-    { callsign: '@The_Fixer', role: 'FIXER // BROKER', secretId: '#F-3088', pin: '1234', playerName: 'Giulia', playerSurname: 'Sartori', email: 'the.fixer@dive.larp', playerContact: '+39 348 308 8120', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'orange', hp: 100, psych: 5, fama: 5, wallet: 4800, ram: 5, ramMax: 5, ice: true },
-    { callsign: '@Dr_Vex', role: 'CHIMICO // BIOTECH', secretId: '#B-6420', pin: '1234', playerName: 'Chiara', playerSurname: 'Valenti', email: 'dr.vex@dive.larp', playerContact: '+39 342 642 0199', avatar: 'assets/images/avatars/pg-5.jpg', themeColor: 'green', hp: 100, psych: 20, fama: 3, wallet: 1750, ram: 5, ramMax: 5, ice: true },
-    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-6.jpg', themeColor: 'green', hp: 55, psych: 45, fama: 2, wallet: 320, ram: 5, ramMax: 5, ice: false, traumas: [{ name: 'Frattura Avambraccio', desc: 'Riduce stabilità arma secondaria.' }] },
-    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245', avatar: 'assets/images/avatars/pg-7.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 5, ramMax: 5, ice: true },
-    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410', avatar: 'assets/images/avatars/pg-8.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 5, ramMax: 5, ice: false }
+    { callsign: '@V_Solo', role: 'MERCENARIO // SOLO', secretId: '#V-7842', pin: '1234', playerName: 'Valerio', playerSurname: 'Rinaldi', email: 'v.solo@dive.larp', playerContact: '+39 340 784 2019', avatar: 'assets/images/avatars/pg-1.jpg', themeColor: 'orange', hp: 100, psych: 10, fama: 3, wallet: 1500, ram: 5, ramMax: 5, ice: true, iceTier: 'standard', healthcareProvider: 'TRAUMA TEAM INTERNATIONAL', healthcarePlan: 'PIANO PREMIUM' },
+    { callsign: '@Kuro_04', role: 'NETRUNNER // HACKER', secretId: '#K-4109', pin: '1234', playerName: 'Elena', playerSurname: 'Moretti', email: 'kuro.04@dive.larp', playerContact: '+39 349 410 9044', avatar: 'assets/images/avatars/pg-2.jpg', themeColor: 'cyan', hp: 100, psych: 25, fama: 4, wallet: 850, ram: 5, ramMax: 5, ice: false, iceTier: 'basic', healthcareProvider: 'BIOTECHNICA CARE', healthcarePlan: 'PIANO STANDARD' },
+    { callsign: '@Doc_Chrome', role: 'TECHIE // RIPPERDOC', secretId: '#D-5510', pin: '1234', playerName: 'Lorenzo', playerSurname: 'De Luca', email: 'doc.chrome@dive.larp', playerContact: '+39 345 551 0088', avatar: 'assets/images/avatars/pg-3.jpg', themeColor: 'red', hp: 100, psych: 15, fama: 4, wallet: 2200, ram: 5, ramMax: 5, ice: true, iceTier: 'premium', healthcareProvider: 'TRAUMA TEAM INTERNATIONAL', healthcarePlan: 'PIANO PLATINUM' },
+    { callsign: '@The_Fixer', role: 'FIXER // BROKER', secretId: '#F-3088', pin: '1234', playerName: 'Giulia', playerSurname: 'Sartori', email: 'the.fixer@dive.larp', playerContact: '+39 348 308 8120', avatar: 'assets/images/avatars/pg-4.jpg', themeColor: 'orange', hp: 100, psych: 5, fama: 5, wallet: 4800, ram: 5, ramMax: 5, ice: true, iceTier: 'premium', healthcareProvider: 'TRAUMA TEAM INTERNATIONAL', healthcarePlan: 'PIANO PLATINUM' },
+    { callsign: '@Dr_Vex', role: 'CHIMICO // BIOTECH', secretId: '#B-6420', pin: '1234', playerName: 'Chiara', playerSurname: 'Valenti', email: 'dr.vex@dive.larp', playerContact: '+39 342 642 0199', avatar: 'assets/images/avatars/pg-5.jpg', themeColor: 'green', hp: 100, psych: 20, fama: 3, wallet: 1750, ram: 5, ramMax: 5, ice: true, iceTier: 'standard', healthcareProvider: 'BIOTECHNICA CARE', healthcarePlan: 'PIANO PREMIUM' },
+    { callsign: '@Runner_Insolito', role: 'SOLO // VAGABONDO', secretId: '#R-9921', pin: '1234', playerName: 'Marco', playerSurname: 'Bellini', email: 'runner.insolito@dive.larp', playerContact: '+39 328 992 1033', avatar: 'assets/images/avatars/pg-6.jpg', themeColor: 'green', hp: 55, psych: 45, fama: 2, wallet: 320, ram: 5, ramMax: 5, ice: false, iceTier: 'basic', healthcareProvider: 'TRAUMA TEAM INTERNATIONAL', healthcarePlan: 'PIANO BASIC', traumas: [{ name: 'Frattura Avambraccio', desc: 'Riduce stabilità arma secondaria.' }] },
+    { callsign: '@CyberRex', role: 'MAELSTROM // CORPO', secretId: '#C-0012', pin: '1234', playerName: 'Davide', playerSurname: 'Conti', email: 'cyberrex@dive.larp', playerContact: '+39 333 001 2245', avatar: 'assets/images/avatars/pg-7.jpg', themeColor: 'red', hp: 100, psych: 0, fama: 5, wallet: 5400, ram: 5, ramMax: 5, ice: true, iceTier: 'premium', healthcareProvider: 'TRAUMA TEAM INTERNATIONAL', healthcarePlan: 'PIANO PLATINUM' },
+    { callsign: '@Nico_Media', role: 'MEDIA // REPORTER', secretId: '#M-3384', pin: '1234', playerName: 'Nicola', playerSurname: 'Ferri', email: 'nico.media@dive.larp', playerContact: '+39 347 338 4410', avatar: 'assets/images/avatars/pg-8.jpg', themeColor: 'purple', hp: 100, psych: 15, fama: 3, wallet: 1200, ram: 5, ramMax: 5, ice: false, iceTier: 'basic', healthcareProvider: 'TRAUMA TEAM INTERNATIONAL', healthcarePlan: 'PIANO SILVER' }
   ];
 
   const ACCOUNTS_STORAGE_KEY = 'dive_accounts_v1';
   const SESSION_STORAGE_KEY = 'dive_session_v1';
 
   function normalizeAccount(raw) {
+    const iceActive = raw.iceActive !== undefined ? raw.iceActive : Boolean(raw.ice);
     return {
       ...DEFAULT_PLAYER,
       ...raw,
       playerContact: String(raw.playerContact ?? DEFAULT_PLAYER.playerContact).replace(/\s*·\s*Telegram\b.*$/i, '').trim(),
-      iceActive: raw.iceActive !== undefined ? raw.iceActive : Boolean(raw.ice),
+      iceActive,
+      iceTier: raw.iceTier || DEFAULT_PLAYER.iceTier,
+      iceHacked: raw.iceHacked !== undefined ? Boolean(raw.iceHacked) : !iceActive,
+      healthcareProvider: raw.healthcareProvider || DEFAULT_PLAYER.healthcareProvider,
+      healthcarePlan: raw.healthcarePlan || DEFAULT_PLAYER.healthcarePlan,
       pin: raw.pin || '1234',
       ram: raw.ram ?? 8,
       ramMax: raw.ramMax ?? 5,
       traumas: Array.isArray(raw.traumas) ? raw.traumas : [],
       contacts: Array.isArray(raw.contacts) ? raw.contacts : [],
-      transactions: Array.isArray(raw.transactions) ? raw.transactions : [
-        { id: 'tx_init', type: 'in', desc: 'Saldo iniziale evento', amount: raw.wallet ?? 1000, time: 'Inizio Evento' }
-      ]
+      transactions: Array.isArray(raw.transactions)
+        ? raw.transactions.filter(t => t && t.id !== 'tx_init' && !/saldo iniziale evento/i.test(String(t.desc || '')))
+        : []
     };
   }
 
@@ -480,6 +487,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${base}?pg=${encodeURIComponent(cleanId)}`;
   }
 
+  function getClinicalUrl(secretId) {
+    const cleanId = String(secretId || '#V-7842').replace(/^#/, '');
+    const base = window.location.origin + window.location.pathname;
+    return `${base}?med=${encodeURIComponent(cleanId)}`;
+  }
+
   function findRunnerByPgParam(pgParam) {
     if (!pgParam) return null;
     const normalized = ('#' + pgParam.replace(/^#/, '')).toUpperCase();
@@ -497,6 +510,10 @@ document.addEventListener('DOMContentLoaded', () => {
       hp: found.hp,
       psych: found.psych,
       iceActive: found.iceActive,
+      iceTier: found.iceTier || 'standard',
+      iceHacked: Boolean(found.iceHacked),
+      healthcareProvider: found.healthcareProvider || DEFAULT_PLAYER.healthcareProvider,
+      healthcarePlan: found.healthcarePlan || DEFAULT_PLAYER.healthcarePlan,
       traumas: found.traumas || []
     };
   }
@@ -530,85 +547,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const CYBERWARE_LEFT_SLOTS = [
-    'CORTECCIA FRONTALE',
-    'SISTEMA OCULARE',
-    'SISTEMA CIRCOLATORIO',
-    'SISTEMA IMMUNITARIO',
-    'SISTEMA NERVOSO',
-    'SISTEMA TEGUMENTARIO'
-  ];
-
-  const CYBERWARE_RIGHT_SLOTS = [
-    'SISTEMA OPERATIVO',
-    'SCHELETRO',
-    'MANI',
-    'BRACCIA',
-    'GAMBE'
-  ];
-
   const CYBERWARE_BY_PG = {
     '#V-7842': {
-      'SISTEMA OCULARE': { name: 'OTTICHE KIROSHI', tag: 'TIER 2', desc: 'Scansione ottica QR di scena e schede runner.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'cyan' },
-      'SISTEMA NERVOSO': { name: 'GHOST PROTOCOL', tag: 'MEDIA', desc: 'Leak anonimi e moderazione feed The Net.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple' },
-      'SISTEMA TEGUMENTARIO': { name: 'ARMATURA SUBDERMICA', tag: 'PASSIVO', desc: 'Nanotubi di carbonio contro danni e traumi.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange' },
-      'SISTEMA OPERATIVO': { name: 'CYBERDECK PARALINE', tag: 'DECK OS', desc: 'Comandi rapidi 5s (Override) e violazione ICE.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' }
+      os: { name: 'CYBERDECK PARALINE', tag: 'DECK OS', desc: 'Comandi rapidi 5s (Override) e violazione ICE.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
+      implants: [
+        { slot: 'BRACCIA', name: 'BRACCIO PROTESICO MIL-SPEC', tag: 'ATTIVO', desc: 'Stabilità di mira e rinforzo presa balistica.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', active: true },
+        { slot: 'GAMBE', name: 'TENDINI RINFORZATI MK.1', tag: 'DISATTIVATO', desc: 'Modulo scatto silenzioso in stand-by energetico.', img: 'assets/images/implants/implant-ghost.jpg', color: 'orange', active: false }
+      ]
     },
     '#K-4109': {
-      'CORTECCIA FRONTALE': { name: 'SELF-ICE NEURALE', tag: 'NET', desc: 'Schermatura sinaptica contro contro-attacchi ICE.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
-      'SISTEMA OCULARE': { name: 'OTTICHE KIROSHI ORACLE', tag: 'TIER 3', desc: 'Decodifica flussi dati e nodi nascosti in AR.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'cyan' },
-      'SISTEMA CIRCOLATORIO': { name: 'BIOMONITOR OVERCLOCK', tag: 'BOOST', desc: 'Raffreddamento rapido RAM durante breach complessi.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'cyan' },
-      'SISTEMA NERVOSO': { name: 'GHOST PROTOCOL V2', tag: 'STEALTH', desc: 'Occultamento tracce e spoofing indirizzo rete.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple' },
-      'SISTEMA OPERATIVO': { name: 'NETWATCH NETDRIVER', tag: 'MK.5', desc: 'Suite di intrusione profonda e controllo daemons.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' }
+      os: { name: 'NETWATCH NETDRIVER', tag: 'MK.5', desc: 'Suite di intrusione profonda e controllo daemons.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
+      implants: [
+        { slot: 'MANI', name: 'SMART LINK NEURALE', tag: 'ATTIVO', desc: 'Interfaccia diretta con terminali fisici e porte deck.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan', active: true },
+        { slot: 'SCHELETRO', name: 'STABILIZZATORE VERTEBRALE', tag: 'DISATTIVATO', desc: 'Disattivato per ridurre il carico sinaptico.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'purple', active: false }
+      ]
+    },
+    '#D-5510': {
+      os: { name: 'TRAUMA MED-DECK OS', tag: 'CLINIC OS', desc: 'Diagnostica biomonitor e controllo micro-suture.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'red' },
+      implants: [
+        { slot: 'MANI', name: 'MICRO-MANIPOLATORI CHIRURGICI', tag: 'ATTIVO', desc: 'Precisione sub-millimetrica per estrazione cromo.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: true }
+      ]
     },
     '#R-9921': {
-      'SISTEMA OCULARE': { name: 'VISORE NOMAD', tag: 'TIER 1', desc: 'Telemetria termica e lettura tracce in esterna.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'green' },
-      'SISTEMA IMMUNITARIO': { name: 'FILTRO TOSSINE', tag: 'BIO', desc: 'Neutralizza gas, scorie e stimolanti sintetici.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green' },
-      'SISTEMA TEGUMENTARIO': { name: 'PLACCATURA KEVLAR', tag: 'PASSIVO', desc: 'Rinforzo dermico anti-taglio e urti da strada.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green' },
-      'GAMBE': { name: 'TENDINI RINFORZATI', tag: 'MOBILITÀ', desc: 'Scatto silenzioso e recupero rapido in fuga.', img: 'assets/images/implants/implant-ghost.jpg', color: 'green' }
+      os: { name: 'CYBERDECK NOMAD BASE', tag: 'DECK OS', desc: 'Modulo base per scansione QR e gestione wallet.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'green' },
+      implants: [
+        { slot: 'GAMBE', name: 'TENDINI RINFORZATI', tag: 'ATTIVO', desc: 'Scatto silenzioso e recupero rapido in fuga.', img: 'assets/images/implants/implant-ghost.jpg', color: 'green', active: true },
+        { slot: 'BRACCIA', name: 'LAME DA SCASSO', tag: 'DISATTIVATO', desc: 'Danneggiate nello scontro: richiede ripperdoc.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: false }
+      ]
     },
     '#C-0012': {
-      'CORTECCIA FRONTALE': { name: 'LIMITATORE DOLORE', tag: 'COMBAT', desc: 'Ignora penalità critiche finché resta HP > 10%.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red' },
-      'SISTEMA OCULARE': { name: 'OTTICHE MAELSTROM', tag: 'MIL-SPEC', desc: 'Puntamento multi-bersaglio ad alta frequenza.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'red' },
-      'SISTEMA CIRCOLATORIO': { name: 'POMPA ADRENALINA', tag: 'COMBAT', desc: 'Scarica immediata all’attivazione dello scontro.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red' },
-      'SISTEMA TEGUMENTARIO': { name: 'CORAZZA SUBDERMICA MK.4', tag: 'HEAVY', desc: 'Scaglie composite balistiche sottoepidermiche.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red' },
-      'SISTEMA OPERATIVO': { name: 'SANDEVISTAN MILITECH', tag: 'SANDY', desc: 'Accelerazione riflessi e finestra tattica 5s.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'red' },
-      'BRACCIA': { name: 'LAME MANTIDE', tag: 'MELEE', desc: 'Lame retrattili ad alta vibrazione negli avambracci.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red' }
+      os: { name: 'SANDEVISTAN MILITECH', tag: 'SANDY OS', desc: 'Accelerazione riflessi e finestra tattica 5s.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'red' },
+      implants: [
+        { slot: 'BRACCIA', name: 'LAME MANTIDE', tag: 'ATTIVO', desc: 'Lame retrattili ad alta vibrazione negli avambracci.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red', active: true },
+        { slot: 'SCHELETRO', name: 'LEGA TITANIO PESANTE', tag: 'ATTIVO', desc: 'Struttura ossea rinforzata per impatti balistici.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: true }
+      ]
     },
     '#M-3384': {
-      'CORTECCIA FRONTALE': { name: 'MEMORIA OLOGRAFICA', tag: 'REC', desc: 'Registrazione audio/video criptata di ogni scena.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' },
-      'SISTEMA OCULARE': { name: 'OTTICHE BROADCAST 8K', tag: 'STREAM', desc: 'Diretta live su The Net con zoom ottico.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'purple' },
-      'SISTEMA NERVOSO': { name: 'GHOST PROTOCOL LEAK', tag: 'MEDIA', desc: 'Pubblicazione anonima e protezione fonti.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple' },
-      'SISTEMA OPERATIVO': { name: 'CYBERDECK SIGNAL', tag: 'DECK', desc: 'Relay satellitare portatile anti-jamming.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' }
+      os: { name: 'CYBERDECK SIGNAL', tag: 'DECK OS', desc: 'Relay satellitare portatile anti-jamming.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' },
+      implants: [
+        { slot: 'MANI', name: 'INTERFACCIA FEED DIRETTA', tag: 'ATTIVO', desc: 'Streaming crittografato immediato su The Net.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple', active: true }
+      ]
     }
   };
 
-  function renderCyberwareSlotHTML(slotName, implant, emptyAccent) {
-    if (!implant) {
-      return `
-        <div class="px-2.5 py-2 bg-[#04060A]/80 border border-dashed border-dive-${emptyAccent}/30 flex items-center justify-between gap-2 font-mono rounded-sm">
-          <div>
-            <span class="text-[9px] text-dive-${emptyAccent} font-bold uppercase block">${slotName}</span>
-            <span class="text-[9px] text-slate-500">Slot libero</span>
-          </div>
-          <span class="w-6 h-6 border border-dive-${emptyAccent}/30 text-dive-${emptyAccent}/70 flex items-center justify-center text-xs">+</span>
-        </div>
-      `;
-    }
-    const c = implant.color || 'cyan';
-    const slotVariant = c === 'purple' ? 'cyberware-slot-purple' : (c === 'orange' ? 'cyberware-slot-orange' : (c === 'red' ? 'cyberware-slot-red' : ''));
+  function renderCyberwareSlotHTML(slotName, implant, isDisabled = false) {
+    if (!implant) return '';
+    const c = isDisabled ? 'slate' : (implant.color || 'cyan');
+    const slotVariant = isDisabled
+      ? 'opacity-70 border-white/15'
+      : (c === 'purple' ? 'cyberware-slot-purple' : (c === 'orange' ? 'cyberware-slot-orange' : (c === 'red' ? 'cyberware-slot-red' : '')));
+    const titleColor = isDisabled ? 'text-slate-400' : `text-dive-${c}`;
+    const badgeCls = isDisabled
+      ? 'text-slate-500 border border-slate-600/40 bg-black/60 px-1.5 py-0.5 rounded-sm'
+      : 'text-dive-green border border-dive-green/40 bg-dive-green/10 px-1.5 py-0.5 rounded-sm font-bold';
     return `
       <div class="cyberware-slot ${slotVariant} p-2.5 space-y-1">
         <div class="flex items-center justify-between font-mono text-[9px]">
-          <span class="text-dive-${c} font-bold uppercase">${slotName}</span>
-          <span class="text-slate-500">${implant.tag || 'ATTIVO'}</span>
+          <span class="${titleColor} font-bold uppercase">${slotName}</span>
+          <span class="${badgeCls}">${isDisabled ? 'DISATTIVATO' : (implant.tag || 'ATTIVO')}</span>
         </div>
         <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 bg-black border border-dive-${c}/40 flex-shrink-0 overflow-hidden">
+          <div class="w-10 h-10 bg-black border ${isDisabled ? 'border-white/15 grayscale' : `border-dive-${c}/40`} flex-shrink-0 overflow-hidden">
             <img src="${implant.img}" alt="${implant.name}" class="w-full h-full object-cover">
           </div>
           <div class="min-w-0">
-            <h4 class="font-orbitron font-bold text-[11px] text-white leading-tight">${implant.name}</h4>
+            <h4 class="font-orbitron font-bold text-[11px] ${isDisabled ? 'text-slate-300' : 'text-white'} leading-tight">${implant.name}</h4>
             <p class="font-sans text-[10px] text-slate-400 leading-tight mt-0.5">${implant.desc}</p>
           </div>
         </div>
@@ -723,23 +726,34 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function renderCyberwareGrid(sheetData) {
-    const colLeft = document.getElementById('cyberware-col-left');
-    const colRight = document.getElementById('cyberware-col-right');
+    const osSlotEl = document.getElementById('cyberware-os-slot');
+    const activeListEl = document.getElementById('cyberware-active-list');
+    const disabledListEl = document.getElementById('cyberware-disabled-list');
+    const activeCountEl = document.getElementById('cyberware-active-count');
+    const disabledCountEl = document.getElementById('cyberware-disabled-count');
     const countEl = document.getElementById('cyberware-slot-count');
-    if (!colLeft || !colRight) return;
+    if (!osSlotEl || !activeListEl || !disabledListEl) return;
 
     const idKey = String((sheetData && sheetData.secretId) || '#V-7842').toUpperCase();
-    const loadout = (sheetData && sheetData.cyberware) || CYBERWARE_BY_PG[idKey] || {
-      'SISTEMA OCULARE': CYBERWARE_BY_PG['#V-7842']['SISTEMA OCULARE'],
-      'SISTEMA OPERATIVO': CYBERWARE_BY_PG['#V-7842']['SISTEMA OPERATIVO']
-    };
-    const emptyAccent = (sheetData && sheetData.themeColor) || 'purple';
+    const pgCyber = (sheetData && sheetData.cyberware) || CYBERWARE_BY_PG[idKey] || CYBERWARE_BY_PG['#V-7842'];
+    const osData = pgCyber.os || CYBERWARE_BY_PG['#V-7842'].os;
+    const implants = Array.isArray(pgCyber.implants) ? pgCyber.implants : [];
+    const activeImplants = implants.filter(imp => imp.active !== false);
+    const disabledImplants = implants.filter(imp => imp.active === false);
 
-    colLeft.innerHTML = CYBERWARE_LEFT_SLOTS.map(slot => renderCyberwareSlotHTML(slot, loadout[slot], emptyAccent)).join('');
-    colRight.innerHTML = CYBERWARE_RIGHT_SLOTS.map(slot => renderCyberwareSlotHTML(slot, loadout[slot], emptyAccent)).join('');
+    osSlotEl.innerHTML = renderCyberwareSlotHTML('SISTEMA OPERATIVO', osData, false);
 
-    const activeCount = [...CYBERWARE_LEFT_SLOTS, ...CYBERWARE_RIGHT_SLOTS].filter(slot => Boolean(loadout[slot])).length;
-    if (countEl) countEl.textContent = `${activeCount} / 11 SLOT ATTIVI`;
+    activeListEl.innerHTML = activeImplants.length
+      ? activeImplants.map(imp => renderCyberwareSlotHTML(imp.slot || 'IMPIANTO', imp, false)).join('')
+      : `<div class="p-2.5 rounded-sm bg-[#04060A]/80 border border-dashed border-white/15 font-mono text-[10px] text-slate-500">Nessun impianto attivo installato.</div>`;
+
+    disabledListEl.innerHTML = disabledImplants.length
+      ? disabledImplants.map(imp => renderCyberwareSlotHTML(imp.slot || 'IMPIANTO', imp, true)).join('')
+      : `<div class="p-2.5 rounded-sm bg-[#04060A]/80 border border-dashed border-white/15 font-mono text-[10px] text-slate-500">Nessun impianto disattivato.</div>`;
+
+    if (activeCountEl) activeCountEl.textContent = String(activeImplants.length);
+    if (disabledCountEl) disabledCountEl.textContent = String(disabledImplants.length);
+    if (countEl) countEl.textContent = `OS + ${activeImplants.length} ATTIVI · ${disabledImplants.length} DISATTIVATI`;
   }
 
   let biomonitorTargetRunner = null;
@@ -927,12 +941,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const iceOn = isViewingOther ? sheetData.iceActive : player.iceActive;
+    const iceTier = String((isViewingOther ? sheetData.iceTier : player.iceTier) || 'standard').toLowerCase();
+    const iceHacked = !iceOn || Boolean(isViewingOther ? sheetData.iceHacked : player.iceHacked);
+    const ICE_TIER_INFO = {
+      basic: { label: 'BASIC (SCARSO)', pct: 30, desc: 'ICE di livello base: protezione minima e facilmente hackerabile da qualsiasi netrunner.' },
+      standard: { label: 'STANDARD', pct: 65, desc: 'ICE di livello medio: offre una protezione standard contro i tentativi di intrusione rapida.' },
+      premium: { label: 'PREMIUM (ALTO LIVELLO)', pct: 95, desc: 'ICE di alto livello (Black-ICE): barriera crittografica avanzata molto difficile da violare.' }
+    };
+    const tierInfo = ICE_TIER_INFO[iceTier] || ICE_TIER_INFO.standard;
+    const playerIceLabel = document.getElementById('player-ice-status-label');
     if (playerIceStatus) {
-      playerIceStatus.textContent = iceOn ? 'ICE ATTIVO (1 HIT)' : 'ICE BREACHED';
-      playerIceStatus.className = iceOn
-        ? 'px-1 sm:px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold text-center truncate'
-        : 'px-1 sm:px-1.5 py-0.5 bg-black border border-dive-red/40 text-dive-red font-bold text-center truncate';
+      if (playerIceLabel) {
+        playerIceLabel.textContent = iceHacked ? 'ICE BREACHED' : `ICE ATTIVO (${iceTier === 'premium' ? 'PREMIUM' : iceTier === 'basic' ? 'BASIC' : '1 HIT'})`;
+      } else {
+        playerIceStatus.textContent = iceHacked ? 'ICE BREACHED' : 'ICE ATTIVO (1 HIT)';
+      }
+      playerIceStatus.className = iceHacked
+        ? 'px-1 sm:px-1.5 py-0.5 bg-black border border-dive-red/40 text-dive-red font-bold hover:border-dive-red hover:bg-dive-red/10 transition-colors cursor-pointer inline-flex items-center justify-center gap-1 truncate'
+        : 'px-1 sm:px-1.5 py-0.5 bg-black border border-dive-green/40 text-dive-green font-bold hover:border-dive-green hover:bg-dive-green/10 transition-colors cursor-pointer inline-flex items-center justify-center gap-1 truncate';
     }
+    const iceTierBadge = document.getElementById('ice-tier-badge');
+    const iceHackStateLabel = document.getElementById('ice-hack-state-label');
+    const iceResistanceLabel = document.getElementById('ice-resistance-label');
+    const iceIntegrityBar = document.getElementById('ice-integrity-bar');
+    const iceTierDesc = document.getElementById('ice-tier-desc');
+    if (iceTierBadge) {
+      iceTierBadge.textContent = `LIVELLO: ${tierInfo.label}`;
+      iceTierBadge.className = iceTier === 'premium'
+        ? 'px-2 py-0.5 rounded-sm font-mono text-[9px] font-bold uppercase border border-dive-purple/50 bg-dive-purple/15 text-dive-purple'
+        : (iceTier === 'basic'
+          ? 'px-2 py-0.5 rounded-sm font-mono text-[9px] font-bold uppercase border border-dive-orange/50 bg-dive-orange/15 text-dive-orange'
+          : 'px-2 py-0.5 rounded-sm font-mono text-[9px] font-bold uppercase border border-dive-cyan/40 bg-dive-cyan/10 text-dive-cyan');
+    }
+    if (iceHackStateLabel) {
+      iceHackStateLabel.textContent = iceHacked ? '● ALLERTA: ICE HACKERATO / VIOLATO' : '● ICE INTEGRO — NESSUNA INTRUSIONE';
+      iceHackStateLabel.className = iceHacked ? 'font-bold text-dive-red uppercase animate-pulse' : 'font-bold text-dive-green uppercase';
+    }
+    const shownPct = iceHacked ? 0 : tierInfo.pct;
+    if (iceResistanceLabel) iceResistanceLabel.textContent = `RESISTENZA: ${shownPct}%`;
+    if (iceIntegrityBar) {
+      iceIntegrityBar.style.width = `${iceHacked ? 100 : shownPct}%`;
+      iceIntegrityBar.className = iceHacked
+        ? 'h-full rounded-[1px] bg-dive-red/70 animate-pulse transition-all duration-300'
+        : (iceTier === 'premium'
+          ? 'h-full rounded-[1px] bg-dive-purple transition-all duration-300'
+          : (iceTier === 'basic'
+            ? 'h-full rounded-[1px] bg-dive-orange transition-all duration-300'
+            : 'h-full rounded-[1px] bg-dive-green transition-all duration-300'));
+    }
+    if (iceTierDesc) iceTierDesc.textContent = iceHacked ? 'Il tuo ICE è stato violato da un netrunner o disattivato: richiedi un ripristino o una patch al Ripperdoc.' : tierInfo.desc;
 
     // Cyberpsychosis
     if (playerPsychText && playerPsychBar && playerPsychDesc) {
@@ -1021,6 +1078,30 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.setAttribute('class', 'w-full h-full block');
       }
     }
+
+    // QR Code Clinico (Healthcare) completamente distaccato dal QR personale
+    const clinicalUrl = getClinicalUrl(targetRunner.secretId || '#V-7842');
+    let clinicalQrHtml = '';
+    if (typeof window.qrcode === 'function') {
+      const qrMed = window.qrcode(0, 'M');
+      qrMed.addData(clinicalUrl);
+      qrMed.make();
+      clinicalQrHtml = qrMed.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+    } else {
+      clinicalQrHtml = `<div class="font-mono text-[10px] text-black text-center p-2">MED ${cleanId}</div>`;
+    }
+    const clinicalQrContainer = document.getElementById('clinical-qr-svg-container');
+    if (clinicalQrContainer) {
+      clinicalQrContainer.innerHTML = clinicalQrHtml;
+      const svg = clinicalQrContainer.querySelector('svg');
+      if (svg) {
+        svg.setAttribute('class', 'w-full h-full block');
+      }
+    }
+    const clinicalProviderEl = document.getElementById('clinical-qr-provider');
+    const clinicalPlanEl = document.getElementById('clinical-qr-plan');
+    if (clinicalProviderEl) clinicalProviderEl.textContent = targetRunner.healthcareProvider || DEFAULT_PLAYER.healthcareProvider;
+    if (clinicalPlanEl) clinicalPlanEl.textContent = targetRunner.healthcarePlan || DEFAULT_PLAYER.healthcarePlan;
 
     renderSocialRubrica();
   }
@@ -1588,6 +1669,44 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scanPlayerActions) scanPlayerActions.classList.add('hidden');
     playCyberFx('scan');
 
+    // Clinical / Healthcare QR scan detection (?med= URL or DIVE-MED:<id>)
+    let medParamFromUrl = null;
+    try {
+      if (raw.includes('med=')) {
+        const parsedMed = new URL(raw, window.location.origin);
+        medParamFromUrl = parsedMed.searchParams.get('med');
+      }
+    } catch {}
+    if (medParamFromUrl || code.startsWith('DIVE-MED:') || code.startsWith('MED:')) {
+      const rawMedId = medParamFromUrl || raw.split(':')[1] || '';
+      const cleanMedCode = ('#' + rawMedId.replace(/^#/, '')).toUpperCase();
+      const targetAcc = getAccountsRegistry().find(r => (r.secretId || '').toUpperCase() === cleanMedCode)
+        || (((player.secretId || '').toUpperCase() === cleanMedCode) ? player : null);
+      const callsign = targetAcc ? targetAcc.callsign : '@Runner';
+      const psych = targetAcc ? (targetAcc.psych || 0) : 0;
+      const hp = targetAcc && typeof targetAcc.hp === 'number' ? targetAcc.hp : 100;
+      const pgCyber = (targetAcc && targetAcc.cyberware) || CYBERWARE_BY_PG[cleanMedCode] || CYBERWARE_BY_PG['#V-7842'];
+      const implantsList = [
+        pgCyber.os ? `OS: ${pgCyber.os.name}` : null,
+        ...(Array.isArray(pgCyber.implants) ? pgCyber.implants.map(i => `${i.name} (${i.active === false ? 'DISATTIVO' : 'ATTIVO'})`) : [])
+      ].filter(Boolean).join(' · ') || 'Nessun impianto rilevato';
+      const planText = targetAcc ? `${targetAcc.healthcareProvider || DEFAULT_PLAYER.healthcareProvider} (${targetAcc.healthcarePlan || DEFAULT_PLAYER.healthcarePlan})` : 'TRAUMA TEAM';
+
+      scanBadge.className = 'px-2 py-0.5 rounded-sm text-[9px] uppercase font-bold bg-dive-red/20 text-dive-red border border-dive-red/40';
+      scanBadge.textContent = '[CLINICA] HEALTHCARE';
+      scanOutputText.textContent = `[SCHEDA CLINICA] ${callsign} (${cleanMedCode}) — Copertura: ${planText} · HP: ${hp}% · Cyberpsicosi: ${psych}% · Impianti: ${implantsList}.`;
+
+      const isRipperdoc = typeof getRoleKind === 'function' && getRoleKind(player.role) === 'ripperdoc';
+      if (isRipperdoc && targetAcc) {
+        biomonitorTargetRunner = (typeof findRunnerByPgParam === 'function' ? findRunnerByPgParam(cleanMedCode) : null) || targetAcc;
+        selectedPatientId = targetAcc.secretId;
+        if (typeof renderRipperdocConsole === 'function') renderRipperdocConsole();
+        syncPlayerUI();
+        expandSectionById('sec-biomonitor');
+      }
+      return;
+    }
+
     // Player QR scan detection (supports ?pg= URL, PLAYER:@Name:#Code, #V-, @Name)
     let pgParamFromUrl = null;
     try {
@@ -1840,11 +1959,82 @@ document.addEventListener('DOMContentLoaded', () => {
   const transferAmount = document.getElementById('transfer-amount-input');
   const txHistoryList = document.getElementById('transaction-history-list');
 
+  function renderWalletStockChart(txs) {
+    const chartBox = document.getElementById('wallet-chart-container');
+    const deltaEl = document.getElementById('wallet-chart-delta');
+    if (!chartBox) return;
+
+    const currentBal = Number(player.wallet || 0);
+    // Ricostruisci la serie storica dal più vecchio al più recente partendo dal saldo attuale
+    const ordered = [...txs].reverse();
+    const netDelta = ordered.reduce((acc, t) => acc + (t.type === 'in' ? Number(t.amount || 0) : -Number(t.amount || 0)), 0);
+    let running = currentBal - netDelta;
+    const points = [running];
+    ordered.forEach(t => {
+      running += (t.type === 'in' ? Number(t.amount || 0) : -Number(t.amount || 0));
+      points.push(running);
+    });
+
+    if (deltaEl) {
+      const sign = netDelta > 0 ? '+' : '';
+      deltaEl.textContent = `${sign}${netDelta.toLocaleString()} €$`;
+      deltaEl.className = netDelta >= 0
+        ? 'text-[10px] font-bold text-dive-green'
+        : 'text-[10px] font-bold text-dive-red';
+    }
+
+    const w = 260;
+    const h = 72;
+    const padX = 6;
+    const padY = 8;
+    const minVal = Math.min(...points);
+    const maxVal = Math.max(...points);
+    const span = Math.max(1, maxVal - minVal);
+    const stepX = points.length > 1 ? (w - padX * 2) / (points.length - 1) : 0;
+
+    const coords = points.map((val, idx) => {
+      const x = points.length > 1 ? padX + idx * stepX : w / 2;
+      const y = h - padY - ((val - minVal) / span) * (h - padY * 2);
+      return [Number(x.toFixed(1)), Number(y.toFixed(1))];
+    });
+    if (coords.length === 1) {
+      coords.unshift([padX, coords[0][1]]);
+      coords.push([w - padX, coords[0][1]]);
+    }
+
+    const strokeColor = netDelta >= 0 ? '#00FF9C' : '#FF2A55';
+    const linePath = coords.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]},${p[1]}`).join(' ');
+    const areaPath = `${linePath} L${coords[coords.length - 1][0]},${h} L${coords[0][0]},${h} Z`;
+    const dots = coords.map((p, i) => (
+      `<circle cx="${p[0]}" cy="${p[1]}" r="${i === coords.length - 1 ? 3 : 2}" fill="${strokeColor}" />`
+    )).join('');
+
+    chartBox.innerHTML = `
+      <div class="flex items-center justify-between font-mono text-[9px] text-slate-500 mb-1">
+        <span>ANDAMENTO SALDO</span>
+        <span>MIN ${minVal.toLocaleString()} · MAX ${maxVal.toLocaleString()} €$</span>
+      </div>
+      <svg viewBox="0 0 ${w} ${h}" class="w-full h-16 overflow-visible" role="img" aria-label="Grafico andamento saldo wallet">
+        <defs>
+          <linearGradient id="walletChartGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${strokeColor}" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="${strokeColor}" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3 3" />
+        <path d="${areaPath}" fill="url(#walletChartGrad)" />
+        <path d="${linePath}" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+        ${dots}
+      </svg>
+    `;
+  }
+
   function renderTransactions() {
     if (!txHistoryList) return;
-    const txs = player.transactions || [];
+    const txs = (player.transactions || []).filter(t => t && t.id !== 'tx_init' && !/saldo iniziale evento/i.test(String(t.desc || '')));
+    renderWalletStockChart(txs);
     if (txs.length === 0) {
-      txHistoryList.innerHTML = `<span class="text-slate-500 italic block py-4 text-center">Nessuna transazione registrata.</span>`;
+      txHistoryList.innerHTML = `<span class="text-slate-500 italic block py-4 text-center">Nessun movimento registrato.</span>`;
       return;
     }
 
@@ -2040,6 +2230,28 @@ document.addEventListener('DOMContentLoaded', () => {
     participantIntroCloseBtn.addEventListener('click', () => setPersonalDetailsOpen(false));
   }
 
+  const iceStatusBtn = document.getElementById('player-ice-status');
+  const iceStatusPanel = document.getElementById('ice-status-panel');
+  const iceStatusCloseBtn = document.getElementById('ice-status-close-btn');
+  const iceStatusChevron = document.getElementById('player-ice-chevron');
+
+  const setIcePanelOpen = (open) => {
+    if (!iceStatusPanel) return;
+    iceStatusPanel.dataset.isOpen = open ? '1' : '0';
+    iceStatusPanel.classList.toggle('hidden', !open);
+    if (iceStatusBtn) iceStatusBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (iceStatusChevron) iceStatusChevron.textContent = open ? '▴' : '▾';
+  };
+
+  if (iceStatusBtn && iceStatusPanel) {
+    iceStatusBtn.addEventListener('click', () => {
+      setIcePanelOpen(iceStatusPanel.dataset.isOpen !== '1');
+    });
+  }
+  if (iceStatusCloseBtn) {
+    iceStatusCloseBtn.addEventListener('click', () => setIcePanelOpen(false));
+  }
+
   // --------------------------------------------------------------------------
   // 10. Personal QR Fullscreen Modal
   // --------------------------------------------------------------------------
@@ -2067,6 +2279,35 @@ document.addEventListener('DOMContentLoaded', () => {
   if (myQrModal) {
     myQrModal.addEventListener('click', (e) => {
       if (e.target === myQrModal) closeMyQrModal();
+    });
+  }
+
+  // 10b. Clinical / Healthcare QR Fullscreen Modal
+  const openClinicalQrBtn = document.getElementById('header-clinical-qr-btn');
+  const clinicalQrModal = document.getElementById('clinical-qr-modal');
+  const closeClinicalQrBtn = document.getElementById('close-clinical-qr-btn');
+
+  const closeClinicalQrModal = () => {
+    if (!clinicalQrModal) return;
+    clinicalQrModal.classList.remove('opacity-100');
+    setTimeout(() => clinicalQrModal.classList.add('hidden', 'pointer-events-none'), 300);
+  };
+
+  if (openClinicalQrBtn && clinicalQrModal) {
+    openClinicalQrBtn.addEventListener('click', () => {
+      renderPersonalQR(activeSheetRunner || player);
+      clinicalQrModal.classList.remove('hidden', 'pointer-events-none');
+      setTimeout(() => clinicalQrModal.classList.add('opacity-100'), 10);
+    });
+  }
+
+  if (closeClinicalQrBtn && clinicalQrModal) {
+    closeClinicalQrBtn.addEventListener('click', closeClinicalQrModal);
+  }
+
+  if (clinicalQrModal) {
+    clinicalQrModal.addEventListener('click', (e) => {
+      if (e.target === clinicalQrModal) closeClinicalQrModal();
     });
   }
 
@@ -3984,6 +4225,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerQrBtn = document.getElementById('header-qr-btn');
     if (headerQrBtn) {
       headerQrBtn.classList.toggle('hidden', !isAuthenticated);
+    }
+    const headerClinicalQrBtn = document.getElementById('header-clinical-qr-btn');
+    if (headerClinicalQrBtn) {
+      headerClinicalQrBtn.classList.toggle('hidden', !isAuthenticated);
     }
     const headerSocialBtn = document.getElementById('header-social-btn');
     if (headerSocialBtn) {
