@@ -5577,7 +5577,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startOffset = (firstDay.getDay() + 6) % 7; // Mon = 0 .. Sun = 6
     const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
 
-    const cellStyle = 'border-right: 1px solid #d1d5db; border-bottom: 1px solid #d1d5db; height: 38px; display: flex; flex-direction: column; align-items: center; justify-content: center;';
+    const cellStyle = 'border-right: 1px solid rgba(255, 255, 255, 0.16); border-bottom: 1px solid rgba(255, 255, 255, 0.16); height: 38px; display: flex; flex-direction: column; align-items: center; justify-content: center;';
     const cells = [];
     for (let i = 0; i < startOffset; i++) {
       cells.push(`<div style="${cellStyle}"></div>`);
@@ -5588,11 +5588,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ev) {
         const isPast = ev.status === 'past';
         const btnStyle = isPast
-          ? `${cellStyle} background: #f9fafb; color: #9ca3af; cursor: pointer;`
-          : `${cellStyle} background: #ecfeff; color: #0284c7; font-weight: 700; cursor: pointer;`;
+          ? `${cellStyle} background: rgba(255, 255, 255, 0.03); color: rgba(255, 255, 255, 0.38); cursor: pointer;`
+          : `${cellStyle} background: rgba(255, 255, 255, 0.14); color: #ffffff; font-weight: 700; cursor: pointer;`;
         const dotHtml = isPast
-          ? '<span style="width: 3px; height: 3px; border-radius: 9999px; background: #9ca3af; display: block; margin-top: 2px;"></span>'
-          : '<span style="width: 4px; height: 4px; border-radius: 9999px; background: #06b6d4; display: block; margin-top: 2px;"></span>';
+          ? '<span style="width: 3px; height: 3px; border-radius: 9999px; background: rgba(255, 255, 255, 0.35); display: block; margin-top: 2px;"></span>'
+          : '<span style="width: 4px; height: 4px; border-radius: 9999px; background: #ffffff; box-shadow: 0 0 6px rgba(255, 255, 255, 0.8); display: block; margin-top: 2px;"></span>';
         cells.push(`
           <button type="button" data-cal-date="${iso}" style="${btnStyle}" title="${escapeChatText(ev.title)}">
             <span style="line-height: 1; font-size: 11px;">${d}</span>
@@ -5600,7 +5600,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </button>
         `);
       } else {
-        cells.push(`<div style="${cellStyle} color: #1f2937; font-size: 11px; font-weight: 400;">${d}</div>`);
+        cells.push(`<div style="${cellStyle} color: #e2e8f0; font-size: 11px; font-weight: 400;">${d}</div>`);
       }
     }
     const trailingEmpty = (7 - ((startOffset + daysInMonth) % 7)) % 7;
@@ -5615,14 +5615,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const ev = DIVE_CALENDAR_EVENTS.find(e => e.date === iso);
         if (!ev || !detailEl) return;
         const isPast = ev.status === 'past';
-        detailEl.style.background = isPast ? '#f3f4f6' : '#ecfeff';
-        detailEl.style.borderColor = isPast ? '#d1d5db' : '#06b6d4';
+        detailEl.style.background = isPast ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.12)';
+        detailEl.style.borderColor = isPast ? 'rgba(255, 255, 255, 0.18)' : 'rgba(255, 255, 255, 0.5)';
         detailEl.innerHTML = `
           <div style="min-width: 0;">
-            <span style="font-weight: 700; color: ${isPast ? '#4b5563' : '#0284c7'}; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeChatText(ev.title)}</span>
-            <span style="font-size: 9px; color: #6b7280;">${ev.date}</span>
+            <span style="font-weight: 700; color: ${isPast ? '#94a3b8' : '#ffffff'}; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeChatText(ev.title)}</span>
+            <span style="font-size: 9px; color: #94a3b8;">${ev.date}</span>
           </div>
-          <button type="button" class="cal-goto-event-btn" style="padding: 4px 8px; border-radius: 2px; background: ${isPast ? '#e5e7eb' : '#0284c7'}; color: ${isPast ? '#1f2937' : '#ffffff'}; font-weight: 700; font-size: 9px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; border: none;">
+          <button type="button" class="cal-goto-event-btn" style="padding: 4px 8px; border-radius: 2px; background: ${isPast ? 'rgba(255, 255, 255, 0.14)' : '#ffffff'}; color: ${isPast ? '#e2e8f0' : '#000000'}; font-weight: 700; font-size: 9px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; border: none;">
             VAI ↗
           </button>
         `;
