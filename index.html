@@ -282,146 +282,78 @@
           </button>
         </div>
 
-        <!-- Calendario Minimalista Bianco & Nero (prima degli eventi) -->
-        <div id="eventi-cyber-calendar" style="width: 420px; max-width: 100%; background: rgba(4, 6, 10, 0.78); backdrop-filter: blur(4px); color: #ffffff; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 2px; font-family: 'Space Grotesk', sans-serif;">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px;">
-            <h3 id="cal-month-label" style="font-weight: 300; font-size: 19px; letter-spacing: 0.2em; color: #ffffff; text-transform: uppercase; margin: 0;">NOVEMBRE 2026</h3>
-            <div style="display: flex; align-items: center; gap: 4px;">
-              <button type="button" id="cal-prev-btn" style="width: 24px; height: 24px; color: #cbd5e1; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; border: none;" aria-label="Mese precedente">‹</button>
-              <button type="button" id="cal-next-btn" style="width: 24px; height: 24px; color: #cbd5e1; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; border: none;" aria-label="Mese successivo">›</button>
+        <div id="eventi-overview-view" class="space-y-6">
+          <!-- Calendario Minimalista Bianco & Nero (prima degli eventi) -->
+          <div id="eventi-cyber-calendar" style="width: 420px; max-width: 100%; background: rgba(4, 6, 10, 0.78); backdrop-filter: blur(4px); color: #ffffff; padding: 18px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 2px; font-family: 'Space Grotesk', sans-serif;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px;">
+              <h3 id="cal-month-label" style="font-weight: 300; font-size: 19px; letter-spacing: 0.2em; color: #ffffff; text-transform: uppercase; margin: 0;">NOVEMBRE 2026</h3>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <button type="button" id="cal-prev-btn" style="width: 24px; height: 24px; color: #cbd5e1; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; border: none;" aria-label="Mese precedente">‹</button>
+                <button type="button" id="cal-next-btn" style="width: 24px; height: 24px; color: #cbd5e1; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; border: none;" aria-label="Mese successivo">›</button>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: #cbd5e1; padding-bottom: 6px;">
+                <span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span>
+              </div>
+              <div id="cal-days-grid" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid rgba(255, 255, 255, 0.16); border-left: 1px solid rgba(255, 255, 255, 0.16); font-size: 11px;">
+                <!-- Popolato da JS -->
+              </div>
             </div>
           </div>
 
-          <div>
-            <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: #cbd5e1; padding-bottom: 6px;">
-              <span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span>
-            </div>
-            <div id="cal-days-grid" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid rgba(255, 255, 255, 0.16); border-left: 1px solid rgba(255, 255, 255, 0.16); font-size: 11px;">
-              <!-- Popolato da JS -->
-            </div>
-          </div>
-          <div id="cal-selected-detail" style="margin-top: 10px; padding: 6px 10px; border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(0, 0, 0, 0.6); font-size: 10px; font-family: 'Share Tech Mono', monospace; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #cbd5e1;">
-            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Seleziona una data evidenziata.</span>
+          <!-- Eventi: Prossimo Evento + Eventi Passati (cliccabili per aprire la schermata dettaglio) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+            <button type="button" id="eventi-card-future" data-event-date="2026-11-28" class="md:col-span-2 w-full text-left cyber-panel hud-bracket p-5 border border-dive-orange/50 hover:border-dive-cyan transition-all space-y-2 cursor-pointer group">
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 bg-dive-orange text-black font-bold text-[10px]">PROSSIMO EVENTO*</span>
+                <span class="text-dive-cyan">CATANIA // LE CIMINIERE</span>
+              </div>
+              <h3 class="font-orbitron font-bold text-lg text-white group-hover:text-dive-cyan transition-colors">SETTORE 04: NOTTE AL NEON</h3>
+              <p class="font-sans text-xs text-slate-300">Serata immersiva cyberpunk con fazioni, fixer, hacking dal vivo e mercato del cromo.</p>
+              <div class="pt-1 font-mono text-[10px] text-dive-orange font-bold uppercase">APRI DETTAGLI, ORARI &amp; COORDINATE ↗</div>
+            </button>
+
+            <button type="button" id="eventi-card-past" data-event-date="2026-10-17" class="w-full text-left cyber-panel p-5 border border-white/15 hover:border-white/50 space-y-2 opacity-80 hover:opacity-100 transition-all cursor-pointer group">
+              <span class="px-2 py-0.5 bg-white/10 text-slate-300 font-bold text-[10px] inline-block">EVENTO PASSATO</span>
+              <h3 class="font-orbitron font-bold text-base text-white group-hover:text-dive-cyan transition-colors">PROLOGO: BLACKOUT</h3>
+              <p class="font-sans text-xs text-slate-400">Sessione zero — test impianti, primo contatto con i broker del Settore 04.</p>
+              <div class="pt-1 font-mono text-[10px] text-slate-300 font-bold uppercase">APRI SCHEDA ARCHIVIO ↗</div>
+            </button>
           </div>
         </div>
 
-        <!-- Eventi: Prossimo Evento + Eventi Passati (subito dopo il calendario) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
-          <div id="eventi-card-future" class="md:col-span-2 cyber-panel hud-bracket p-5 border border-dive-orange/50 space-y-2 transition-all">
-            <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 bg-dive-orange text-black font-bold text-[10px]">PROSSIMO EVENTO*</span>
-              <span class="text-dive-cyan">CATANIA // LE CIMINIERE</span>
+        <!-- Schermata Dettaglio Evento (aperta cliccando su un evento o su una data del calendario) -->
+        <div id="event-detail-view" class="hidden cyber-panel hud-bracket p-5 sm:p-7 border border-dive-cyan/40 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
+            <button type="button" id="event-detail-back-btn" class="px-3 py-1.5 rounded-sm border border-white/20 bg-white/5 hover:border-dive-cyan hover:text-dive-cyan font-mono text-xs text-slate-200 uppercase cursor-pointer transition-colors">
+              ← TORNA AGLI EVENTI
+            </button>
+            <span id="event-detail-badge" class="px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase bg-dive-orange text-black">PROSSIMO EVENTO</span>
+          </div>
+
+          <div class="space-y-2">
+            <h3 id="event-detail-title" class="font-orbitron font-bold text-2xl text-white">SETTORE 04: NOTTE AL NEON</h3>
+            <p id="event-detail-desc" class="font-sans text-sm text-slate-300 leading-relaxed"></p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+            <div class="p-4 bg-black/60 border border-white/15 space-y-1.5">
+              <span class="text-[10px] text-dive-cyan font-bold uppercase block">DATA &amp; ORARI</span>
+              <div id="event-detail-date" class="text-white font-bold text-sm"></div>
+              <div id="event-detail-hours" class="text-slate-300 text-xs"></div>
             </div>
-            <h3 class="font-orbitron font-bold text-lg text-white">SETTORE 04: NOTTE AL NEON</h3>
-            <p class="font-sans text-xs text-slate-300">Serata immersiva cyberpunk con fazioni, fixer, hacking dal vivo e mercato del cromo.</p>
-          </div>
-
-          <div id="eventi-card-past" class="cyber-panel p-5 space-y-2 opacity-80 transition-all">
-            <span class="px-2 py-0.5 bg-white/10 text-slate-300 font-bold text-[10px]">EVENTO PASSATO</span>
-            <h3 class="font-orbitron font-bold text-base text-white">PROLOGO: BLACKOUT</h3>
-            <p class="font-sans text-xs text-slate-400">Sessione zero — test impianti, primo contatto con i broker del Settore 04.</p>
-          </div>
-        </div>
-
-        <!-- Scheda Evento* (5 sotto-sezioni dello schema) -->
-        <div id="event-scheda-box" class="cyber-panel hud-bracket p-5 sm:p-6 space-y-5">
-          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/10 font-mono text-xs">
-            <span class="text-dive-orange font-bold uppercase">SCHEDA EVENTO*: LE CIMINIERE — CATANIA</span>
-            <div class="flex flex-wrap gap-1.5">
-              <button type="button" class="event-subtab-btn px-2.5 py-1 bg-dive-orange text-black font-bold uppercase text-[10px]" data-subtab="iscriviti">ISCRIVITI</button>
-              <button type="button" class="event-subtab-btn px-2.5 py-1 bg-white/5 text-slate-300 border border-white/15 hover:text-white uppercase text-[10px]" data-subtab="guida">GUIDA / MANUALE</button>
-              <button type="button" class="event-subtab-btn px-2.5 py-1 bg-white/5 text-slate-300 border border-white/15 hover:text-white uppercase text-[10px]" data-subtab="setting">SETTING (VIDEO · MAPPA · GLOSSARI)</button>
-              <button type="button" class="event-subtab-btn px-2.5 py-1 bg-white/5 text-slate-300 border border-white/15 hover:text-white uppercase text-[10px]" data-subtab="personaggi">PERSONAGGI</button>
-              <button type="button" class="nav-tab-trigger px-2.5 py-1 bg-dive-purple text-black font-bold uppercase text-[10px]" data-tab="net">APP DI GIOCO ↗</button>
+            <div class="p-4 bg-black/60 border border-white/15 space-y-1.5">
+              <span class="text-[10px] text-dive-orange font-bold uppercase block">LOCATION &amp; COORDINATE</span>
+              <div id="event-detail-location" class="text-white font-bold text-sm"></div>
+              <div id="event-detail-coords" class="text-slate-300 text-xs"></div>
             </div>
           </div>
 
-          <!-- Subtab 1: Iscriviti -->
-          <div id="event-sub-iscriviti" class="event-subtab-panel space-y-4">
-            <h4 class="font-orbitron font-bold text-base text-white">ISCRIZIONE ALL'EVENTO</h4>
-            <p class="text-xs text-slate-300 font-sans">Compila la pre-registrazione per ricevere il tuo ID Runner e il QR d'ingresso.</p>
-            <form id="event-register-form" class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
-              <input type="text" placeholder="Nome / Nickname..." class="px-3 py-2 bg-black border border-white/15 text-white outline-none focus:border-dive-orange" required>
-              <input type="email" placeholder="Email di contatto..." class="px-3 py-2 bg-black border border-white/15 text-white outline-none focus:border-dive-orange" required>
-              <button type="submit" class="cyber-btn py-2 px-4 bg-dive-orange text-black font-bold uppercase hover:bg-white">INVIA RICHIESTA</button>
-            </form>
-            <p id="event-register-msg" class="hidden text-xs font-mono text-dive-green">Richiesta registrata! Riceverai conferma dallo staff DIVE.</p>
-          </div>
-
-          <!-- Subtab 2: Guida / Manuale -->
-          <div id="event-sub-guida" class="event-subtab-panel hidden space-y-3 text-xs font-sans text-slate-300">
-            <h4 class="font-orbitron font-bold text-base text-white">GUIDA RAPIDA &amp; MANUALE LARP</h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-3 bg-black/60 border border-white/10 space-y-1">
-                <span class="font-mono text-dive-orange font-bold block">CHIAMATE COMBAT (OVERRIDE 5s)</span>
-                <p>Pronuncia ad alta voce <strong class="text-white">OVERRIDE FERMO / AL BUIO / BUTTALA!</strong> attivando il timer dal Cyberdeck. Durata fissa 5 secondi.</p>
-              </div>
-              <div class="p-3 bg-black/60 border border-white/10 space-y-1">
-                <span class="font-mono text-dive-cyan font-bold block">QR CODE &amp; IDENTITÀ</span>
-                <p>Il tuo QR personale è l'ID di ingresso e il tuo contatto in-game. Proteggilo: un Netrunner con il tuo codice può tentare un'intrusione.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Subtab 3: Setting (Video, Mappa, Glossari) -->
-          <div id="event-sub-setting" class="event-subtab-panel hidden space-y-4">
-            <h4 class="font-orbitron font-bold text-base text-white">SETTING // VIDEO · MAPPA · GLOSSARI</h4>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              <div class="p-4 bg-black/60 border border-dive-purple/30 space-y-2">
-                <span class="font-mono text-dive-purple font-bold uppercase block">VIDEO TEASER</span>
-                <div class="aspect-video bg-black border border-white/10 overflow-hidden relative flex items-center justify-center">
-                  <img src="assets/images/og-preview.jpg" alt="Teaser Video" class="w-full h-full object-cover opacity-70">
-                  <span class="absolute font-mono text-[10px] px-2 py-1 bg-black/80 border border-dive-purple text-dive-purple">SETTORE 04 // BRIEFING</span>
-                </div>
-              </div>
-
-              <div class="p-4 bg-black/60 border border-dive-cyan/30 space-y-2">
-                <span class="font-mono text-dive-cyan font-bold uppercase block">MAPPA LOCATION</span>
-                <ul class="space-y-1 text-slate-300 font-mono text-[11px]">
-                  <li><span class="text-dive-orange">[A]</span> Ingresso &amp; Controllo Security</li>
-                  <li><span class="text-dive-purple">[B]</span> Lounge Bar &amp; Angolo Fixer</li>
-                  <li><span class="text-dive-cyan">[C]</span> Terminali Blu &amp; Sala Server</li>
-                  <li><span class="text-dive-red">[D]</span> Clinica Ripperdoc &amp; Detenzione</li>
-                </ul>
-              </div>
-
-              <div class="p-4 bg-black/60 border border-dive-orange/30 space-y-2">
-                <span class="font-mono text-dive-orange font-bold uppercase block">GLOSSARI CYBERPUNK</span>
-                <ul class="space-y-1 text-slate-300 text-[11px]">
-                  <li><strong class="text-white">Choom / Choomba:</strong> Amico, socio.</li>
-                  <li><strong class="text-white">Eddies (€$):</strong> EuroDollari, valuta corrente.</li>
-                  <li><strong class="text-white">ICE:</strong> Intrusion Countermeasures Electronics.</li>
-                  <li><strong class="text-white">Ripperdoc:</strong> Chirurgo di impianti cyberware.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Subtab 4: Personaggi -->
-          <div id="event-sub-personaggi" class="event-subtab-panel hidden space-y-3">
-            <h4 class="font-orbitron font-bold text-base text-white">PERSONAGGI &amp; ARCHETIPI</h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div class="p-3 bg-black/60 border border-dive-orange/40 space-y-2">
-                <img src="assets/images/avatars/pg-1.jpg" alt="Solo" class="w-full h-36 object-cover">
-                <div class="font-orbitron font-bold text-xs text-white">@V_Solo</div>
-                <div class="font-mono text-[10px] text-dive-orange">MERCENARIO // SOLO</div>
-              </div>
-              <div class="p-3 bg-black/60 border border-dive-cyan/40 space-y-2">
-                <img src="assets/images/avatars/pg-2.jpg" alt="Netrunner" class="w-full h-36 object-cover">
-                <div class="font-orbitron font-bold text-xs text-white">@Kuro_04</div>
-                <div class="font-mono text-[10px] text-dive-cyan">NETRUNNER // HACKER</div>
-              </div>
-              <div class="p-3 bg-black/60 border border-dive-green/40 space-y-2">
-                <img src="assets/images/avatars/pg-3.jpg" alt="Media" class="w-full h-36 object-cover">
-                <div class="font-orbitron font-bold text-xs text-white">@Runner_Insolito</div>
-                <div class="font-mono text-[10px] text-dive-green">SOLO // VAGABONDO</div>
-              </div>
-              <div class="p-3 bg-black/60 border border-dive-red/40 space-y-2">
-                <img src="assets/images/avatars/pg-4.jpg" alt="Maelstrom" class="w-full h-36 object-cover">
-                <div class="font-orbitron font-bold text-xs text-white">@CyberRex</div>
-                <div class="font-mono text-[10px] text-dive-red">MAELSTROM // CORPO</div>
-              </div>
-            </div>
+          <div class="p-4 bg-black/50 border-l-2 border-dive-purple space-y-1.5">
+            <span class="font-mono text-[10px] text-dive-purple font-bold uppercase block">DETTAGLI OPERATIVI &amp; BRIEFING</span>
+            <p id="event-detail-notes" class="font-sans text-xs text-slate-300 leading-relaxed"></p>
           </div>
         </div>
 

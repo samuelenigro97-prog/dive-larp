@@ -5555,21 +5555,111 @@ document.addEventListener('DOMContentLoaded', () => {
   // Calendario Eventi Cyberpunk (Eventi Passati sbiaditi vs Futuri Neon)
   // --------------------------------------------------------------------------
   const DIVE_CALENDAR_EVENTS = [
-    { date: '2026-10-17', title: 'PROLOGO: BLACKOUT', location: 'Le Ciminiere — Catania', status: 'past', desc: 'Sessione zero — test impianti, primo contatto con i broker del Settore 04.' },
-    { date: '2026-11-07', title: 'TEST RETE // PORTO FRANCO', location: 'Catania — Settore 04', status: 'past', desc: 'Simulazione intrusioni Cyberspazio e calibrazione Biomonitor.' },
-    { date: '2026-11-28', title: 'SETTORE 04: NOTTE AL NEON', location: 'Le Ciminiere — Catania', status: 'future', desc: 'Serata immersiva cyberpunk con fazioni, fixer, hacking dal vivo e mercato del cromo.' },
-    { date: '2026-12-12', title: 'ARENA & PALCO CARAVAN YARD', location: 'Porto Franco Navarro — Sicilia', status: 'future', desc: 'Torneo clandestino Arena, slot spettacolo dal vivo e contratti Black Market.' },
-    { date: '2026-12-27', title: 'OPERAZIONE NEPTUN // SOLSTIZIO', location: 'Catania — Settore BioTech', status: 'future', desc: 'Evento notturno ad alta tensione su sieri biotech e guerre di fazione.' }
+    {
+      date: '2026-10-17',
+      title: 'PROLOGO: BLACKOUT',
+      location: 'Le Ciminiere — Catania',
+      coords: '37.5126° N, 15.0982° E · Viale Africa 12, Catania',
+      hours: 'Check-in 19:30 · Inizio Gioco 20:30 · Chiusura 01:00',
+      status: 'past',
+      desc: 'Sessione zero — test impianti, primo contatto con i broker del Settore 04.',
+      notes: 'Evento archiviato. Sessione introduttiva di calibrazione biomonitor, verifica QR di accesso e primo incontro tra le fazioni di Catania.'
+    },
+    {
+      date: '2026-11-07',
+      title: 'TEST RETE // PORTO FRANCO',
+      location: 'Catania — Settore 04',
+      coords: '37.5019° N, 15.0938° E · Area Porto Franco Navarro, Catania',
+      hours: 'Check-in 20:00 · Inizio Gioco 21:00 · Chiusura 01:30',
+      status: 'past',
+      desc: 'Simulazione intrusioni Cyberspazio e calibrazione Biomonitor.',
+      notes: 'Evento archiviato. Stress test della rete locale, simulazione ICE e scambi sperimentali al banco chimico.'
+    },
+    {
+      date: '2026-11-28',
+      title: 'SETTORE 04: NOTTE AL NEON',
+      location: 'Le Ciminiere — Catania',
+      coords: '37.5126° N, 15.0982° E · Viale Africa 12, Le Ciminiere (CT)',
+      hours: 'Check-in 19:30 · Briefing 20:30 · Live Action 21:00 – 02:00',
+      status: 'future',
+      desc: 'Serata immersiva cyberpunk con fazioni, fixer, hacking dal vivo e mercato del cromo.',
+      notes: 'Porta con te il tuo QR personale sull’app DIVE. Dress code consigliato: street-tech / cyberware visibile. Presenti stazioni Ripperdoc, terminali Netrunner e area ristoro.'
+    },
+    {
+      date: '2026-12-12',
+      title: 'ARENA & PALCO CARAVAN YARD',
+      location: 'Porto Franco Navarro — Sicilia',
+      coords: '37.5019° N, 15.0938° E · Molo Est, Porto Franco Navarro',
+      hours: 'Check-in 19:00 · Apertura Arena 20:30 · Chiusura 02:30',
+      status: 'future',
+      desc: 'Torneo clandestino Arena, slot spettacolo dal vivo e contratti Black Market.',
+      notes: 'Regolamento combattimento con chiamata OVERRIDE 5s attiva. Slot spettacolo aperti per Dive & Performer registrati.'
+    },
+    {
+      date: '2026-12-27',
+      title: 'OPERAZIONE NEPTUN // SOLSTIZIO',
+      location: 'Catania — Settore BioTech',
+      coords: '37.5150° N, 15.0994° E · Padiglione Nord, Settore BioTech',
+      hours: 'Check-in 20:00 · Inizio Gioco 21:00 · Chiusura 02:00',
+      status: 'future',
+      desc: 'Evento notturno ad alta tensione su sieri biotech e guerre di fazione.',
+      notes: 'Focus su contratti BioTech, gestione immunosoppressori e trattative ad alto rischio tra corporazioni.'
+    }
   ];
 
   const MONTH_NAMES_IT = ['GENNAIO', 'FEBBRAIO', 'MARZO', 'APRILE', 'MAGGIO', 'GIUGNO', 'LUGLIO', 'AGOSTO', 'SETTEMBRE', 'OTTOBRE', 'NOVEMBRE', 'DICEMBRE'];
   let calYear = 2026;
   let calMonth = 10; // 0-indexed: 10 = Novembre 2026
 
-  function renderEventiCalendar(selectedDate = null) {
+  function openEventDetailScreen(isoDate) {
+    const ev = DIVE_CALENDAR_EVENTS.find(e => e.date === isoDate);
+    const overviewEl = document.getElementById('eventi-overview-view');
+    const detailViewEl = document.getElementById('event-detail-view');
+    if (!ev || !overviewEl || !detailViewEl) return;
+
+    const isPast = ev.status === 'past';
+    const badgeEl = document.getElementById('event-detail-badge');
+    const titleEl = document.getElementById('event-detail-title');
+    const descEl = document.getElementById('event-detail-desc');
+    const dateEl = document.getElementById('event-detail-date');
+    const hoursEl = document.getElementById('event-detail-hours');
+    const locEl = document.getElementById('event-detail-location');
+    const coordsEl = document.getElementById('event-detail-coords');
+    const notesEl = document.getElementById('event-detail-notes');
+
+    if (badgeEl) {
+      badgeEl.textContent = isPast ? 'EVENTO PASSATO' : 'PROSSIMO EVENTO';
+      badgeEl.className = isPast
+        ? 'px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase bg-white/15 text-slate-200'
+        : 'px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase bg-dive-orange text-black';
+    }
+    if (titleEl) titleEl.textContent = ev.title;
+    if (descEl) descEl.textContent = ev.desc;
+    if (dateEl) dateEl.textContent = ev.date;
+    if (hoursEl) hoursEl.textContent = ev.hours || 'Orari in via di definizione';
+    if (locEl) locEl.textContent = ev.location;
+    if (coordsEl) coordsEl.textContent = ev.coords || ev.location;
+    if (notesEl) notesEl.textContent = ev.notes || ev.desc;
+
+    overviewEl.classList.add('hidden');
+    detailViewEl.classList.remove('hidden');
+    detailViewEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('eventi-card-future')?.addEventListener('click', () => {
+    openEventDetailScreen('2026-11-28');
+  });
+  document.getElementById('eventi-card-past')?.addEventListener('click', () => {
+    openEventDetailScreen('2026-10-17');
+  });
+  document.getElementById('event-detail-back-btn')?.addEventListener('click', () => {
+    document.getElementById('event-detail-view')?.classList.add('hidden');
+    document.getElementById('eventi-overview-view')?.classList.remove('hidden');
+  });
+
+  function renderEventiCalendar() {
     const gridEl = document.getElementById('cal-days-grid');
     const labelEl = document.getElementById('cal-month-label');
-    const detailEl = document.getElementById('cal-selected-detail');
     if (!gridEl || !labelEl) return;
 
     labelEl.textContent = `${MONTH_NAMES_IT[calMonth]} ${calYear}`;
@@ -5612,34 +5702,9 @@ document.addEventListener('DOMContentLoaded', () => {
     gridEl.querySelectorAll('[data-cal-date]').forEach(btn => {
       btn.addEventListener('click', () => {
         const iso = btn.getAttribute('data-cal-date');
-        const ev = DIVE_CALENDAR_EVENTS.find(e => e.date === iso);
-        if (!ev || !detailEl) return;
-        const isPast = ev.status === 'past';
-        detailEl.style.background = isPast ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.12)';
-        detailEl.style.borderColor = isPast ? 'rgba(255, 255, 255, 0.18)' : 'rgba(255, 255, 255, 0.5)';
-        detailEl.innerHTML = `
-          <div style="min-width: 0;">
-            <span style="font-weight: 700; color: ${isPast ? '#94a3b8' : '#ffffff'}; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeChatText(ev.title)}</span>
-            <span style="font-size: 9px; color: #94a3b8;">${ev.date}</span>
-          </div>
-          <button type="button" class="cal-goto-event-btn" style="padding: 4px 8px; border-radius: 2px; background: ${isPast ? 'rgba(255, 255, 255, 0.14)' : '#ffffff'}; color: ${isPast ? '#e2e8f0' : '#000000'}; font-weight: 700; font-size: 9px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; border: none;">
-            VAI ↗
-          </button>
-        `;
-        detailEl.querySelector('.cal-goto-event-btn')?.addEventListener('click', () => {
-          const targetCard = document.getElementById(isPast ? 'eventi-card-past' : 'eventi-card-future');
-          if (targetCard) {
-            targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            targetCard.classList.add('ring-2', isPast ? 'ring-white/40' : 'ring-dive-cyan');
-            setTimeout(() => targetCard.classList.remove('ring-2', 'ring-white/40', 'ring-dive-cyan'), 1800);
-          }
-        });
+        if (iso) openEventDetailScreen(iso);
       });
     });
-
-    if (selectedDate) {
-      gridEl.querySelector(`[data-cal-date="${selectedDate}"]`)?.click();
-    }
   }
 
   document.getElementById('cal-prev-btn')?.addEventListener('click', () => {
@@ -5652,7 +5717,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (calMonth > 11) { calMonth = 0; calYear += 1; }
     renderEventiCalendar();
   });
-  renderEventiCalendar('2026-11-28');
+  renderEventiCalendar();
 
   function renderGalleryFolders() {
     const gridEl = document.getElementById('gallery-folders-grid');
