@@ -278,30 +278,26 @@
           </button>
         </div>
 
-        <!-- Calendario Compatto Quadrato Cyberpunk (prima degli eventi) -->
-        <div id="eventi-cyber-calendar" class="cyber-panel hud-bracket p-3 space-y-2 font-mono" style="width: 280px; max-width: 100%;">
-          <div class="flex items-center justify-between gap-1.5 pb-1.5 border-b border-white/10">
-            <div class="flex items-center gap-1">
-              <button type="button" id="cal-prev-btn" class="w-5 h-5 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-[10px] font-bold flex items-center justify-center cursor-pointer">◀</button>
-              <h3 id="cal-month-label" class="font-orbitron font-bold text-[11px] text-white uppercase tracking-wider min-w-[110px] text-center">NOVEMBRE 2026</h3>
-              <button type="button" id="cal-next-btn" class="w-5 h-5 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-[10px] font-bold flex items-center justify-center cursor-pointer">▶</button>
-            </div>
-            <div class="flex items-center gap-1.5 text-[9px]">
-              <span class="text-slate-500 opacity-70">■ PASS</span>
-              <span class="text-dive-cyan font-bold">■ FUT</span>
+        <!-- Calendario Minimalista Compatto (prima degli eventi) -->
+        <div id="eventi-cyber-calendar" class="border border-white/15 p-4 space-y-3 font-sans" style="width: 340px; max-width: 100%; background: rgba(4, 6, 10, 0.65); backdrop-filter: blur(4px);">
+          <div class="flex items-center justify-between gap-2">
+            <h3 id="cal-month-label" class="font-light text-base text-white uppercase tracking-[0.2em]">NOVEMBRE 2026</h3>
+            <div class="flex items-center gap-1 font-mono">
+              <button type="button" id="cal-prev-btn" class="w-6 h-6 text-slate-400 hover:text-dive-cyan text-sm flex items-center justify-center cursor-pointer transition-colors" aria-label="Mese precedente">‹</button>
+              <button type="button" id="cal-next-btn" class="w-6 h-6 text-slate-400 hover:text-dive-cyan text-sm flex items-center justify-center cursor-pointer transition-colors" aria-label="Mese successivo">›</button>
             </div>
           </div>
 
-          <div class="space-y-1">
-            <div class="grid grid-cols-7 gap-1 text-center text-[9px] text-slate-500 uppercase font-bold">
-              <span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span>
+          <div>
+            <div class="grid grid-cols-7 text-center text-[9px] text-slate-400 uppercase font-bold tracking-widest pb-1.5">
+              <span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span>
             </div>
-            <div id="cal-days-grid" class="grid grid-cols-7 gap-1 text-[11px]">
+            <div id="cal-days-grid" class="grid grid-cols-7 text-[11px]" style="gap: 0; border-top: 1px solid rgba(255,255,255,0.14); border-left: 1px solid rgba(255,255,255,0.14);">
               <!-- Popolato da JS -->
             </div>
           </div>
-          <div id="cal-selected-detail" class="px-2 py-1 rounded-sm bg-black/70 border border-white/10 text-[10px] flex items-center justify-between gap-2">
-            <span class="text-slate-400 truncate">Clicca una data evidenziata.</span>
+          <div id="cal-selected-detail" class="px-2 py-1.5 border border-white/10 bg-black/50 text-[10px] font-mono flex items-center justify-between gap-2">
+            <span class="text-slate-400 truncate">Seleziona una data evidenziata.</span>
           </div>
         </div>
 
