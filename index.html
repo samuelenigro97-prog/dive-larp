@@ -433,6 +433,28 @@
           <span class="text-dive-purple font-mono text-xs uppercase tracking-widest font-semibold block">GALLERY // ARCHIVIO VISUALE</span>
           <h2 class="font-orbitron font-bold text-2xl text-white">SCATTI DAL SETTORE 04</h2>
         </div>
+
+        <!-- Cartelle Eventi Passati (al momento vuote) -->
+        <div id="gallery-folders-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Popolato da JS -->
+        </div>
+
+        <!-- Vista Cartella Selezionata -->
+        <div id="gallery-folder-viewer" class="hidden cyber-panel hud-bracket p-5 border border-dive-purple/40 space-y-4">
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-white/10">
+            <div>
+              <span id="gallery-viewer-date" class="font-mono text-[10px] text-dive-cyan uppercase block"></span>
+              <h3 id="gallery-viewer-title" class="font-orbitron font-bold text-base text-white"></h3>
+            </div>
+            <button type="button" id="gallery-viewer-close-btn" class="px-2.5 py-1 rounded-sm border border-white/20 bg-white/5 hover:border-dive-red hover:text-dive-red font-mono text-[10px] text-slate-300 uppercase cursor-pointer">
+              CHIUDI ×
+            </button>
+          </div>
+          <div class="py-10 px-4 border border-dashed border-white/15 rounded-sm bg-black/40 text-center space-y-2">
+            <span class="font-mono text-xs text-dive-purple font-bold uppercase block">ARCHIVIO VUOTO // 0 FOTO</span>
+            <p class="font-sans text-xs text-slate-400">Nessuna foto ancora caricata per questo evento. Gli scatti appariranno qui appena disponibili.</p>
+          </div>
+        </div>
       </div>
     </section>
 

@@ -5655,6 +5655,53 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   renderEventiCalendar('2026-11-28');
 
+  function renderGalleryFolders() {
+    const gridEl = document.getElementById('gallery-folders-grid');
+    const viewerEl = document.getElementById('gallery-folder-viewer');
+    const viewerDateEl = document.getElementById('gallery-viewer-date');
+    const viewerTitleEl = document.getElementById('gallery-viewer-title');
+    if (!gridEl) return;
+
+    const pastEvents = DIVE_CALENDAR_EVENTS.filter(e => e.status === 'past');
+    gridEl.innerHTML = pastEvents.map(ev => `
+      <button type="button" data-folder-date="${ev.date}" class="gallery-folder-card w-full text-left group cursor-pointer focus:outline-none">
+        <div style="width: 112px; height: 14px; background: rgba(184, 41, 255, 0.22); border: 1px solid rgba(184, 41, 255, 0.45); border-bottom: none; border-radius: 3px 6px 0 0;" class="px-2 flex items-center">
+          <span class="font-mono text-[9px] text-dive-purple font-bold uppercase tracking-wider truncate">${ev.date}</span>
+        </div>
+        <div class="relative overflow-hidden rounded-b-sm rounded-tr-sm border border-dive-purple/40 group-hover:border-dive-cyan transition-colors p-4 flex flex-col justify-between" style="height: 144px; background: linear-gradient(145deg, rgba(16, 18, 28, 0.92), rgba(4, 6, 10, 0.96));">
+          <div class="flex items-center justify-between gap-2">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-dive-purple group-hover:text-dive-cyan transition-colors opacity-80">
+              <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>
+            </svg>
+            <span class="px-2 py-0.5 rounded-sm bg-black/70 border border-white/15 font-mono text-[9px] text-slate-400 uppercase">0 FOTO · VUOTA</span>
+          </div>
+          <div class="space-y-1">
+            <span class="font-mono text-[10px] text-dive-cyan font-bold uppercase block">${ev.date}</span>
+            <h3 class="font-orbitron font-bold text-sm text-white group-hover:text-dive-cyan transition-colors leading-snug">${escapeChatText(ev.title)}</h3>
+            <p class="font-mono text-[10px] text-slate-400 truncate">${escapeChatText(ev.location || 'Sicilia')}</p>
+          </div>
+        </div>
+      </button>
+    `).join('');
+
+    gridEl.querySelectorAll('.gallery-folder-card').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const date = btn.getAttribute('data-folder-date');
+        const ev = pastEvents.find(e => e.date === date);
+        if (!ev || !viewerEl) return;
+        if (viewerDateEl) viewerDateEl.textContent = `${ev.date} · ${ev.location || ''}`;
+        if (viewerTitleEl) viewerTitleEl.textContent = ev.title;
+        viewerEl.classList.remove('hidden');
+        viewerEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+
+    document.getElementById('gallery-viewer-close-btn')?.addEventListener('click', () => {
+      viewerEl?.classList.add('hidden');
+    });
+  }
+  renderGalleryFolders();
+
   renderSocialFeed();
   renderAdminRoster();
 
