@@ -5472,7 +5472,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cells = [];
     for (let i = 0; i < startOffset; i++) {
-      cells.push('<div class="h-10 sm:h-12 rounded-sm bg-black/20 border border-white/5 opacity-30"></div>');
+      cells.push('<div class="h-7 rounded-sm bg-black/20 border border-white/5 opacity-25"></div>');
     }
     for (let d = 1; d <= daysInMonth; d++) {
       const iso = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -5480,16 +5480,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ev) {
         const isPast = ev.status === 'past';
         const cls = isPast
-          ? 'border-white/15 bg-white/5 text-slate-400 opacity-50 hover:opacity-80'
-          : 'border-dive-cyan bg-dive-cyan/20 text-dive-cyan font-bold shadow-[0_0_12px_rgba(0,240,255,0.45)] hover:bg-dive-cyan hover:text-black';
+          ? 'border-white/15 bg-white/5 text-slate-400 opacity-45 hover:opacity-80'
+          : 'border-dive-cyan bg-dive-cyan/25 text-dive-cyan font-bold shadow-[0_0_10px_rgba(0,240,255,0.5)] hover:bg-dive-cyan hover:text-black';
         cells.push(`
-          <button type="button" data-cal-date="${iso}" class="h-10 sm:h-12 rounded-sm border transition-all flex flex-col items-center justify-center cursor-pointer ${cls}" title="${escapeChatText(ev.title)}">
-            <span class="text-xs leading-none">${d}</span>
-            <span class="text-[8px] mt-0.5 uppercase tracking-tighter truncate max-w-[90%]">${isPast ? 'PASSATO' : 'LIVE'}</span>
+          <button type="button" data-cal-date="${iso}" class="h-7 rounded-sm border transition-all flex items-center justify-center cursor-pointer text-[11px] ${cls}" title="${escapeChatText(ev.title)}">
+            ${d}
           </button>
         `);
       } else {
-        cells.push(`<div class="h-10 sm:h-12 rounded-sm border border-white/10 bg-black/40 text-slate-500 flex items-center justify-center text-xs">${d}</div>`);
+        cells.push(`<div class="h-7 rounded-sm border border-white/10 bg-black/40 text-slate-500 flex items-center justify-center text-[11px]">${d}</div>`);
       }
     }
     gridEl.innerHTML = cells.join('');
@@ -5501,22 +5500,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ev || !detailEl) return;
         const isPast = ev.status === 'past';
         detailEl.className = isPast
-          ? 'p-3 rounded-sm bg-black/60 border border-white/15 text-[11px] opacity-75 space-y-1'
-          : 'p-3 rounded-sm bg-dive-cyan/10 border border-dive-cyan/60 text-[11px] space-y-1 shadow-[0_0_14px_rgba(0,240,255,0.2)]';
+          ? 'p-2 rounded-sm bg-black/60 border border-white/15 text-[10px] opacity-80 flex items-center justify-between gap-2'
+          : 'p-2 rounded-sm bg-dive-cyan/10 border border-dive-cyan/60 text-[10px] flex items-center justify-between gap-2 shadow-[0_0_10px_rgba(0,240,255,0.2)]';
         detailEl.innerHTML = `
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="font-orbitron font-bold ${isPast ? 'text-slate-300' : 'text-dive-cyan'}">${escapeChatText(ev.title)}</span>
-            <span class="text-[10px] ${isPast ? 'text-slate-500' : 'text-dive-orange font-bold'}">${ev.date} · ${escapeChatText(ev.location)}</span>
+          <div class="min-w-0">
+            <span class="font-orbitron font-bold ${isPast ? 'text-slate-300' : 'text-dive-cyan'} truncate block">${escapeChatText(ev.title)}</span>
+            <span class="text-[9px] text-slate-400">${ev.date}</span>
           </div>
-          <p class="font-sans text-slate-300">${escapeChatText(ev.desc)}</p>
-          <div class="pt-1 flex justify-end">
-            <button type="button" class="cal-goto-event-btn px-2.5 py-1 rounded-sm ${isPast ? 'bg-white/10 text-slate-200 border border-white/20' : 'bg-dive-cyan text-black font-bold'} text-[10px] uppercase cursor-pointer">
-              VAI ALL'EVENTO ↗
-            </button>
-          </div>
+          <button type="button" class="cal-goto-event-btn px-2 py-1 rounded-sm ${isPast ? 'bg-white/10 text-slate-200 border border-white/20' : 'bg-dive-cyan text-black font-bold'} text-[9px] uppercase cursor-pointer flex-shrink-0">
+            VAI ↗
+          </button>
         `;
         detailEl.querySelector('.cal-goto-event-btn')?.addEventListener('click', () => {
-          const targetCard = document.getElementById(isPast ? 'eventi-card-past' : 'event-scheda-box');
+          const targetCard = document.getElementById(isPast ? 'eventi-card-past' : 'eventi-card-future');
           if (targetCard) {
             targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
             targetCard.classList.add('ring-2', isPast ? 'ring-white/40' : 'ring-dive-cyan');
