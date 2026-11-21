@@ -5550,7 +5550,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cells = [];
     for (let i = 0; i < startOffset; i++) {
-      cells.push('<div class="h-7 rounded-sm bg-black/20 border border-white/5 opacity-25"></div>');
+      cells.push('<div class="w-full aspect-square rounded-sm bg-black/20 border border-white/5 opacity-25" style="aspect-ratio: 1 / 1;"></div>');
     }
     for (let d = 1; d <= daysInMonth; d++) {
       const iso = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -5561,12 +5561,12 @@ document.addEventListener('DOMContentLoaded', () => {
           ? 'border-white/15 bg-white/5 text-slate-400 opacity-45 hover:opacity-80'
           : 'border-dive-cyan bg-dive-cyan/25 text-dive-cyan font-bold shadow-[0_0_10px_rgba(0,240,255,0.5)] hover:bg-dive-cyan hover:text-black';
         cells.push(`
-          <button type="button" data-cal-date="${iso}" class="h-7 rounded-sm border transition-all flex items-center justify-center cursor-pointer text-[11px] ${cls}" title="${escapeChatText(ev.title)}">
+          <button type="button" data-cal-date="${iso}" class="w-full aspect-square rounded-sm border transition-all flex items-center justify-center cursor-pointer text-[11px] leading-none ${cls}" style="aspect-ratio: 1 / 1;" title="${escapeChatText(ev.title)}">
             ${d}
           </button>
         `);
       } else {
-        cells.push(`<div class="h-7 rounded-sm border border-white/10 bg-black/40 text-slate-500 flex items-center justify-center text-[11px]">${d}</div>`);
+        cells.push(`<div class="w-full aspect-square rounded-sm border border-white/10 bg-black/40 text-slate-500 flex items-center justify-center text-[11px] leading-none" style="aspect-ratio: 1 / 1;">${d}</div>`);
       }
     }
     gridEl.innerHTML = cells.join('');
