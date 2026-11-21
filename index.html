@@ -278,7 +278,32 @@
           </button>
         </div>
 
-        <!-- Calendario: Prossimo Evento + Eventi Passati -->
+        <!-- Calendario Compatto Cyberpunk (prima degli eventi) -->
+        <div id="eventi-cyber-calendar" class="max-w-sm cyber-panel hud-bracket p-3.5 space-y-2.5 font-mono">
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-white/10">
+            <div class="flex items-center gap-1.5">
+              <button type="button" id="cal-prev-btn" class="w-6 h-6 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-[10px] font-bold flex items-center justify-center cursor-pointer">◀</button>
+              <h3 id="cal-month-label" class="font-orbitron font-bold text-xs text-white uppercase tracking-wider min-w-[120px] text-center">NOVEMBRE 2026</h3>
+              <button type="button" id="cal-next-btn" class="w-6 h-6 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-[10px] font-bold flex items-center justify-center cursor-pointer">▶</button>
+            </div>
+            <div class="flex items-center gap-2 text-[9px]">
+              <span class="text-slate-500 opacity-70">■ PASS</span>
+              <span class="text-dive-cyan font-bold">■ FUT</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 text-center text-[9px] text-slate-500 uppercase font-bold">
+            <span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span>
+          </div>
+          <div id="cal-days-grid" class="grid grid-cols-7 gap-1 text-[11px]">
+            <!-- Popolato da JS -->
+          </div>
+          <div id="cal-selected-detail" class="p-2 rounded-sm bg-black/70 border border-white/10 text-[10px] flex items-center justify-between gap-2">
+            <span class="text-slate-400 truncate">Clicca una data evidenziata.</span>
+          </div>
+        </div>
+
+        <!-- Eventi: Prossimo Evento + Eventi Passati (subito dopo il calendario) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
           <div id="eventi-card-future" class="md:col-span-2 cyber-panel hud-bracket p-5 border border-dive-orange/50 space-y-2 transition-all">
             <div class="flex items-center justify-between">
@@ -293,37 +318,6 @@
             <span class="px-2 py-0.5 bg-white/10 text-slate-300 font-bold text-[10px]">EVENTO PASSATO</span>
             <h3 class="font-orbitron font-bold text-base text-white">PROLOGO: BLACKOUT</h3>
             <p class="font-sans text-xs text-slate-400">Sessione zero — test impianti, primo contatto con i broker del Settore 04.</p>
-          </div>
-        </div>
-
-        <!-- Calendario Mensile Cyberpunk (Eventi Passati Sbiaditi vs Eventi Futuri Neon) -->
-        <div id="eventi-cyber-calendar" class="cyber-panel hud-bracket p-4 sm:p-5 space-y-4 font-mono">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
-            <div class="flex items-center gap-2">
-              <button type="button" id="cal-prev-btn" class="w-7 h-7 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-xs font-bold flex items-center justify-center cursor-pointer">◀</button>
-              <h3 id="cal-month-label" class="font-orbitron font-bold text-sm sm:text-base text-white uppercase tracking-wider min-w-[160px] text-center">NOVEMBRE 2026</h3>
-              <button type="button" id="cal-next-btn" class="w-7 h-7 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-xs font-bold flex items-center justify-center cursor-pointer">▶</button>
-            </div>
-            <div class="flex flex-wrap items-center gap-3 text-[10px]">
-              <span class="inline-flex items-center gap-1.5 text-slate-400 opacity-65">
-                <span class="w-2.5 h-2.5 rounded-sm border border-white/25 bg-white/10 inline-block"></span>
-                EVENTO PASSATO (ARCHIVIO)
-              </span>
-              <span class="inline-flex items-center gap-1.5 text-dive-cyan font-bold">
-                <span class="w-2.5 h-2.5 rounded-sm border border-dive-cyan bg-dive-cyan/30 inline-block shadow-[0_0_8px_rgba(0,240,255,0.6)]"></span>
-                EVENTO FUTURO (NEON)
-              </span>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] text-slate-500 uppercase tracking-wider font-bold">
-            <span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span>
-          </div>
-          <div id="cal-days-grid" class="grid grid-cols-7 gap-1.5 text-xs">
-            <!-- Popolato da JS -->
-          </div>
-          <div id="cal-selected-detail" class="p-3 rounded-sm bg-black/70 border border-white/10 text-[11px] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span class="text-slate-400">Seleziona una data evidenziata nel calendario per vedere i dettagli dell'evento.</span>
           </div>
         </div>
 
