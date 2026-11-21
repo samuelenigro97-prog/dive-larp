@@ -5577,26 +5577,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const startOffset = (firstDay.getDay() + 6) % 7; // Mon = 0 .. Sun = 6
     const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
 
+    const cellStyle = 'border-right: 1px solid rgba(255,255,255,0.14); border-bottom: 1px solid rgba(255,255,255,0.14); height: 34px;';
     const cells = [];
     for (let i = 0; i < startOffset; i++) {
-      cells.push('<div class="w-full aspect-square rounded-sm bg-black/20 border border-white/5 opacity-25" style="aspect-ratio: 1 / 1;"></div>');
+      cells.push(`<div style="${cellStyle}"></div>`);
     }
     for (let d = 1; d <= daysInMonth; d++) {
       const iso = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const ev = DIVE_CALENDAR_EVENTS.find(e => e.date === iso);
       if (ev) {
         const isPast = ev.status === 'past';
-        const cls = isPast
-          ? 'border-white/15 bg-white/5 text-slate-400 opacity-45 hover:opacity-80'
-          : 'border-dive-cyan bg-dive-cyan/25 text-dive-cyan font-bold shadow-[0_0_10px_rgba(0,240,255,0.5)] hover:bg-dive-cyan hover:text-black';
+        const btnStyle = isPast
+          ? `${cellStyle} background: rgba(255,255,255,0.02); opacity: 0.45;`
+          : `${cellStyle} background: rgba(0,212,255,0.08);`;
+        const dotHtml = isPast
+          ? '<span style="width: 3px; height: 3px; border-radius: 9999px; background: rgba(255,255,255,0.45); display: block; margin-top: 1px;"></span>'
+          : '<span style="width: 4px; height: 4px; border-radius: 9999px; background: #00d4ff; box-shadow: 0 0 6px #00d4ff; display: block; margin-top: 1px;"></span>';
         cells.push(`
-          <button type="button" data-cal-date="${iso}" class="w-full aspect-square rounded-sm border transition-all flex items-center justify-center cursor-pointer text-[11px] leading-none ${cls}" style="aspect-ratio: 1 / 1;" title="${escapeChatText(ev.title)}">
-            ${d}
+          <button type="button" data-cal-date="${iso}" class="flex flex-col items-center justify-center cursor-pointer transition-colors ${isPast ? 'text-slate-400 hover:text-white' : 'text-dive-cyan font-semibold hover:bg-dive-cyan/20'}" style="${btnStyle}" title="${escapeChatText(ev.title)}">
+            <span class="leading-none text-[11px]">${d}</span>
+            ${dotHtml}
           </button>
         `);
       } else {
-        cells.push(`<div class="w-full aspect-square rounded-sm border border-white/10 bg-black/40 text-slate-500 flex items-center justify-center text-[11px] leading-none" style="aspect-ratio: 1 / 1;">${d}</div>`);
+        cells.push(`<div class="text-slate-400 flex items-center justify-center text-[11px] font-light" style="${cellStyle}">${d}</div>`);
       }
+    }
+    const trailingEmpty = (7 - ((startOffset + daysInMonth) % 7)) % 7;
+    for (let i = 0; i < trailingEmpty; i++) {
+      cells.push(`<div style="${cellStyle}"></div>`);
     }
     gridEl.innerHTML = cells.join('');
 
