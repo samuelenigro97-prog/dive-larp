@@ -5486,7 +5486,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const neonGlow = NEON_GLOW_COLORS[color] || NEON_GLOW_COLORS.cyan;
       const thumbImg = item.img || 'assets/images/city-bg.jpg';
       return `
-      <button type="button" data-target-tab="${item.targetTab || 'net'}" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${color}/60 transition-colors cursor-pointer group" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px); display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; gap: 16px; overflow: hidden; width: 100%; height: 156px;">
+      <button type="button" data-target-tab="${item.targetTab || 'net'}" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${color}/60 transition-colors cursor-pointer group" style="background: rgba(4, 6, 10, 0.78); backdrop-filter: blur(4px); display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; gap: 16px; overflow: hidden; width: 100%; height: 156px;">
         <div class="text-left" style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; overflow: hidden;">
           <div class="flex items-center gap-2 font-mono text-[10px]" style="overflow: hidden; white-space: nowrap;">
             <span class="px-2 py-0.5 rounded-sm bg-dive-${color}/15 border border-dive-${color}/40 text-dive-${color} font-bold uppercase">${item.tag}</span>
@@ -5732,7 +5732,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="width: 112px; height: 14px; background: rgba(184, 41, 255, 0.22); border: 1px solid rgba(184, 41, 255, 0.45); border-bottom: none; border-radius: 3px 6px 0 0;" class="px-2 flex items-center">
           <span class="font-mono text-[9px] text-dive-purple font-bold uppercase tracking-wider truncate">${ev.date}</span>
         </div>
-        <div class="relative overflow-hidden rounded-b-sm rounded-tr-sm border border-dive-purple/40 group-hover:border-dive-cyan transition-colors p-4 flex flex-col justify-between" style="height: 144px; background: linear-gradient(145deg, rgba(16, 18, 28, 0.92), rgba(4, 6, 10, 0.96));">
+        <div class="relative overflow-hidden rounded-b-sm rounded-tr-sm border border-dive-purple/40 group-hover:border-dive-cyan transition-colors p-4 flex flex-col justify-between" style="height: 144px; background: rgba(4, 6, 10, 0.78); backdrop-filter: blur(4px);">
           <div class="flex items-center justify-between gap-2">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-dive-purple group-hover:text-dive-cyan transition-colors opacity-80">
               <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>
