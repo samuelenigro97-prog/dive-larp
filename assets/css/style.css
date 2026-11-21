@@ -56,9 +56,10 @@ body {
   pointer-events: none;
 }
 
-/* Authentic Cyberpunk Chamfered Panel (45-deg cut corners, matte carbon) */
+/* Authentic Cyberpunk Chamfered Panel (45-deg cut corners, translucent obsidian) */
 .cyber-panel {
-  background: var(--bg-carbon);
+  background: rgba(4, 6, 10, 0.78);
+  backdrop-filter: blur(4px);
   border: 1px solid var(--border-tech);
   clip-path: polygon(
     0 0,
@@ -76,7 +77,7 @@ body {
 }
 
 .cyber-panel-inner {
-  background: var(--bg-slot);
+  background: rgba(12, 17, 28, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
