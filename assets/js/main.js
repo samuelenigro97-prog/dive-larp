@@ -5328,20 +5328,104 @@ document.addEventListener('DOMContentLoaded', () => {
   // --------------------------------------------------------------------------
   const HOME_DISPATCHES = [
     {
+      tag: 'PREMESSE // NUOVE REGOLE & LORE',
+      tagColor: 'orange',
+      title: 'ATTENZIONE: aggiunte nuove regole e capitoli inediti di storia dell’ambientazione',
+      desc: 'AGGIORNAMENTO UFFICIALE — Sono stati inseriti nuovi trafiletti nel riquadro delle Premesse: scopri le modifiche al regolamento e gli ultimi sviluppi narrativi della Sicilia 2088.',
+      time: 'AGGIORNAMENTO SITO',
+      img: 'assets/images/hero-city-bg.jpg?v=0.27.1',
+      targetTab: 'premesse',
+      ctaLabel: 'VAI ALLE PREMESSE ↗'
+    },
+    {
+      tag: 'EVENTI // CALENDARIO LIVE',
+      tagColor: 'cyan',
+      title: 'Prossimo appuntamento DIVE in calendario: iscrizioni e dettagli operativi online',
+      desc: 'BOLLETTINO EVENTI — Consulta il nuovo calendario sintetico per verificare date passate e future, location confermate e finestre di ingaggio per la prossima sessione.',
+      time: 'CALENDARIO EVENTI',
+      img: 'assets/images/sicilia-cyberpunk-map.jpg',
+      targetTab: 'eventi',
+      ctaLabel: 'APRI CALENDARIO EVENTI ↗'
+    },
+    {
+      tag: 'GALLERY // ULTIMI SCATTI',
+      tagColor: 'purple',
+      title: 'Online gli ultimi scatti dell’evento passato: rivivi l’azione sul campo',
+      desc: 'ARCHIVIO FOTOGRAFICO — Abbiamo aggiornato la sezione Gallery con le foto dell’ultima serata operativa. Sfoglia gli scatti prima del prossimo briefing.',
+      time: 'GALLERY AGGIORNATA',
+      img: 'assets/images/og-preview.jpg',
+      targetTab: 'gallery',
+      ctaLabel: 'GUARDA LA GALLERY ↗'
+    },
+    {
+      tag: 'NIGHTLIFE // DJ SET ELETTRONICO',
+      tagColor: 'purple',
+      title: 'SPECIALE CLUB: DJ Vexx-9 in console per la notte Synth-Bass ai Docks di Catania',
+      desc: 'PROMO SERATA — Il celebre DJ internazionale arriva in Sicilia per un set esclusivo di musica elettronica ad alto voltaggio. Ingresso riservato fino a esaurimento slot.',
+      time: 'SERATA ELETTRONICA',
+      img: 'assets/images/city-bg.jpg',
+      targetTab: 'eventi',
+      ctaLabel: 'SCOPRI GLI EVENTI ↗'
+    },
+    {
+      tag: 'TOUR // PERFORMER & DIVE IN VIAGGIO',
+      tagColor: 'orange',
+      title: 'Le Dive di Chrome-Siren in tour verso Porto Franco Navarro: annunciate le tappe',
+      desc: 'TOUR LIVE — Le performer più richieste del circuito mediterraneo sono in viaggio verso le nuove location costiere. Previsti show olografici e after-party privati.',
+      time: 'TOUR IN CORSO',
+      img: 'assets/images/hero-city-bg.jpg?v=0.27.1',
+      targetTab: 'net',
+      ctaLabel: 'SEGUI IL TOUR SU DIVE SOCIAL ↗'
+    },
+    {
+      tag: 'ARASAKA // NUOVI IMPIANTI CYBERWARE',
+      tagColor: 'red',
+      title: 'Arasaka lancia sul mercato la serie neurale Kensei Mk.V: prestazioni militari',
+      desc: 'INSERTO ARASAKA — Nuovi impianti sinaptici e riflessi balistici appena sbarcati nei canali ufficiali. Disponibilità limitata per operatori con licenza di fascia alta.',
+      time: 'LANCIO PRODOTTO',
+      img: 'assets/images/implants/cyberware-body.jpg',
+      targetTab: 'net',
+      ctaLabel: 'DETTAGLI SU DIVE SOCIAL ↗'
+    },
+    {
+      tag: 'BIOTECH // NUOVI IMMUNOSOPPRESSORI',
+      tagColor: 'green',
+      title: 'Nuova formula di immunosoppressori NeuroBlock-X: zero rigetto ad alto carico',
+      desc: 'PUBBLICITÀ BIOTECH — Sviluppata una nuova generazione di immunosoppressori per stabilizzare impianti estremi senza cali cognitivi. Richiedi la dose al Banco Biotech.',
+      time: 'SPONSOR BIOTECH',
+      img: 'assets/images/implants/cyberware-body.jpg',
+      targetTab: 'net',
+      ctaLabel: 'APPROFONDISCI IN RETE ↗'
+    },
+    {
+      tag: 'NUOVE LOCATION // APERTURA SETTORI',
+      tagColor: 'cyan',
+      title: 'Inaugurato il nuovo distretto “Vetro Nero” tra le banchine est e il porto',
+      desc: 'SEGNALAZIONE TERRITORIO — Nuove location aperte al traffico notturno: lounge sotterranee, officine clandestine e snodi neutrali per trattative fuori dai radar.',
+      time: 'NUOVA LOCATION',
+      img: 'assets/images/sicilia-cyberpunk-map.jpg',
+      targetTab: 'premesse',
+      ctaLabel: 'VEDI AMBIENTAZIONE ↗'
+    },
+    {
+      tag: 'MEDIA LIVE // DIRETTA DA NAVARRO',
+      tagColor: 'red',
+      title: 'DIRETTA TG: Anna Navarro intervista i vertici della sicurezza dal molo di Porto Franco',
+      desc: 'EDIZIONE LIVE — I giornalisti del network trasmettono in diretta da Navarro con retroscena esclusivi, collegamenti dall’estero e interviste ai testimoni chiave.',
+      time: 'IN DIRETTA ORA',
+      img: 'assets/images/og-preview.jpg',
+      targetTab: 'net',
+      ctaLabel: 'SEGUI LA DIRETTA ↗'
+    },
+    {
       tag: 'TG SICILIA // EDIZIONE STRAORDINARIA',
       tagColor: 'orange',
       title: 'Catania, coprifuoco al Settore Ciminiere: pattuglie private attorno ai moli di Navarro',
       desc: 'FLASH REDAZIONE — Da mezzanotte scattano i posti di blocco lungo la fascia portuale di Porto Franco Navarro. Fonti locali segnalano tensioni tra scortatori corporativi e convogli indipendenti.',
       time: 'ULTIM’ORA · 12m fa',
-      img: 'assets/images/sicilia-cyberpunk-map.jpg'
-    },
-    {
-      tag: 'MEDIA SPOT // NEPTUN BIOTECH SICILIA',
-      tagColor: 'green',
-      title: 'Siero Rigenerante MK-IV: via alla distribuzione nei laboratori etnei',
-      desc: 'INSERTO COMMERCIALE — Riduzione certificata del rigetto sinaptico per impianti ad alto carico. Consulenze aperte sul Banco Biotech Unificato prima dei turni in Arena.',
-      time: 'SPONSOR TG',
-      img: 'assets/images/implants/cyberware-body.jpg'
+      img: 'assets/images/sicilia-cyberpunk-map.jpg',
+      targetTab: 'net',
+      ctaLabel: 'LEGGI SU DIVE SOCIAL ↗'
     },
     {
       tag: 'MONDO // CORRISPONDENZA DA ZURIGO',
@@ -5349,23 +5433,9 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Borse europee in calo dopo il leak sui nodi Cyberspazio di Vertex Corp',
       desc: 'DAL NOSTRO INVIATO — Un collettivo di Netrunner ha diffuso migliaia di pacchetti cifrati dai server elvetici, rivelando contratti non dichiarati su prototipi neurali.',
       time: 'AGGIORNATO · 38m fa',
-      img: 'assets/images/city-bg.jpg'
-    },
-    {
-      tag: 'CRONACA SICILIA // DISTRETTO ETNA',
-      tagColor: 'purple',
-      title: 'Convoglio Caravan Yard alle porte di Catania: attesi scambi al mercato notturno',
-      desc: 'REPORTAGE — Mezzi blindati avvistati sulla tangenziale est. Secondo gli osservatori, a bordo viaggiano forniture Gorilla Arms e nuove quote per gli scontri clandestini.',
-      time: '1 ora fa',
-      img: 'assets/images/hero-city-bg.jpg?v=0.27.1'
-    },
-    {
-      tag: 'BREAKING // NIGHTWIRE GLOBAL PRESS',
-      tagColor: 'red',
-      title: 'Media Signal Network lancia i compensi diretti per i reporter verificati sul campo',
-      desc: 'COMUNICATO STAMPA — Ogni corrispondenza firmata con bollino VERIFICATO da Sicilia e Mediterraneo genera accrediti immediati in EuroDollari sulla rete pubblica.',
-      time: 'PUBBLICITÀ',
-      img: 'assets/images/og-preview.jpg'
+      img: 'assets/images/city-bg.jpg',
+      targetTab: 'net',
+      ctaLabel: 'LEGGI SU DIVE SOCIAL ↗'
     },
     {
       tag: 'ESTERI // DIRETTA DA TOKYO',
@@ -5373,7 +5443,9 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Allarme internazionale Overclock: picco di casi di cyberpsicosi nei circuiti combat',
       desc: 'TG MONDO — Il Comitato Sanitario Transnazionale chiede controlli più severi sui moduli Overclock non autorizzati impiegati nei combattimenti urbani.',
       time: '2 ore fa',
-      img: 'assets/images/city-bg.jpg'
+      img: 'assets/images/city-bg.jpg',
+      targetTab: 'net',
+      ctaLabel: 'LEGGI SU DIVE SOCIAL ↗'
     }
   ];
 
@@ -5386,12 +5458,14 @@ document.addEventListener('DOMContentLoaded', () => {
       tagColor: p.isAnonymous ? 'purple' : 'cyan',
       title: p.title || (p.author ? `Aggiornamento da ${escapeChatText(p.author)}` : 'Dispaccio dal Feed'),
       desc: p.content || '',
-      time: p.timestamp || 'Live'
+      time: p.timestamp || 'Live',
+      targetTab: 'net',
+      ctaLabel: 'LEGGI SU DIVE SOCIAL ↗'
     }));
 
-    const combined = [...liveNews, ...HOME_DISPATCHES];
+    const combined = [...HOME_DISPATCHES, ...liveNews];
     streamEl.innerHTML = combined.map(item => `
-      <button type="button" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${item.tagColor || 'cyan'}/60 transition-colors space-y-2 cursor-pointer group" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px);">
+      <button type="button" data-target-tab="${item.targetTab || 'net'}" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${item.tagColor || 'cyan'}/60 transition-colors space-y-2 cursor-pointer group" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px);">
         <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
           <span class="px-2 py-0.5 rounded-sm bg-dive-${item.tagColor || 'cyan'}/15 border border-dive-${item.tagColor || 'cyan'}/40 text-dive-${item.tagColor || 'cyan'} font-bold uppercase">${item.tag}</span>
           <span class="text-slate-400">${escapeChatText(item.time)}</span>
@@ -5399,20 +5473,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <h3 class="font-orbitron font-bold text-sm sm:text-base text-white group-hover:text-dive-cyan transition-colors">${escapeChatText(item.title)}</h3>
         <p class="font-sans text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeChatText(item.desc)}</p>
         <div class="pt-1 font-mono text-[10px] text-dive-orange font-bold uppercase">
-          LEGGI SU DIVE SOCIAL ↗
+          ${escapeChatText(item.ctaLabel || 'LEGGI SU DIVE SOCIAL ↗')}
         </div>
       </button>
     `).join('');
 
     streamEl.querySelectorAll('.home-news-card').forEach(card => {
       card.addEventListener('click', () => {
-        switchTab('net');
+        switchTab(card.dataset.targetTab || 'net');
       });
     });
   }
 
   let homePopupDismissed = false;
   let homePopupIdx = 0;
+  let currentHomePopupTargetTab = 'net';
   function showHomeNewsPopup() {
     if (homePopupDismissed) return;
     const homeTab = document.getElementById('tab-home');
@@ -5420,14 +5495,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!homeTab || homeTab.classList.contains('hidden') || !popupEl) return;
     const item = HOME_DISPATCHES[homePopupIdx % HOME_DISPATCHES.length];
     homePopupIdx += 1;
+    currentHomePopupTargetTab = item.targetTab || 'net';
     const tagEl = document.getElementById('home-popup-tag');
     const titleEl = document.getElementById('home-popup-title');
     const descEl = document.getElementById('home-popup-desc');
     const imgEl = document.getElementById('home-popup-img');
+    const ctaLabelEl = document.getElementById('home-popup-cta-label');
     if (tagEl) tagEl.textContent = item.tag;
     if (titleEl) titleEl.textContent = item.title;
     if (descEl) descEl.textContent = item.desc;
     if (imgEl && item.img) imgEl.src = item.img;
+    if (ctaLabelEl) ctaLabelEl.textContent = (item.ctaLabel || 'APRI RETE DIVE SOCIAL').replace(/\s*↗$/, '');
     popupEl.classList.remove('hidden');
   }
 
@@ -5437,7 +5515,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('home-popup-cta-btn')?.addEventListener('click', () => {
     document.getElementById('home-news-popup')?.classList.add('hidden');
-    switchTab('net');
+    switchTab(currentHomePopupTargetTab || 'net');
   });
 
   renderHomeVerticalFeed();
