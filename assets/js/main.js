@@ -549,43 +549,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const CYBERWARE_BY_PG = {
     '#V-7842': {
-      os: { name: 'CYBERDECK PARALINE', tag: 'DECK OS', desc: 'Comandi rapidi 5s (Override) e violazione ICE.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
+      os: { name: 'SISTEMA COMBAT // TATTICO', tag: 'COMBAT', desc: 'Suite combattimento: Gorilla Arms, SHIELD, Deadeye, Subdermal.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange' },
       implants: [
-        { slot: 'BRACCIA', name: 'BRACCIO PROTESICO MIL-SPEC', tag: 'ATTIVO', desc: 'Stabilità di mira e rinforzo presa balistica.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', active: true },
-        { slot: 'GAMBE', name: 'TENDINI RINFORZATI MK.1', tag: 'DISATTIVATO', desc: 'Modulo scatto silenzioso in stand-by energetico.', img: 'assets/images/implants/implant-ghost.jpg', color: 'orange', active: false }
+        { id: 'gorilla_arms', slot: 'BRACCIA // COMBAT', name: 'Gorilla Arms', tag: 'ATTIVO', desc: 'Forza d\'impatto potenziata e sfondamento in mischia.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', active: true, combat: true },
+        { id: 'shield_protocol', slot: 'DIFESA // COMBAT', name: 'SHIELD protocol', tag: 'ATTIVO', desc: 'Scudo cinetico reattivo contro raffiche e colpi diretti.', img: 'assets/images/implants/implant-ghost.jpg', color: 'orange', active: true, combat: true },
+        { id: 'deadeye', slot: 'OTTICA // COMBAT', name: 'Deadeye', tag: 'ATTIVO', desc: 'Puntamento balistico assistito ad alta precisione.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'orange', active: true, combat: true },
+        { id: 'subdermal_armor', slot: 'PELLE // COMBAT', name: 'Subdermal Armor', tag: 'ATTIVO', desc: 'Corazzatura sottocutanea balistica integrata.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', active: true, combat: true }
       ]
     },
     '#K-4109': {
-      os: { name: 'NETWATCH NETDRIVER', tag: 'MK.5', desc: 'Suite di intrusione profonda e controllo daemons.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
+      os: { name: 'SISTEMA INFORMATICO // CYBERSPAZIO', tag: 'NET OS', desc: 'Accesso al Cyberspazio e controllo terminali/ICE.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
       implants: [
-        { slot: 'MANI', name: 'SMART LINK NEURALE', tag: 'ATTIVO', desc: 'Interfaccia diretta con terminali fisici e porte deck.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan', active: true },
-        { slot: 'SCHELETRO', name: 'STABILIZZATORE VERTEBRALE', tag: 'DISATTIVATO', desc: 'Disattivato per ridurre il carico sinaptico.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'purple', active: false }
+        { id: 'cyberdeck', slot: 'DECK // INFORMATICO', name: 'Cyberdeck', tag: 'ATTIVO', desc: 'Comandi: .dropweapon · .stop · .sightout · .stealmoney · .ICEbreaker.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan', active: true },
+        { id: 'ice_firewall', slot: 'SICUREZZA // INFORMATICO', name: 'ICE Firewall', tag: 'ATTIVO', desc: 'Barriera crittografica contro intrusioni e .stealmoney nemici.', img: 'assets/images/implants/implant-ghost.jpg', color: 'cyan', active: true }
       ]
     },
     '#D-5510': {
-      os: { name: 'TRAUMA MED-DECK OS', tag: 'CLINIC OS', desc: 'Diagnostica biomonitor e controllo micro-suture.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'red' },
+      os: { name: 'SISTEMA BIOTECH // BANCO UNIFICATO', tag: 'BIOTECH', desc: 'Lavori al banco Ripperdoc tra operazioni mediche, meccaniche e chimiche.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'red' },
       implants: [
-        { slot: 'MANI', name: 'MICRO-MANIPOLATORI CHIRURGICI', tag: 'ATTIVO', desc: 'Precisione sub-millimetrica per estrazione cromo.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: true }
+        { id: 'substance_storage', slot: 'SERBATOIO // BIOTECH', name: 'Substance Storage', tag: '3 / 3 DOSI', desc: 'Contiene fino a 3 sostanze utilizzabili in scena.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green', active: true },
+        { id: 'instant_injection', slot: 'INIETTORE // BIOTECH', name: 'Instant Injection', tag: 'ATTIVO', desc: 'Guarigione di +1 istantanea anche lontano dal banco Ripperdoc.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red', active: true },
+        { id: 'overclock', slot: 'MODULO // BIOTECH', name: 'Overclock (Combat Only)', tag: 'ATTIVO', desc: 'Sblocca versioni Overclocked degli impianti Combat e abbassa il costo dei Quickhack.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple', active: true }
+      ]
+    },
+    '#F-3088': {
+      os: { name: 'SISTEMA BUSINESS // BROKER SUITE', tag: 'BUSINESS', desc: 'Bonus iniziale crediti & reputazione · Gig, Spettacolo (palco) e Arena.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'orange' },
+      implants: [
+        { id: 'ice_firewall', slot: 'SICUREZZA // BUSINESS', name: 'ICE Firewall', tag: 'ATTIVO', desc: 'Protezione conto EuroDollari e contratti riservati.', img: 'assets/images/implants/implant-ghost.jpg', color: 'cyan', active: true },
+        { id: 'black_market_access', slot: 'RETE // BUSINESS', name: 'Black Market Access', tag: 'ATTIVO', desc: 'Accesso diretto a forniture clandestine e sponsor Arena.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', active: true },
+        { id: 'gig_database', slot: 'ARCHIVIO // BUSINESS', name: 'Gig Database', tag: 'ATTIVO', desc: 'Database unificato di Gig, slot palco Spettacolo e incontri Arena.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple', active: true }
+      ]
+    },
+    '#B-6420': {
+      os: { name: 'SISTEMA BIOTECH // BANCO UNIFICATO', tag: 'BIOTECH', desc: 'Operazioni mediche, meccaniche ed esperimenti chimici dal banco Ripperdoc.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'green' },
+      implants: [
+        { id: 'substance_storage', slot: 'SERBATOIO // BIOTECH', name: 'Substance Storage', tag: '3 / 3 DOSI', desc: 'Contiene fino a 3 sostanze utilizzabili.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green', active: true },
+        { id: 'instant_injection', slot: 'INIETTORE // BIOTECH', name: 'Instant Injection', tag: 'ATTIVO', desc: 'Guarigione di +1 istantanea anche lontano dal banco Ripperdoc.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red', active: true },
+        { id: 'overclock', slot: 'MODULO // BIOTECH', name: 'Overclock (Combat Only)', tag: 'ATTIVO', desc: 'Versioni Overclocked degli impianti Combat + Quickhack a costo ridotto.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple', active: true }
       ]
     },
     '#R-9921': {
-      os: { name: 'CYBERDECK NOMAD BASE', tag: 'DECK OS', desc: 'Modulo base per scansione QR e gestione wallet.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'green' },
+      os: { name: 'SISTEMA COMBAT // SCAV', tag: 'COMBAT', desc: 'Impianti da combattimento recuperati sul campo.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green' },
       implants: [
-        { slot: 'GAMBE', name: 'TENDINI RINFORZATI', tag: 'ATTIVO', desc: 'Scatto silenzioso e recupero rapido in fuga.', img: 'assets/images/implants/implant-ghost.jpg', color: 'green', active: true },
-        { slot: 'BRACCIA', name: 'LAME DA SCASSO', tag: 'DISATTIVATO', desc: 'Danneggiate nello scontro: richiede ripperdoc.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: false }
+        { id: 'gorilla_arms', slot: 'BRACCIA // COMBAT', name: 'Gorilla Arms', tag: 'ATTIVO', desc: 'Forza d\'impatto potenziata in mischia.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', active: true, combat: true },
+        { id: 'shield_protocol', slot: 'DIFESA // COMBAT', name: 'SHIELD protocol', tag: 'ATTIVO', desc: 'Scudo cinetico reattivo.', img: 'assets/images/implants/implant-ghost.jpg', color: 'orange', active: true, combat: true },
+        { id: 'deadeye', slot: 'OTTICA // COMBAT', name: 'Deadeye', tag: 'DISATTIVATO', desc: 'Modulo di mira danneggiato: richiede intervento Biotech.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'red', active: false, combat: true },
+        { id: 'subdermal_armor', slot: 'PELLE // COMBAT', name: 'Subdermal Armor', tag: 'ATTIVO', desc: 'Corazzatura sottocutanea balistica.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', active: true, combat: true }
       ]
     },
     '#C-0012': {
-      os: { name: 'SANDEVISTAN MILITECH', tag: 'SANDY OS', desc: 'Accelerazione riflessi e finestra tattica 5s.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'red' },
+      os: { name: 'SISTEMA COMBAT // OVERCLOCK', tag: 'COMBAT', desc: 'Architettura da assalto pesante compatibile Overclock.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red' },
       implants: [
-        { slot: 'BRACCIA', name: 'LAME MANTIDE', tag: 'ATTIVO', desc: 'Lame retrattili ad alta vibrazione negli avambracci.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red', active: true },
-        { slot: 'SCHELETRO', name: 'LEGA TITANIO PESANTE', tag: 'ATTIVO', desc: 'Struttura ossea rinforzata per impatti balistici.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: true }
+        { id: 'gorilla_arms', slot: 'BRACCIA // COMBAT', name: 'Gorilla Arms', tag: 'ATTIVO', desc: 'Forza d\'impatto potenziata.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: true, combat: true },
+        { id: 'shield_protocol', slot: 'DIFESA // COMBAT', name: 'SHIELD protocol', tag: 'ATTIVO', desc: 'Scudo cinetico reattivo.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red', active: true, combat: true },
+        { id: 'deadeye', slot: 'OTTICA // COMBAT', name: 'Deadeye', tag: 'ATTIVO', desc: 'Puntamento balistico assistito.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'red', active: true, combat: true },
+        { id: 'subdermal_armor', slot: 'PELLE // COMBAT', name: 'Subdermal Armor', tag: 'ATTIVO', desc: 'Corazzatura sottocutanea balistica.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: true, combat: true },
+        { id: 'overclock', slot: 'MODULO // BIOTECH', name: 'Overclock (Combat Only)', tag: 'ATTIVO', desc: 'Attiva varianti Overclocked degli impianti Combat e riduce il costo dei Quickhack.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple', active: true }
       ]
     },
     '#M-3384': {
-      os: { name: 'CYBERDECK SIGNAL', tag: 'DECK OS', desc: 'Relay satellitare portatile anti-jamming.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' },
+      os: { name: 'SISTEMA MEDIA // VERIFICATO', tag: 'MEDIA OS', desc: 'Bollino Verificato automatico e compenso per ogni contenuto pubblicato.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' },
       implants: [
-        { slot: 'MANI', name: 'INTERFACCIA FEED DIRETTA', tag: 'ATTIVO', desc: 'Streaming crittografato immediato su The Net.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple', active: true }
+        { id: 'untraceable', slot: 'RETE // MEDIA', name: 'Untraceable', tag: 'ATTIVO', desc: 'Pubblica post anonimi non rintracciabili nel feed.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple', active: true },
+        { id: 'lockedon', slot: 'ARCHIVIO // MEDIA', name: 'Lockedon', tag: 'ATTIVO', desc: 'Pubblica post non rimovibili a tempo (5 minuti).', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan', active: true },
+        { id: 'cancelcontent', slot: 'MOD // MEDIA', name: 'Cancelcontent', tag: 'ATTIVO', desc: 'Rimuove contenuti dal feed social (salvo Lockedon attivi).', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red', active: true }
       ]
     }
   };
@@ -737,7 +764,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const idKey = String((sheetData && sheetData.secretId) || '#V-7842').toUpperCase();
     const pgCyber = (sheetData && sheetData.cyberware) || CYBERWARE_BY_PG[idKey] || CYBERWARE_BY_PG['#V-7842'];
     const osData = pgCyber.os || CYBERWARE_BY_PG['#V-7842'].os;
-    const implants = Array.isArray(pgCyber.implants) ? pgCyber.implants : [];
+    const isOverclocked = Boolean(sheetData && sheetData.overclockActive);
+    const rawImplants = Array.isArray(pgCyber.implants) ? pgCyber.implants : [];
+    const implants = rawImplants.map(imp => {
+      if (isOverclocked && imp.combat && imp.active !== false) {
+        return {
+          ...imp,
+          name: `${imp.name} [OVERCLOCKED]`,
+          tag: 'OVERCLOCKED',
+          desc: `${imp.desc} (Potenziamento Overclock Combat attivo)`,
+          color: 'purple'
+        };
+      }
+      if (imp.id === 'substance_storage') {
+        const doses = typeof sheetData.substanceCharges === 'number' ? sheetData.substanceCharges : 3;
+        return { ...imp, tag: `${doses} / 3 DOSI` };
+      }
+      return imp;
+    });
     const activeImplants = implants.filter(imp => imp.active !== false);
     const disabledImplants = implants.filter(imp => imp.active === false);
 
@@ -750,6 +794,64 @@ document.addEventListener('DOMContentLoaded', () => {
     disabledListEl.innerHTML = disabledImplants.length
       ? disabledImplants.map(imp => renderCyberwareSlotHTML(imp.slot || 'IMPIANTO', imp, true)).join('')
       : `<div class="p-2.5 rounded-sm bg-[#04060A]/80 border border-dashed border-white/15 font-mono text-[10px] text-slate-500">Nessun impianto disattivato.</div>`;
+
+    const actionsEl = document.getElementById('cyberware-system-actions');
+    if (actionsEl) {
+      const hasCombatOrOverclock = rawImplants.some(i => i.id === 'overclock' || i.combat);
+      const hasInstantInj = rawImplants.some(i => i.id === 'instant_injection');
+      const hasStorage = rawImplants.some(i => i.id === 'substance_storage');
+      if (!activeSheetRunner && (hasCombatOrOverclock || hasInstantInj || hasStorage)) {
+        const doses = typeof player.substanceCharges === 'number' ? player.substanceCharges : 3;
+        actionsEl.classList.remove('hidden');
+        actionsEl.innerHTML = `
+          <div class="flex flex-wrap items-center gap-2">
+            ${hasCombatOrOverclock ? `
+              <button type="button" id="cw-toggle-overclock-btn" class="px-2.5 py-1.5 rounded-sm border font-bold uppercase transition-colors cursor-pointer ${player.overclockActive ? 'bg-dive-purple text-black border-dive-purple' : 'bg-dive-purple/10 text-dive-purple border-dive-purple/40 hover:bg-dive-purple hover:text-black'}">
+                ${player.overclockActive ? 'OVERCLOCK: ATTIVO (COMBAT + -1 RAM)' : 'ATTIVA OVERCLOCK (COMBAT)'}
+              </button>
+            ` : ''}
+            ${hasInstantInj ? `
+              <button type="button" id="cw-instant-inj-btn" class="px-2.5 py-1.5 rounded-sm border border-dive-red/40 bg-dive-red/10 text-dive-red hover:bg-dive-red hover:text-black font-bold uppercase transition-colors cursor-pointer">
+                INSTANT INJECTION (+1 HP)
+              </button>
+            ` : ''}
+            ${hasStorage ? `
+              <button type="button" id="cw-use-substance-btn" class="px-2.5 py-1.5 rounded-sm border border-dive-green/40 bg-dive-green/10 text-dive-green hover:bg-dive-green hover:text-black font-bold uppercase transition-colors cursor-pointer">
+                USA SOSTANZA (${doses}/3)
+              </button>
+            ` : ''}
+          </div>
+        `;
+        document.getElementById('cw-toggle-overclock-btn')?.addEventListener('click', () => {
+          player.overclockActive = !player.overclockActive;
+          savePlayerState(player);
+          renderRamUI();
+          syncPlayerUI();
+          playCyberFx(player.overclockActive ? 'ram' : 'ui');
+        });
+        document.getElementById('cw-instant-inj-btn')?.addEventListener('click', () => {
+          player.hp = Math.min(100, (player.hp || 0) + 1);
+          savePlayerState(player);
+          syncPlayerUI();
+          playCyberFx('success');
+        });
+        document.getElementById('cw-use-substance-btn')?.addEventListener('click', () => {
+          const cur = typeof player.substanceCharges === 'number' ? player.substanceCharges : 3;
+          if (cur <= 0) {
+            player.substanceCharges = 3;
+          } else {
+            player.substanceCharges = cur - 1;
+            player.hp = Math.min(100, (player.hp || 0) + 20);
+          }
+          savePlayerState(player);
+          syncPlayerUI();
+          playCyberFx('success');
+        });
+      } else {
+        actionsEl.classList.add('hidden');
+        actionsEl.innerHTML = '';
+      }
+    }
 
     if (activeCountEl) activeCountEl.textContent = String(activeImplants.length);
     if (disabledCountEl) disabledCountEl.textContent = String(disabledImplants.length);
@@ -1535,8 +1637,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    const overclockDiscount = player.overclockActive ? 1 : 0;
+    const ocBadge = document.getElementById('quickhack-overclock-badge');
+    if (ocBadge) ocBadge.classList.toggle('hidden', !player.overclockActive);
+
     document.querySelectorAll('.quickhack-trigger-btn').forEach(btn => {
-      const cost = Number(btn.getAttribute('data-ram') || 0);
+      const baseCost = Number(btn.getAttribute('data-ram') || 0);
+      const cost = Math.max(1, baseCost - overclockDiscount);
+      const badgeEl = btn.querySelector('.quickhack-ram-badge');
+      if (badgeEl) badgeEl.textContent = `${cost} RAM`;
       const affordable = current >= cost;
       btn.classList.toggle('opacity-50', !affordable);
       btn.setAttribute('aria-disabled', affordable ? 'false' : 'true');
@@ -1636,7 +1745,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       const hack = btn.getAttribute('data-hack');
       const desc = btn.getAttribute('data-desc');
-      const ramCost = Number(btn.getAttribute('data-ram') || 0);
+      const baseCost = Number(btn.getAttribute('data-ram') || 0);
+      const ramCost = Math.max(1, baseCost - (player.overclockActive ? 1 : 0));
       launchQuickhackCombat(hack, desc, ramCost);
     });
   });
@@ -2865,7 +2975,9 @@ document.addEventListener('DOMContentLoaded', () => {
         (post.authorSecretId && player.secretId && post.authorSecretId.toUpperCase() === player.secretId.toUpperCase()) ||
         (!isAnon && post.author && player.callsign && post.author.toUpperCase() === player.callsign.toUpperCase())
       );
-      const canDelete = isMediaOrAdmin || isOwnPost;
+      const isLockedOn = Boolean(post.lockedUntil && Date.now() < post.lockedUntil);
+      const lockedMinsLeft = isLockedOn ? Math.max(1, Math.ceil((post.lockedUntil - Date.now()) / 60000)) : 0;
+      const canDelete = !isLockedOn && (isMediaOrAdmin || isOwnPost);
 
       const badgeClass = isAnon
         ? 'bg-dive-purple/15 border-dive-purple/40 text-dive-purple'
@@ -2882,8 +2994,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div>
                   <div class="flex items-center gap-1.5 font-mono text-xs font-bold text-white">
-                    <span>${isAnon ? 'Ghost Net (Anonimo)' : post.author}</span>
-                    ${post.isVerified ? '<span class="text-dive-cyan text-[10px]" title="Verificato Media/Corp">[VER]</span>' : ''}
+                    <span>${isAnon ? 'Untraceable (Anonimo)' : post.author}</span>
+                    ${post.isVerified ? '<span class="text-dive-cyan text-[10px]" title="Verificato Media">[VERIFICATO]</span>' : ''}
+                    ${isLockedOn ? `<span class="text-[9px] px-1.5 py-0.5 rounded-sm bg-dive-cyan/15 border border-dive-cyan/40 text-dive-cyan font-mono">LOCKEDON ${lockedMinsLeft}m</span>` : ''}
                     ${post.isPinned ? '<span class="text-[9px] px-1.5 py-0.5 rounded-sm bg-dive-orange/20 border border-dive-orange/40 text-dive-orange font-mono">PINNED</span>' : ''}
                   </div>
                   <div class="font-mono text-[10px] text-slate-500">${post.location || 'Settore 04'} • ${post.timestamp}</div>
@@ -2898,8 +3011,8 @@ document.addEventListener('DOMContentLoaded', () => {
                   </button>
                 ` : ''}
                 ${canDelete ? `
-                  <button class="media-delete-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-red hover:border-dive-red/40 cursor-pointer" data-id="${post.id}" title="Elimina post">
-                    [ELIMINA]
+                  <button class="media-delete-btn px-1.5 py-0.5 rounded-sm border border-white/10 text-[9px] font-mono text-slate-400 hover:text-dive-red hover:border-dive-red/40 cursor-pointer" data-id="${post.id}" title="${isMediaOrAdmin ? 'Cancelcontent: rimuovi post dal feed' : 'Elimina post'}">
+                    ${isMediaOrAdmin ? '[CANCELCONTENT]' : '[ELIMINA]'}
                   </button>
                 ` : ''}
                 <span class="px-2 py-0.5 rounded-sm border text-[9px] font-mono font-bold uppercase ${badgeClass}">
@@ -3127,6 +3240,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const quickSocialForm = document.getElementById('quick-social-form');
   const quickSocialInput = document.getElementById('quick-social-input');
   const quickSocialAnon = document.getElementById('quick-social-anon');
+  const quickSocialLockedon = document.getElementById('quick-social-lockedon');
+  const quickSocialLockedonWrap = document.getElementById('quick-social-lockedon-wrap');
+  if (quickSocialLockedonWrap) {
+    const isMediaUser = String(player.role || '').toUpperCase().includes('MEDIA') || String(player.role || '').toUpperCase().includes('ADMIN');
+    quickSocialLockedonWrap.classList.toggle('hidden', !isMediaUser);
+  }
 
   if (quickSocialForm && quickSocialInput) {
     quickSocialForm.addEventListener('submit', (e) => {
@@ -3134,18 +3253,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = quickSocialInput.value.trim();
       if (!content) return;
       const isAnon = Boolean(quickSocialAnon && quickSocialAnon.checked);
+      const isMediaUser = String(player.role || '').toUpperCase().includes('MEDIA');
+      const isVerifiedPost = !isAnon && (isMediaUser || String(player.role || '').toUpperCase().includes('CORPO'));
+      const useLockedOn = Boolean(quickSocialLockedon && quickSocialLockedon.checked);
       const posts = getSocialPosts();
       posts.unshift({
         id: 'post_' + Date.now(),
         type: 'news',
-        author: isAnon ? 'Ghost_Net' : player.callsign,
+        author: isAnon ? 'Untraceable_Node' : player.callsign,
         authorSecretId: player.secretId,
         isAnonymous: isAnon,
-        isVerified: !isAnon && (player.role.includes('MEDIA') || player.role.includes('CORPO')),
+        isVerified: isVerifiedPost,
+        lockedUntil: useLockedOn ? (Date.now() + 5 * 60 * 1000) : null,
         isPinned: false,
         location: isAnon ? 'Rete Oscura' : 'The Net',
         timestamp: 'Adesso',
-        title: isAnon ? 'LEAK ANONIMO' : '',
+        title: isAnon ? 'UNTRACEABLE LEAK' : '',
         content,
         likes: 0,
         dislikes: 0,
@@ -3153,6 +3276,20 @@ document.addEventListener('DOMContentLoaded', () => {
         dislikedBy: [],
         comments: []
       });
+      if (isMediaUser) {
+        const mediaReward = 150;
+        player.wallet = (player.wallet || 0) + mediaReward;
+        if (!Array.isArray(player.transactions)) player.transactions = [];
+        player.transactions.unshift({
+          id: 'tx_media_' + Date.now(),
+          type: 'in',
+          desc: isVerifiedPost ? 'Compenso Media (Post Verificato)' : 'Compenso Media (Contenuto Feed)',
+          amount: mediaReward,
+          time: 'Adesso'
+        });
+        savePlayerState(player);
+        syncPlayerUI();
+      }
       saveSocialPosts(posts);
       renderSocialFeed();
       quickSocialForm.reset();
@@ -4350,6 +4487,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const rolePanelFixer = document.getElementById('role-panel-fixer');
   const rolePanelNetrunner = document.getElementById('role-panel-netrunner');
   const rolePanelChimico = document.getElementById('role-panel-chimico');
+  const rolePanelMedia = document.getElementById('role-panel-media');
 
   function getRoleKind(roleStr) {
     const r = String(roleStr || '').toUpperCase();
@@ -4357,6 +4495,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (r.includes('FIXER')) return 'fixer';
     if (r.includes('NETRUNNER') || r.includes('HACKER')) return 'netrunner';
     if (r.includes('CHIMICO') || r.includes('BIOTECH')) return 'chimico';
+    if (r.includes('MEDIA')) return 'media';
     return null;
   }
 
@@ -4688,6 +4827,74 @@ document.addEventListener('DOMContentLoaded', () => {
     r.messages.push({ author: player.callsign, text: `[CONTRATTO ASSEGNATO] ${r.runnerCallsign} ha l'incarico ufficiale.`, time: 'Adesso' });
     saveFixerQuests(quests);
     renderFixerConsole();
+    playCyberFx('success');
+  });
+
+  // Business: Spettacolo (Slot Palco) & Arena (Sponsorizzazione Combattenti)
+  const BUSINESS_EXT_KEY = 'dive_business_ext_v1';
+  function getBusinessExtState() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(BUSINESS_EXT_KEY) || '{}');
+      return {
+        stageSlots: Array.isArray(parsed.stageSlots) ? parsed.stageSlots : [],
+        arenaSponsors: Array.isArray(parsed.arenaSponsors) ? parsed.arenaSponsors : []
+      };
+    } catch {
+      return { stageSlots: [], arenaSponsors: [] };
+    }
+  }
+  function saveBusinessExtState(state) {
+    try { localStorage.setItem(BUSINESS_EXT_KEY, JSON.stringify(state)); } catch {}
+  }
+  function renderBusinessExtensions() {
+    const state = getBusinessExtState();
+    const stageList = document.getElementById('fixer-stage-list');
+    const arenaList = document.getElementById('fixer-arena-list');
+    if (stageList) {
+      stageList.innerHTML = state.stageSlots.length
+        ? state.stageSlots.map(s => `<div class="p-1.5 rounded-sm bg-black/70 border border-dive-purple/30 flex items-center justify-between gap-2"><span class="text-white truncate">${escapeChatText(s.act)}</span><span class="text-dive-purple font-bold flex-shrink-0">${escapeChatText(s.time)}</span></div>`).join('')
+        : '<div class="text-slate-500 italic">Nessuno slot palco prenotato.</div>';
+    }
+    if (arenaList) {
+      arenaList.innerHTML = state.arenaSponsors.length
+        ? state.arenaSponsors.map(a => `<div class="p-1.5 rounded-sm bg-black/70 border border-dive-red/30 flex items-center justify-between gap-2"><span class="text-white truncate">${escapeChatText(a.fighter)}</span><span class="text-dive-green font-bold flex-shrink-0">€$ ${a.fee}</span></div>`).join('')
+        : '<div class="text-slate-500 italic">Nessun combattente sponsorizzato.</div>';
+    }
+  }
+
+  document.getElementById('fixer-stage-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const act = document.getElementById('fixer-stage-act')?.value.trim();
+    const time = document.getElementById('fixer-stage-time')?.value.trim();
+    if (!act || !time) return;
+    const state = getBusinessExtState();
+    state.stageSlots.unshift({ act, time, by: player.callsign });
+    saveBusinessExtState(state);
+    renderBusinessExtensions();
+    e.target.reset();
+    playCyberFx('success');
+  });
+
+  document.getElementById('fixer-arena-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fighter = document.getElementById('fixer-arena-fighter')?.value.trim();
+    const fee = Math.max(50, parseInt(document.getElementById('fixer-arena-fee')?.value || '250', 10) || 250);
+    if (!fighter) return;
+    if ((player.wallet || 0) < fee) {
+      playCyberFx('denied');
+      alert('Crediti €$ insufficienti per sponsorizzare questo combattente in Arena.');
+      return;
+    }
+    player.wallet -= fee;
+    if (!Array.isArray(player.transactions)) player.transactions = [];
+    player.transactions.unshift({ id: 'tx_arena_' + Date.now(), type: 'out', desc: `Sponsor Arena: ${fighter}`, amount: fee, time: 'Adesso' });
+    savePlayerState(player);
+    syncPlayerUI();
+    const state = getBusinessExtState();
+    state.arenaSponsors.unshift({ fighter, fee, by: player.callsign });
+    saveBusinessExtState(state);
+    renderBusinessExtensions();
+    e.target.reset();
     playCyberFx('success');
   });
 
@@ -5059,43 +5266,50 @@ document.addEventListener('DOMContentLoaded', () => {
     if (shortcutRoleBtn) {
       shortcutRoleBtn.classList.remove('hidden');
       const roleShortcutLabels = {
-        ripperdoc: 'CLINICA RIPPERDOC',
-        fixer: 'BROKER FIXER',
-        netrunner: 'NODI RETE & ICE',
-        chimico: 'BIOLAB CHIMICO'
+        ripperdoc: 'BANCO BIOTECH',
+        fixer: 'SISTEMA BUSINESS',
+        netrunner: 'CYBERSPAZIO',
+        chimico: 'BANCO BIOTECH',
+        media: 'SISTEMA MEDIA'
       };
       shortcutRoleBtn.textContent = roleShortcutLabels[kind] || 'CONSOLE MESTIERE';
     }
-    [rolePanelRipperdoc, rolePanelFixer, rolePanelNetrunner, rolePanelChimico].forEach(p => {
+    [rolePanelRipperdoc, rolePanelFixer, rolePanelNetrunner, rolePanelChimico, rolePanelMedia].forEach(p => {
       if (p) p.classList.add('hidden');
     });
 
-    if (kind === 'ripperdoc') {
-      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'CLINICA CLANDESTINA // MODULO RIPPERDOC';
-      if (roleConsoleTitle) roleConsoleTitle.textContent = 'MONITOR PAZIENTI & CHIRURGIA';
-      if (roleConsoleBadge) roleConsoleBadge.textContent = 'RIPPERDOC';
+    if (kind === 'ripperdoc' || kind === 'chimico') {
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'SISTEMA BIOTECH // BANCO MEDICO, MECCANICO & CHIMICO';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'BANCO BIOTECH UNIFICATO';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'BIOTECH';
       if (rolePanelRipperdoc) rolePanelRipperdoc.classList.remove('hidden');
+      if (rolePanelChimico) rolePanelChimico.classList.remove('hidden');
       renderRipperdocConsole();
+      renderChimicoConsole();
     } else if (kind === 'fixer') {
-      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'BROKER OPS // CONTRATTI & TAGLIE';
-      if (roleConsoleTitle) roleConsoleTitle.textContent = 'ANNUNCI QUEST & RISPOSTE PG';
-      if (roleConsoleBadge) roleConsoleBadge.textContent = 'FIXER';
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'SISTEMA BUSINESS // GIG, SPETTACOLO & ARENA';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'GIG, PALCO SPETTACOLO & ARENA';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'BUSINESS';
       if (rolePanelFixer) rolePanelFixer.classList.remove('hidden');
       renderFixerConsole();
+      renderBusinessExtensions();
     } else if (kind === 'netrunner') {
-      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'DEEP NET // INTRUSIONE & BREACH';
-      if (roleConsoleTitle) roleConsoleTitle.textContent = 'CONSOLE NODI RETE & ICE';
-      if (roleConsoleBadge) roleConsoleBadge.textContent = 'NETRUNNER';
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'SISTEMA INFORMATICO // CYBERSPAZIO & ICE';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'CYBERSPAZIO // NODI RETE & ICE';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'INFORMATICO';
       if (rolePanelNetrunner) rolePanelNetrunner.classList.remove('hidden');
       renderNetrunnerConsole();
-    } else if (kind === 'chimico') {
-      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'BIOTECH LAB // COLTURE & CAVIE';
-      if (roleConsoleTitle) roleConsoleTitle.textContent = 'VASCHE, PATOGENI & IMMUNOSOPPRESSORI';
-      if (roleConsoleBadge) roleConsoleBadge.textContent = 'CHIMICO';
-      if (rolePanelChimico) rolePanelChimico.classList.remove('hidden');
-      renderChimicoConsole();
+    } else if (kind === 'media') {
+      if (roleConsoleEyebrow) roleConsoleEyebrow.textContent = 'SISTEMA MEDIA // VERIFICA & CONTENUTI';
+      if (roleConsoleTitle) roleConsoleTitle.textContent = 'BROADCAST VERIFICATO & FEED';
+      if (roleConsoleBadge) roleConsoleBadge.textContent = 'MEDIA';
+      if (rolePanelMedia) rolePanelMedia.classList.remove('hidden');
+      const lockedWrap = document.getElementById('quick-social-lockedon-wrap');
+      if (lockedWrap) lockedWrap.classList.remove('hidden');
     }
   }
+
+  document.getElementById('media-open-social-btn')?.addEventListener('click', () => switchTab('net'));
 
   // Initialize
   syncPlayerUI();
