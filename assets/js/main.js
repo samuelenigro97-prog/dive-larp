@@ -5453,30 +5453,59 @@ document.addEventListener('DOMContentLoaded', () => {
     const streamEl = document.getElementById('home-news-stream');
     if (!streamEl) return;
 
+    const NEON_BTN_STYLES = {
+      cyan: 'border-dive-cyan bg-dive-cyan/10 text-dive-cyan group-hover:bg-dive-cyan group-hover:text-black',
+      orange: 'border-dive-orange bg-dive-orange/10 text-dive-orange group-hover:bg-dive-orange group-hover:text-black',
+      purple: 'border-dive-purple bg-dive-purple/10 text-dive-purple group-hover:bg-dive-purple group-hover:text-black',
+      red: 'border-dive-red bg-dive-red/10 text-dive-red group-hover:bg-dive-red group-hover:text-black',
+      green: 'border-dive-green bg-dive-green/10 text-dive-green group-hover:bg-dive-green group-hover:text-black'
+    };
+    const NEON_GLOW_COLORS = {
+      cyan: '0 0 12px rgba(0, 212, 255, 0.45)',
+      orange: '0 0 12px rgba(255, 107, 0, 0.45)',
+      purple: '0 0 12px rgba(184, 41, 255, 0.45)',
+      red: '0 0 12px rgba(255, 42, 75, 0.45)',
+      green: '0 0 12px rgba(0, 255, 136, 0.45)'
+    };
+
     const liveNews = getSocialPosts().slice(0, 6).map(p => ({
       tag: p.isAnonymous ? 'LEAK RETE // ANONIMO' : `DIVE SOCIAL // ${escapeChatText(p.location || 'SICILIA')}`,
       tagColor: p.isAnonymous ? 'purple' : 'cyan',
       title: p.title || (p.author ? `Aggiornamento da ${escapeChatText(p.author)}` : 'Dispaccio dal Feed'),
       desc: p.content || '',
       time: p.timestamp || 'Live',
+      img: p.image || 'assets/images/city-bg.jpg',
       targetTab: 'net',
-      ctaLabel: 'LEGGI SU DIVE SOCIAL ↗'
+      ctaLabel: 'APPROFONDISCI IN RETE ↗'
     }));
 
     const combined = [...HOME_DISPATCHES, ...liveNews];
-    streamEl.innerHTML = combined.map(item => `
-      <button type="button" data-target-tab="${item.targetTab || 'net'}" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${item.tagColor || 'cyan'}/60 transition-colors space-y-2 cursor-pointer group" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px);">
-        <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
-          <span class="px-2 py-0.5 rounded-sm bg-dive-${item.tagColor || 'cyan'}/15 border border-dive-${item.tagColor || 'cyan'}/40 text-dive-${item.tagColor || 'cyan'} font-bold uppercase">${item.tag}</span>
-          <span class="text-slate-400">${escapeChatText(item.time)}</span>
+    streamEl.innerHTML = combined.map(item => {
+      const color = item.tagColor || 'cyan';
+      const neonCls = NEON_BTN_STYLES[color] || NEON_BTN_STYLES.cyan;
+      const neonGlow = NEON_GLOW_COLORS[color] || NEON_GLOW_COLORS.cyan;
+      const thumbImg = item.img || 'assets/images/city-bg.jpg';
+      return `
+      <button type="button" data-target-tab="${item.targetTab || 'net'}" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${color}/60 transition-colors cursor-pointer group flex flex-col sm:flex-row items-stretch justify-between gap-4 sm:gap-6" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px);">
+        <div class="flex-1 min-w-0 text-left space-y-2 flex flex-col justify-center">
+          <div class="flex flex-wrap items-center gap-2 font-mono text-[10px]">
+            <span class="px-2 py-0.5 rounded-sm bg-dive-${color}/15 border border-dive-${color}/40 text-dive-${color} font-bold uppercase">${item.tag}</span>
+            <span class="text-slate-400">${escapeChatText(item.time)}</span>
+          </div>
+          <h3 class="font-orbitron font-bold text-sm sm:text-base text-white group-hover:text-dive-cyan transition-colors text-left">${escapeChatText(item.title)}</h3>
+          <p class="font-sans text-xs sm:text-sm text-slate-300 leading-relaxed text-left">${escapeChatText(item.desc)}</p>
         </div>
-        <h3 class="font-orbitron font-bold text-sm sm:text-base text-white group-hover:text-dive-cyan transition-colors">${escapeChatText(item.title)}</h3>
-        <p class="font-sans text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeChatText(item.desc)}</p>
-        <div class="pt-1 font-mono text-[10px] text-dive-orange font-bold uppercase">
-          ${escapeChatText(item.ctaLabel || 'LEGGI SU DIVE SOCIAL ↗')}
+        <div class="w-full sm:w-52 md:w-60 flex-shrink-0 flex flex-col justify-between items-end gap-2.5">
+          <div class="w-full h-32 sm:h-36 rounded-sm overflow-hidden border border-white/15 bg-black">
+            <img src="${thumbImg}" alt="${escapeChatText(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <span class="inline-flex items-center justify-center px-3 py-1.5 rounded-sm font-mono text-[10px] font-bold uppercase tracking-wider border transition-all ${neonCls}" style="box-shadow: ${neonGlow};">
+            ${escapeChatText(item.ctaLabel || 'APPROFONDISCI IN RETE ↗')}
+          </span>
         </div>
       </button>
-    `).join('');
+    `;
+    }).join('');
 
     streamEl.querySelectorAll('.home-news-card').forEach(card => {
       card.addEventListener('click', () => {
