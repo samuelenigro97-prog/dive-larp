@@ -5375,7 +5375,7 @@ document.addEventListener('DOMContentLoaded', () => {
       time: 'TOUR IN CORSO',
       img: 'assets/images/hero-city-bg.jpg?v=0.27.1',
       targetTab: 'net',
-      ctaLabel: 'SEGUI IL TOUR SU DIVE SOCIAL ↗'
+      ctaLabel: 'SEGUI IL TOUR ↗'
     },
     {
       tag: 'ARASAKA // NUOVI IMPIANTI CYBERWARE',
@@ -5486,20 +5486,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const neonGlow = NEON_GLOW_COLORS[color] || NEON_GLOW_COLORS.cyan;
       const thumbImg = item.img || 'assets/images/city-bg.jpg';
       return `
-      <button type="button" data-target-tab="${item.targetTab || 'net'}" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${color}/60 transition-colors cursor-pointer group" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px); display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; gap: 16px; overflow: hidden;">
-        <div class="text-left space-y-2" style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
-          <div class="flex flex-wrap items-center gap-2 font-mono text-[10px]">
+      <button type="button" data-target-tab="${item.targetTab || 'net'}" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${color}/60 transition-colors cursor-pointer group" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px); display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; gap: 16px; overflow: hidden; width: 100%; height: 156px;">
+        <div class="text-left" style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; overflow: hidden;">
+          <div class="flex items-center gap-2 font-mono text-[10px]" style="overflow: hidden; white-space: nowrap;">
             <span class="px-2 py-0.5 rounded-sm bg-dive-${color}/15 border border-dive-${color}/40 text-dive-${color} font-bold uppercase">${item.tag}</span>
-            <span class="text-slate-400">${escapeChatText(item.time)}</span>
+            <span class="text-slate-400 truncate">${escapeChatText(item.time)}</span>
           </div>
-          <h3 class="font-orbitron font-bold text-sm sm:text-base text-white group-hover:text-dive-cyan transition-colors text-left">${escapeChatText(item.title)}</h3>
-          <p class="font-sans text-xs sm:text-sm text-slate-300 leading-relaxed text-left">${escapeChatText(item.desc)}</p>
+          <h3 class="font-orbitron font-bold text-sm sm:text-base text-white group-hover:text-dive-cyan transition-colors text-left" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeChatText(item.title)}</h3>
+          <p class="font-sans text-xs sm:text-sm text-slate-300 leading-snug text-left" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeChatText(item.desc)}</p>
         </div>
-        <div style="width: 148px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: 8px;">
-          <div class="rounded-sm border border-white/15 bg-black" style="width: 148px; height: 84px; overflow: hidden; flex-shrink: 0;">
+        <div style="width: 168px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: 8px;">
+          <div class="rounded-sm border border-white/15 bg-black" style="width: 168px; height: 84px; overflow: hidden; flex-shrink: 0;">
             <img src="${thumbImg}" alt="${escapeChatText(item.title)}" class="group-hover:scale-105 transition-transform duration-300" style="width: 100%; height: 100%; object-fit: cover; display: block;">
           </div>
-          <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-sm font-mono text-[9px] font-bold uppercase tracking-wider border transition-all ${neonCls}" style="box-shadow: ${neonGlow}; white-space: nowrap;">
+          <span class="inline-flex items-center justify-center px-2 py-1 rounded-sm font-mono text-[9px] font-bold uppercase tracking-wider border transition-all ${neonCls}" style="box-shadow: ${neonGlow}; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             ${escapeChatText(item.ctaLabel || 'APPROFONDISCI IN RETE ↗')}
           </span>
         </div>
