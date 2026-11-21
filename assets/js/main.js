@@ -5328,46 +5328,52 @@ document.addEventListener('DOMContentLoaded', () => {
   // --------------------------------------------------------------------------
   const HOME_DISPATCHES = [
     {
-      tag: 'SICILIA // PORTO FRANCO NAVARRO',
+      tag: 'TG SICILIA // EDIZIONE STRAORDINARIA',
       tagColor: 'orange',
-      title: 'Coprifuoco e controlli corporativi al Settore Ciminiere',
-      desc: 'Pattuglie private segnalate attorno ai moli di Catania-Navarro. I broker consigliano canali cifrati per gli scambi notturni.',
-      time: '12 min fa'
+      title: 'Catania, coprifuoco al Settore Ciminiere: pattuglie private attorno ai moli di Navarro',
+      desc: 'FLASH REDAZIONE — Da mezzanotte scattano i posti di blocco lungo la fascia portuale di Porto Franco Navarro. Fonti locali segnalano tensioni tra scortatori corporativi e convogli indipendenti.',
+      time: 'ULTIM’ORA · 12m fa',
+      img: 'assets/images/sicilia-cyberpunk-map.jpg'
     },
     {
-      tag: 'AD // NEPTUN BIOTECH SICILIA',
+      tag: 'MEDIA SPOT // NEPTUN BIOTECH SICILIA',
       tagColor: 'green',
-      title: 'Siero Rigenerante MK-IV — Ora nei laboratori di Catania',
-      desc: 'Test clinici sul Banco Biotech Unificato: riduci il rigetto da cromo pesante prima del prossimo scontro in Arena.',
-      time: 'SPONSORIZZATO'
+      title: 'Siero Rigenerante MK-IV: via alla distribuzione nei laboratori etnei',
+      desc: 'INSERTO COMMERCIALE — Riduzione certificata del rigetto sinaptico per impianti ad alto carico. Consulenze aperte sul Banco Biotech Unificato prima dei turni in Arena.',
+      time: 'SPONSOR TG',
+      img: 'assets/images/implants/cyberware-body.jpg'
     },
     {
-      tag: 'MONDO // ZURIGO & NEO-EUROPA',
+      tag: 'MONDO // CORRISPONDENZA DA ZURIGO',
       tagColor: 'cyan',
-      title: 'Vertex Corp perde il 14% dopo il leak dei nodi Cyberspazio',
-      desc: 'Un gruppo di Netrunner ha violato i firewall europei esponendo contratti riservati su impianti sperimentali.',
-      time: '38 min fa'
+      title: 'Borse europee in calo dopo il leak sui nodi Cyberspazio di Vertex Corp',
+      desc: 'DAL NOSTRO INVIATO — Un collettivo di Netrunner ha diffuso migliaia di pacchetti cifrati dai server elvetici, rivelando contratti non dichiarati su prototipi neurali.',
+      time: 'AGGIORNATO · 38m fa',
+      img: 'assets/images/city-bg.jpg'
     },
     {
-      tag: 'SICILIA // CARAVAN YARD ETNA',
+      tag: 'CRONACA SICILIA // DISTRETTO ETNA',
       tagColor: 'purple',
-      title: 'Convoglio Nomade in arrivo alle pendici dell’Etna',
-      desc: 'Rifornimenti di hardware combat (Gorilla Arms, SHIELD protocol) e nuovi slot disponibili per l’Arena clandestina.',
-      time: '1 ora fa'
+      title: 'Convoglio Caravan Yard alle porte di Catania: attesi scambi al mercato notturno',
+      desc: 'REPORTAGE — Mezzi blindati avvistati sulla tangenziale est. Secondo gli osservatori, a bordo viaggiano forniture Gorilla Arms e nuove quote per gli scontri clandestini.',
+      time: '1 ora fa',
+      img: 'assets/images/hero-city-bg.jpg?v=0.27.1'
     },
     {
-      tag: 'AD // MEDIA SIGNAL NETWORK',
+      tag: 'BREAKING // NIGHTWIRE GLOBAL PRESS',
       tagColor: 'red',
-      title: 'Trasmetti dal vivo su The Net con bollino VERIFICATO',
-      desc: 'Giornalisti indipendenti e reporter pagati in EuroDollari per ogni dispaccio certificato dalla Sicilia e dal Mondo.',
-      time: 'PUBBLICITÀ'
+      title: 'Media Signal Network lancia i compensi diretti per i reporter verificati sul campo',
+      desc: 'COMUNICATO STAMPA — Ogni corrispondenza firmata con bollino VERIFICATO da Sicilia e Mediterraneo genera accrediti immediati in EuroDollari sulla rete pubblica.',
+      time: 'PUBBLICITÀ',
+      img: 'assets/images/og-preview.jpg'
     },
     {
-      tag: 'MONDO // TOKYO & NIGHTWIRE',
+      tag: 'ESTERI // DIRETTA DA TOKYO',
       tagColor: 'cyan',
-      title: 'Allerta Overclock: nuovi limiti ai potenziamenti Combat',
-      desc: 'Le autorità internazionali segnalano picchi di cyberpsicosi legati all’uso non regolamentato di moduli Overclock.',
-      time: '2 ore fa'
+      title: 'Allarme internazionale Overclock: picco di casi di cyberpsicosi nei circuiti combat',
+      desc: 'TG MONDO — Il Comitato Sanitario Transnazionale chiede controlli più severi sui moduli Overclock non autorizzati impiegati nei combattimenti urbani.',
+      time: '2 ore fa',
+      img: 'assets/images/city-bg.jpg'
     }
   ];
 
@@ -5385,7 +5391,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const combined = [...liveNews, ...HOME_DISPATCHES];
     streamEl.innerHTML = combined.map(item => `
-      <button type="button" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${item.tagColor || 'cyan'}/60 transition-colors space-y-2 cursor-pointer group">
+      <button type="button" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${item.tagColor || 'cyan'}/60 transition-colors space-y-2 cursor-pointer group" style="background: rgba(4, 6, 10, 0.45); backdrop-filter: blur(3px);">
         <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
           <span class="px-2 py-0.5 rounded-sm bg-dive-${item.tagColor || 'cyan'}/15 border border-dive-${item.tagColor || 'cyan'}/40 text-dive-${item.tagColor || 'cyan'} font-bold uppercase">${item.tag}</span>
           <span class="text-slate-400">${escapeChatText(item.time)}</span>
@@ -5417,9 +5423,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagEl = document.getElementById('home-popup-tag');
     const titleEl = document.getElementById('home-popup-title');
     const descEl = document.getElementById('home-popup-desc');
+    const imgEl = document.getElementById('home-popup-img');
     if (tagEl) tagEl.textContent = item.tag;
     if (titleEl) titleEl.textContent = item.title;
     if (descEl) descEl.textContent = item.desc;
+    if (imgEl && item.img) imgEl.src = item.img;
     popupEl.classList.remove('hidden');
   }
 
@@ -5435,6 +5443,105 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHomeVerticalFeed();
   setTimeout(showHomeNewsPopup, 2500);
   setInterval(showHomeNewsPopup, 12000);
+
+  // --------------------------------------------------------------------------
+  // Calendario Eventi Cyberpunk (Eventi Passati sbiaditi vs Futuri Neon)
+  // --------------------------------------------------------------------------
+  const DIVE_CALENDAR_EVENTS = [
+    { date: '2026-10-17', title: 'PROLOGO: BLACKOUT', location: 'Le Ciminiere — Catania', status: 'past', desc: 'Sessione zero — test impianti, primo contatto con i broker del Settore 04.' },
+    { date: '2026-11-07', title: 'TEST RETE // PORTO FRANCO', location: 'Catania — Settore 04', status: 'past', desc: 'Simulazione intrusioni Cyberspazio e calibrazione Biomonitor.' },
+    { date: '2026-11-28', title: 'SETTORE 04: NOTTE AL NEON', location: 'Le Ciminiere — Catania', status: 'future', desc: 'Serata immersiva cyberpunk con fazioni, fixer, hacking dal vivo e mercato del cromo.' },
+    { date: '2026-12-12', title: 'ARENA & PALCO CARAVAN YARD', location: 'Porto Franco Navarro — Sicilia', status: 'future', desc: 'Torneo clandestino Arena, slot spettacolo dal vivo e contratti Black Market.' },
+    { date: '2026-12-27', title: 'OPERAZIONE NEPTUN // SOLSTIZIO', location: 'Catania — Settore BioTech', status: 'future', desc: 'Evento notturno ad alta tensione su sieri biotech e guerre di fazione.' }
+  ];
+
+  const MONTH_NAMES_IT = ['GENNAIO', 'FEBBRAIO', 'MARZO', 'APRILE', 'MAGGIO', 'GIUGNO', 'LUGLIO', 'AGOSTO', 'SETTEMBRE', 'OTTOBRE', 'NOVEMBRE', 'DICEMBRE'];
+  let calYear = 2026;
+  let calMonth = 10; // 0-indexed: 10 = Novembre 2026
+
+  function renderEventiCalendar(selectedDate = null) {
+    const gridEl = document.getElementById('cal-days-grid');
+    const labelEl = document.getElementById('cal-month-label');
+    const detailEl = document.getElementById('cal-selected-detail');
+    if (!gridEl || !labelEl) return;
+
+    labelEl.textContent = `${MONTH_NAMES_IT[calMonth]} ${calYear}`;
+    const firstDay = new Date(calYear, calMonth, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7; // Mon = 0 .. Sun = 6
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+    const cells = [];
+    for (let i = 0; i < startOffset; i++) {
+      cells.push('<div class="h-10 sm:h-12 rounded-sm bg-black/20 border border-white/5 opacity-30"></div>');
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const iso = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const ev = DIVE_CALENDAR_EVENTS.find(e => e.date === iso);
+      if (ev) {
+        const isPast = ev.status === 'past';
+        const cls = isPast
+          ? 'border-white/15 bg-white/5 text-slate-400 opacity-50 hover:opacity-80'
+          : 'border-dive-cyan bg-dive-cyan/20 text-dive-cyan font-bold shadow-[0_0_12px_rgba(0,240,255,0.45)] hover:bg-dive-cyan hover:text-black';
+        cells.push(`
+          <button type="button" data-cal-date="${iso}" class="h-10 sm:h-12 rounded-sm border transition-all flex flex-col items-center justify-center cursor-pointer ${cls}" title="${escapeChatText(ev.title)}">
+            <span class="text-xs leading-none">${d}</span>
+            <span class="text-[8px] mt-0.5 uppercase tracking-tighter truncate max-w-[90%]">${isPast ? 'PASSATO' : 'LIVE'}</span>
+          </button>
+        `);
+      } else {
+        cells.push(`<div class="h-10 sm:h-12 rounded-sm border border-white/10 bg-black/40 text-slate-500 flex items-center justify-center text-xs">${d}</div>`);
+      }
+    }
+    gridEl.innerHTML = cells.join('');
+
+    gridEl.querySelectorAll('[data-cal-date]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const iso = btn.getAttribute('data-cal-date');
+        const ev = DIVE_CALENDAR_EVENTS.find(e => e.date === iso);
+        if (!ev || !detailEl) return;
+        const isPast = ev.status === 'past';
+        detailEl.className = isPast
+          ? 'p-3 rounded-sm bg-black/60 border border-white/15 text-[11px] opacity-75 space-y-1'
+          : 'p-3 rounded-sm bg-dive-cyan/10 border border-dive-cyan/60 text-[11px] space-y-1 shadow-[0_0_14px_rgba(0,240,255,0.2)]';
+        detailEl.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-orbitron font-bold ${isPast ? 'text-slate-300' : 'text-dive-cyan'}">${escapeChatText(ev.title)}</span>
+            <span class="text-[10px] ${isPast ? 'text-slate-500' : 'text-dive-orange font-bold'}">${ev.date} · ${escapeChatText(ev.location)}</span>
+          </div>
+          <p class="font-sans text-slate-300">${escapeChatText(ev.desc)}</p>
+          <div class="pt-1 flex justify-end">
+            <button type="button" class="cal-goto-event-btn px-2.5 py-1 rounded-sm ${isPast ? 'bg-white/10 text-slate-200 border border-white/20' : 'bg-dive-cyan text-black font-bold'} text-[10px] uppercase cursor-pointer">
+              VAI ALL'EVENTO ↗
+            </button>
+          </div>
+        `;
+        detailEl.querySelector('.cal-goto-event-btn')?.addEventListener('click', () => {
+          const targetCard = document.getElementById(isPast ? 'eventi-card-past' : 'event-scheda-box');
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            targetCard.classList.add('ring-2', isPast ? 'ring-white/40' : 'ring-dive-cyan');
+            setTimeout(() => targetCard.classList.remove('ring-2', 'ring-white/40', 'ring-dive-cyan'), 1800);
+          }
+        });
+      });
+    });
+
+    if (selectedDate) {
+      gridEl.querySelector(`[data-cal-date="${selectedDate}"]`)?.click();
+    }
+  }
+
+  document.getElementById('cal-prev-btn')?.addEventListener('click', () => {
+    calMonth -= 1;
+    if (calMonth < 0) { calMonth = 11; calYear -= 1; }
+    renderEventiCalendar();
+  });
+  document.getElementById('cal-next-btn')?.addEventListener('click', () => {
+    calMonth += 1;
+    if (calMonth > 11) { calMonth = 0; calYear += 1; }
+    renderEventiCalendar();
+  });
+  renderEventiCalendar('2026-11-28');
 
   renderSocialFeed();
   renderAdminRoster();

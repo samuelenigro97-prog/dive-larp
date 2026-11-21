@@ -244,13 +244,16 @@
 
       </div>
 
-      <!-- Pop-up Pubblicità / Breaking News (Sicilia & Mondo) -->
-      <div id="home-news-popup" class="hidden fixed bottom-16 left-3 right-3 sm:left-auto sm:right-4 sm:w-96 z-40 cyber-panel hud-bracket border border-dive-orange/60 bg-[#04060A]/95 backdrop-blur-md p-3.5 shadow-[0_12px_36px_rgba(0,0,0,0.85)] space-y-2">
+      <!-- Pop-up Pubblicità / Breaking News (Sicilia & Mondo, semi-trasparente stile Cambia Realtà) -->
+      <div id="home-news-popup" class="hidden fixed bottom-16 left-3 right-3 sm:left-auto sm:right-4 sm:w-96 z-40 cyber-panel hud-bracket border border-dive-orange/60 p-3.5 shadow-[0_12px_36px_rgba(0,0,0,0.65)] space-y-2" style="background: rgba(4, 6, 10, 0.48); backdrop-filter: blur(4px);">
         <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
           <span id="home-popup-tag" class="px-1.5 py-0.5 rounded-sm bg-dive-orange/20 border border-dive-orange/50 text-dive-orange font-bold uppercase">AD // SICILIA</span>
           <button id="home-popup-close-btn" type="button" aria-label="Chiudi avviso" class="w-5 h-5 rounded-sm bg-white/10 hover:bg-dive-red text-white text-[10px] font-bold flex items-center justify-center cursor-pointer">×</button>
         </div>
-        <button id="home-popup-cta-btn" type="button" class="w-full text-left space-y-1 cursor-pointer group">
+        <button id="home-popup-cta-btn" type="button" class="w-full text-left space-y-2 cursor-pointer group">
+          <div class="w-full h-28 rounded-sm overflow-hidden border border-white/15 bg-black">
+            <img id="home-popup-img" src="assets/images/city-bg.jpg" alt="News DIVE" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
           <h4 id="home-popup-title" class="font-orbitron font-bold text-xs sm:text-sm text-white group-hover:text-dive-cyan transition-colors">PORTO FRANCO NAVARRO // SICILIA</h4>
           <p id="home-popup-desc" class="font-sans text-[11px] text-slate-300 leading-snug">Nuovi carichi dal Settore Ciminiere. Apri il feed Dive Social per leggere gli aggiornamenti dal vivo.</p>
           <span class="inline-block font-mono text-[10px] text-dive-cyan font-bold uppercase pt-0.5">APRI SU DIVE SOCIAL ↗</span>
@@ -277,7 +280,7 @@
 
         <!-- Calendario: Prossimo Evento + Eventi Passati -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
-          <div class="md:col-span-2 cyber-panel hud-bracket p-5 border border-dive-orange/50 space-y-2">
+          <div id="eventi-card-future" class="md:col-span-2 cyber-panel hud-bracket p-5 border border-dive-orange/50 space-y-2 transition-all">
             <div class="flex items-center justify-between">
               <span class="px-2 py-0.5 bg-dive-orange text-black font-bold text-[10px]">PROSSIMO EVENTO*</span>
               <span class="text-dive-cyan">CATANIA // LE CIMINIERE</span>
@@ -286,15 +289,46 @@
             <p class="font-sans text-xs text-slate-300">Serata immersiva cyberpunk con fazioni, fixer, hacking dal vivo e mercato del cromo.</p>
           </div>
 
-          <div class="cyber-panel p-5 space-y-2 opacity-80">
+          <div id="eventi-card-past" class="cyber-panel p-5 space-y-2 opacity-80 transition-all">
             <span class="px-2 py-0.5 bg-white/10 text-slate-300 font-bold text-[10px]">EVENTO PASSATO</span>
             <h3 class="font-orbitron font-bold text-base text-white">PROLOGO: BLACKOUT</h3>
             <p class="font-sans text-xs text-slate-400">Sessione zero — test impianti, primo contatto con i broker del Settore 04.</p>
           </div>
         </div>
 
+        <!-- Calendario Mensile Cyberpunk (Eventi Passati Sbiaditi vs Eventi Futuri Neon) -->
+        <div id="eventi-cyber-calendar" class="cyber-panel hud-bracket p-4 sm:p-5 space-y-4 font-mono">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+            <div class="flex items-center gap-2">
+              <button type="button" id="cal-prev-btn" class="w-7 h-7 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-xs font-bold flex items-center justify-center cursor-pointer">◀</button>
+              <h3 id="cal-month-label" class="font-orbitron font-bold text-sm sm:text-base text-white uppercase tracking-wider min-w-[160px] text-center">NOVEMBRE 2026</h3>
+              <button type="button" id="cal-next-btn" class="w-7 h-7 rounded-sm border border-white/15 bg-black hover:border-dive-cyan hover:text-dive-cyan text-slate-300 text-xs font-bold flex items-center justify-center cursor-pointer">▶</button>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 text-[10px]">
+              <span class="inline-flex items-center gap-1.5 text-slate-400 opacity-65">
+                <span class="w-2.5 h-2.5 rounded-sm border border-white/25 bg-white/10 inline-block"></span>
+                EVENTO PASSATO (ARCHIVIO)
+              </span>
+              <span class="inline-flex items-center gap-1.5 text-dive-cyan font-bold">
+                <span class="w-2.5 h-2.5 rounded-sm border border-dive-cyan bg-dive-cyan/30 inline-block shadow-[0_0_8px_rgba(0,240,255,0.6)]"></span>
+                EVENTO FUTURO (NEON)
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] text-slate-500 uppercase tracking-wider font-bold">
+            <span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span>
+          </div>
+          <div id="cal-days-grid" class="grid grid-cols-7 gap-1.5 text-xs">
+            <!-- Popolato da JS -->
+          </div>
+          <div id="cal-selected-detail" class="p-3 rounded-sm bg-black/70 border border-white/10 text-[11px] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-slate-400">Seleziona una data evidenziata nel calendario per vedere i dettagli dell'evento.</span>
+          </div>
+        </div>
+
         <!-- Scheda Evento* (5 sotto-sezioni dello schema) -->
-        <div class="cyber-panel hud-bracket p-5 sm:p-6 space-y-5">
+        <div id="event-scheda-box" class="cyber-panel hud-bracket p-5 sm:p-6 space-y-5">
           <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/10 font-mono text-xs">
             <span class="text-dive-orange font-bold uppercase">SCHEDA EVENTO*: LE CIMINIERE — CATANIA</span>
             <div class="flex flex-wrap gap-1.5">
@@ -407,21 +441,6 @@
           <span class="text-dive-purple font-mono text-xs uppercase tracking-widest font-semibold block">GALLERY // ARCHIVIO VISUALE</span>
           <h2 class="font-orbitron font-bold text-2xl text-white">SCATTI DAL SETTORE 04</h2>
         </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="cyber-panel overflow-hidden border border-dive-orange/30">
-            <img src="assets/images/city-bg.jpg" alt="Settore 04" class="w-full h-48 object-cover">
-            <div class="p-3 font-mono text-[11px] text-slate-300">PANORAMA SETTORE 04 // CIMINIERE</div>
-          </div>
-          <div class="cyber-panel overflow-hidden border border-dive-purple/30">
-            <img src="assets/images/og-preview.jpg" alt="Enter the System" class="w-full h-48 object-cover">
-            <div class="p-3 font-mono text-[11px] text-slate-300">ENTER THE SYSTEM // VISUAL UFFICIALE</div>
-          </div>
-          <div class="cyber-panel overflow-hidden border border-dive-cyan/30">
-            <img src="assets/images/implants/cyberware-body.jpg" alt="Cyberware" class="w-full h-48 object-cover">
-            <div class="p-3 font-mono text-[11px] text-slate-300">DIAGNOSTICA CLINICA RIPPERDOC</div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -453,7 +472,6 @@
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div>
               <span class="text-dive-orange font-mono text-[10px] uppercase tracking-widest font-semibold block">GEOPOLITICA // SICILIA 2088</span>
-              <h3 class="font-orbitron font-bold text-lg sm:text-xl text-white">PORTO FRANCO NAVARRO &amp; FAZIONI</h3>
             </div>
             <span class="px-2 py-0.5 rounded-sm bg-dive-cyan/10 border border-dive-cyan/40 font-mono text-[10px] text-dive-cyan uppercase">MAPPA OPERATIVA</span>
           </div>
@@ -484,8 +502,8 @@
               <div class="text-slate-400 text-[10px] mt-0.5">Recupero rottami, impianti usati e traffici nei bassifondi post-siccità.</div>
             </div>
             <div class="p-3 rounded-sm bg-black/60 border border-dive-green/35 sm:col-span-2 lg:col-span-2">
-              <div class="text-dive-green font-bold">NYOKA CIRCLE &amp; INDIPENDENTI</div>
-              <div class="text-slate-400 text-[10px] mt-0.5">Fixer, mediatori e schede neutrali fuori dalle fazioni rigide.</div>
+              <div class="text-dive-green font-bold">NAVARRO'S ARMY</div>
+              <div class="text-slate-400 text-[10px] mt-0.5">Forza armata e milizia di controllo del Porto Franco Navarro.</div>
             </div>
           </div>
         </div>
