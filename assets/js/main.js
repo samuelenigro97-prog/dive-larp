@@ -1569,7 +1569,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     try { playCyberSound(450, 'triangle', 0.05); } catch {}
 
-    if (['net', 'profile'].includes(effectiveTab) && !getActiveSessionId() && typeof openLoginModal === 'function') {
+    const homePopup = document.getElementById('home-news-popup');
+    if (homePopup && effectiveTab !== 'home') {
+      homePopup.classList.add('hidden');
+    }
+
+    if (effectiveTab === 'profile' && !getActiveSessionId() && typeof openLoginModal === 'function') {
       openLoginModal(false);
     }
   }
@@ -3250,6 +3255,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (quickSocialForm && quickSocialInput) {
     quickSocialForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (!getActiveSessionId()) {
+        if (typeof openLoginModal === 'function') openLoginModal(false);
+        return;
+      }
       const content = quickSocialInput.value.trim();
       if (!content) return;
       const isAnon = Boolean(quickSocialAnon && quickSocialAnon.checked);
@@ -5314,6 +5323,119 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize
   syncPlayerUI();
   renderChat();
+  // --------------------------------------------------------------------------
+  // Home Vertical News Stream & Sicily/World Pop-up Ads (Public, No Login)
+  // --------------------------------------------------------------------------
+  const HOME_DISPATCHES = [
+    {
+      tag: 'SICILIA // PORTO FRANCO NAVARRO',
+      tagColor: 'orange',
+      title: 'Coprifuoco e controlli corporativi al Settore Ciminiere',
+      desc: 'Pattuglie private segnalate attorno ai moli di Catania-Navarro. I broker consigliano canali cifrati per gli scambi notturni.',
+      time: '12 min fa'
+    },
+    {
+      tag: 'AD // NEPTUN BIOTECH SICILIA',
+      tagColor: 'green',
+      title: 'Siero Rigenerante MK-IV — Ora nei laboratori di Catania',
+      desc: 'Test clinici sul Banco Biotech Unificato: riduci il rigetto da cromo pesante prima del prossimo scontro in Arena.',
+      time: 'SPONSORIZZATO'
+    },
+    {
+      tag: 'MONDO // ZURIGO & NEO-EUROPA',
+      tagColor: 'cyan',
+      title: 'Vertex Corp perde il 14% dopo il leak dei nodi Cyberspazio',
+      desc: 'Un gruppo di Netrunner ha violato i firewall europei esponendo contratti riservati su impianti sperimentali.',
+      time: '38 min fa'
+    },
+    {
+      tag: 'SICILIA // CARAVAN YARD ETNA',
+      tagColor: 'purple',
+      title: 'Convoglio Nomade in arrivo alle pendici dell’Etna',
+      desc: 'Rifornimenti di hardware combat (Gorilla Arms, SHIELD protocol) e nuovi slot disponibili per l’Arena clandestina.',
+      time: '1 ora fa'
+    },
+    {
+      tag: 'AD // MEDIA SIGNAL NETWORK',
+      tagColor: 'red',
+      title: 'Trasmetti dal vivo su The Net con bollino VERIFICATO',
+      desc: 'Giornalisti indipendenti e reporter pagati in EuroDollari per ogni dispaccio certificato dalla Sicilia e dal Mondo.',
+      time: 'PUBBLICITÀ'
+    },
+    {
+      tag: 'MONDO // TOKYO & NIGHTWIRE',
+      tagColor: 'cyan',
+      title: 'Allerta Overclock: nuovi limiti ai potenziamenti Combat',
+      desc: 'Le autorità internazionali segnalano picchi di cyberpsicosi legati all’uso non regolamentato di moduli Overclock.',
+      time: '2 ore fa'
+    }
+  ];
+
+  function renderHomeVerticalFeed() {
+    const streamEl = document.getElementById('home-news-stream');
+    if (!streamEl) return;
+
+    const liveNews = getSocialPosts().slice(0, 6).map(p => ({
+      tag: p.isAnonymous ? 'LEAK RETE // ANONIMO' : `DIVE SOCIAL // ${escapeChatText(p.location || 'SICILIA')}`,
+      tagColor: p.isAnonymous ? 'purple' : 'cyan',
+      title: p.title || (p.author ? `Aggiornamento da ${escapeChatText(p.author)}` : 'Dispaccio dal Feed'),
+      desc: p.content || '',
+      time: p.timestamp || 'Live'
+    }));
+
+    const combined = [...liveNews, ...HOME_DISPATCHES];
+    streamEl.innerHTML = combined.map(item => `
+      <button type="button" class="home-news-card w-full text-left cyber-panel hud-bracket p-4 sm:p-5 border border-white/15 hover:border-dive-${item.tagColor || 'cyan'}/60 transition-colors space-y-2 cursor-pointer group">
+        <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
+          <span class="px-2 py-0.5 rounded-sm bg-dive-${item.tagColor || 'cyan'}/15 border border-dive-${item.tagColor || 'cyan'}/40 text-dive-${item.tagColor || 'cyan'} font-bold uppercase">${item.tag}</span>
+          <span class="text-slate-400">${escapeChatText(item.time)}</span>
+        </div>
+        <h3 class="font-orbitron font-bold text-sm sm:text-base text-white group-hover:text-dive-cyan transition-colors">${escapeChatText(item.title)}</h3>
+        <p class="font-sans text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeChatText(item.desc)}</p>
+        <div class="pt-1 font-mono text-[10px] text-dive-orange font-bold uppercase">
+          LEGGI SU DIVE SOCIAL ↗
+        </div>
+      </button>
+    `).join('');
+
+    streamEl.querySelectorAll('.home-news-card').forEach(card => {
+      card.addEventListener('click', () => {
+        switchTab('net');
+      });
+    });
+  }
+
+  let homePopupDismissed = false;
+  let homePopupIdx = 0;
+  function showHomeNewsPopup() {
+    if (homePopupDismissed) return;
+    const homeTab = document.getElementById('tab-home');
+    const popupEl = document.getElementById('home-news-popup');
+    if (!homeTab || homeTab.classList.contains('hidden') || !popupEl) return;
+    const item = HOME_DISPATCHES[homePopupIdx % HOME_DISPATCHES.length];
+    homePopupIdx += 1;
+    const tagEl = document.getElementById('home-popup-tag');
+    const titleEl = document.getElementById('home-popup-title');
+    const descEl = document.getElementById('home-popup-desc');
+    if (tagEl) tagEl.textContent = item.tag;
+    if (titleEl) titleEl.textContent = item.title;
+    if (descEl) descEl.textContent = item.desc;
+    popupEl.classList.remove('hidden');
+  }
+
+  document.getElementById('home-popup-close-btn')?.addEventListener('click', () => {
+    homePopupDismissed = true;
+    document.getElementById('home-news-popup')?.classList.add('hidden');
+  });
+  document.getElementById('home-popup-cta-btn')?.addEventListener('click', () => {
+    document.getElementById('home-news-popup')?.classList.add('hidden');
+    switchTab('net');
+  });
+
+  renderHomeVerticalFeed();
+  setTimeout(showHomeNewsPopup, 2500);
+  setInterval(showHomeNewsPopup, 12000);
+
   renderSocialFeed();
   renderAdminRoster();
 

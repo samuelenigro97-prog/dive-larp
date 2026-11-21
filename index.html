@@ -230,73 +230,31 @@
           <span class="sm:text-right">DIVE INTO ANOTHER LIFE /</span>
         </div>
 
-        <!-- 2. Prossimo Evento* & App di Gioco -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <!-- Prossimo Evento* -->
-          <div class="cyber-panel p-6 hud-bracket flex flex-col justify-between gap-5">
-            <div class="space-y-2">
-              <div class="font-mono text-[11px] text-dive-orange font-semibold tracking-wider uppercase">
-                PROSSIMO EVENTO* // ISCRIZIONI APERTE
-              </div>
-              <h2 class="font-orbitron font-bold text-xl sm:text-2xl text-white">
-                LE CIMINIERE — CATANIA
-              </h2>
-              <p class="text-xs sm:text-sm text-slate-400">
-                Scopri il setting, la mappa, il glossario, la guida rapida e iscriviti alla prossima serata LARP.
-              </p>
-            </div>
-            <div>
-              <button class="nav-tab-trigger cyber-btn w-full sm:w-auto px-5 py-3 bg-dive-orange text-black font-mono font-bold text-xs uppercase tracking-widest hover:bg-white" data-tab="eventi">
-                VAI ALL'EVENTO* ↗
-              </button>
-            </div>
+        <!-- 2. Flusso Verticale Unico: News Cliccabili & Pubblicità Sicilia / Mondo -->
+        <div id="home-vertical-feed" class="max-w-3xl mx-auto space-y-4 pt-2">
+          <div class="flex items-center justify-between pb-2 border-b border-white/10 font-mono text-xs">
+            <span class="text-dive-cyan font-bold uppercase tracking-widest">RETE DIVE // DISPACCI DAL MONDO &amp; SICILIA</span>
+            <span class="px-2 py-0.5 rounded-sm bg-dive-red/15 border border-dive-red/40 text-dive-red text-[10px] font-bold uppercase">LIVE PUBBLICO</span>
           </div>
 
-          <!-- App di Gioco (In-Game: DIVE SOCIAL | SCHEDA PG) -->
-          <div class="cyber-panel hud-bracket p-6 border border-dive-purple/40 flex flex-col justify-between gap-5">
-            <div class="space-y-2">
-              <div class="font-mono text-[11px] text-dive-purple neon-purple font-semibold tracking-wider uppercase">
-                APP DI GIOCO // MODALITÀ IN-GAME
-              </div>
-              <h2 class="font-orbitron font-bold text-xl sm:text-2xl text-white">
-                DIVE SOCIAL · SCHEDA PG
-              </h2>
-              <p class="text-xs sm:text-sm text-slate-400">
-                Accedi con il tuo Runner per usare il Feed Social, la Chat, il QR personale, il Cyberdeck e il Wallet.
-              </p>
-            </div>
-            <div class="flex flex-wrap gap-2.5">
-              <button class="nav-tab-trigger cyber-btn px-4 py-3 bg-dive-purple text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-white" data-tab="net">
-                DIVE SOCIAL
-              </button>
-              <button class="nav-tab-trigger cyber-btn px-4 py-3 bg-white/10 text-white border border-dive-orange/50 font-mono font-bold text-xs uppercase tracking-wider hover:bg-dive-orange hover:text-black" data-tab="profile">
-                SCHEDA PG
-              </button>
-            </div>
+          <div id="home-news-stream" class="space-y-4">
+            <!-- Popolato da JS con notizie cliccabili e ad Sicilia/Mondo -->
           </div>
         </div>
 
-        <!-- Sezioni del Sito -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <button class="nav-tab-trigger text-left cyber-panel p-5 group hover:border-dive-orange transition-colors space-y-2" data-tab="eventi">
-            <span class="font-mono text-[10px] text-dive-orange uppercase tracking-widest block">01 // EVENTI</span>
-            <h3 class="font-orbitron font-bold text-base text-white group-hover:text-dive-orange">CALENDARIO &amp; EVENTI PASSATI</h3>
-            <p class="text-xs text-slate-400">Iscrizioni, guida, mappa, glossari e personaggi.</p>
-          </button>
+      </div>
 
-          <button class="nav-tab-trigger text-left cyber-panel p-5 group hover:border-dive-purple transition-colors space-y-2" data-tab="gallery">
-            <span class="font-mono text-[10px] text-dive-purple uppercase tracking-widest block">02 // GALLERY</span>
-            <h3 class="font-orbitron font-bold text-base text-white group-hover:text-dive-purple">ARCHIVIO VISUALE &amp; SCENA</h3>
-            <p class="text-xs text-slate-400">Foto dagli eventi, concept e ritratti runner.</p>
-          </button>
-
-          <button class="nav-tab-trigger text-left cyber-panel p-5 group hover:border-dive-cyan transition-colors space-y-2" data-tab="premesse">
-            <span class="font-mono text-[10px] text-dive-cyan uppercase tracking-widest block">03 // PREMESSE</span>
-            <h3 class="font-orbitron font-bold text-base text-white group-hover:text-dive-cyan">MANIFESTO &amp; REGOLAMENTO</h3>
-            <p class="text-xs text-slate-400">Cos'è DIVE, sicurezza in scena e codice di condotta.</p>
-          </button>
+      <!-- Pop-up Pubblicità / Breaking News (Sicilia & Mondo) -->
+      <div id="home-news-popup" class="hidden fixed bottom-16 left-3 right-3 sm:left-auto sm:right-4 sm:w-96 z-40 cyber-panel hud-bracket border border-dive-orange/60 bg-[#04060A]/95 backdrop-blur-md p-3.5 shadow-[0_12px_36px_rgba(0,0,0,0.85)] space-y-2">
+        <div class="flex items-center justify-between gap-2 font-mono text-[10px]">
+          <span id="home-popup-tag" class="px-1.5 py-0.5 rounded-sm bg-dive-orange/20 border border-dive-orange/50 text-dive-orange font-bold uppercase">AD // SICILIA</span>
+          <button id="home-popup-close-btn" type="button" aria-label="Chiudi avviso" class="w-5 h-5 rounded-sm bg-white/10 hover:bg-dive-red text-white text-[10px] font-bold flex items-center justify-center cursor-pointer">×</button>
         </div>
-
+        <button id="home-popup-cta-btn" type="button" class="w-full text-left space-y-1 cursor-pointer group">
+          <h4 id="home-popup-title" class="font-orbitron font-bold text-xs sm:text-sm text-white group-hover:text-dive-cyan transition-colors">PORTO FRANCO NAVARRO // SICILIA</h4>
+          <p id="home-popup-desc" class="font-sans text-[11px] text-slate-300 leading-snug">Nuovi carichi dal Settore Ciminiere. Apri il feed Dive Social per leggere gli aggiornamenti dal vivo.</p>
+          <span class="inline-block font-mono text-[10px] text-dive-cyan font-bold uppercase pt-0.5">APRI SU DIVE SOCIAL ↗</span>
+        </button>
       </div>
 
     </section>
