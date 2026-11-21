@@ -72,8 +72,8 @@
         </span>
       </a>
 
-      <!-- Desktop Navigation Tabs & In-Game Section Links -->
-      <nav id="desktop-game-nav" class="hidden md:flex order-2 flex-1 min-w-0 items-center justify-start lg:justify-center gap-0.5 xl:gap-1 overflow-x-auto no-scrollbar font-mono text-[10px] uppercase tracking-wider text-slate-400">
+      <!-- Top Navigation Tabs (Home, Eventi, Gallery, Premesse) -->
+      <nav id="desktop-game-nav" class="flex order-2 flex-1 min-w-0 items-center justify-start lg:justify-center gap-0.5 xl:gap-1 overflow-x-auto no-scrollbar font-mono text-[10px] uppercase tracking-wider text-slate-400">
         <button class="public-site-nav nav-tab-trigger px-2.5 py-1.5 text-dive-orange font-bold border-b-2 border-dive-orange transition-colors whitespace-nowrap" data-tab="home">HOME</button>
         <button class="public-site-nav nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap" data-tab="eventi">EVENTI</button>
         <button class="public-site-nav nav-tab-trigger px-2.5 py-1.5 border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap" data-tab="gallery">GALLERY</button>
@@ -209,11 +209,8 @@
       
       <div class="max-w-5xl mx-auto w-full space-y-8">
         
-        <!-- 1. Slogan / Immagini -->
-        <div class="relative overflow-hidden rounded-sm border border-white/15 px-4 sm:px-8 py-12 sm:py-16 text-center">
-          <img src="assets/images/hero-city-bg.jpg?v=0.27.1" alt="Metropoli Cyberpunk DIVE" class="absolute inset-0 w-full h-full object-cover object-center opacity-90 brightness-110 contrast-105 pointer-events-none select-none">
-          <div class="absolute inset-0 bg-gradient-to-b from-[#04060A]/30 via-[#04060A]/15 to-[#04060A]/65 pointer-events-none"></div>
-
+        <!-- 1. Slogan / Hero -->
+        <div class="relative overflow-hidden rounded-sm border border-white/15 bg-[#04060A]/45 backdrop-blur-[2px] px-4 sm:px-8 py-12 sm:py-16 text-center">
           <div class="relative z-10 space-y-4">
             <h1 class="font-orbitron font-black text-4xl sm:text-7xl lg:text-8xl tracking-tight leading-[0.95] uppercase drop-shadow-[0_4px_18px_rgba(0,0,0,0.85)]">
               <span class="block text-white">CAMBIA</span>
@@ -2264,9 +2261,6 @@
   <!-- BOTTOM NAVIGATION & SECTION SHORTCUTS BAR -->
   <nav id="mobile-game-dock" class="fixed bottom-0 left-0 right-0 z-40 bg-[#04060A]/95 backdrop-blur-md border-t border-white/10 px-2 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
     <div class="max-w-7xl mx-auto flex items-center justify-end gap-1.5 overflow-x-auto no-scrollbar font-mono text-[10px] tracking-wider text-slate-400">
-      <button class="public-site-nav md:hidden nav-tab-trigger mobile-dock-item active px-2.5 py-1.5 rounded-sm border border-dive-orange/40 bg-dive-orange/10 text-dive-orange font-bold whitespace-nowrap" data-tab="home">HOME</button>
-      <button class="public-site-nav md:hidden nav-tab-trigger mobile-dock-item px-2.5 py-1.5 rounded-sm border border-white/15 bg-white/5 hover:text-white whitespace-nowrap" data-tab="eventi">EVENTI</button>
-
       <button type="button" class="ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border border-white/35 bg-white/10 text-white hover:bg-white hover:text-black font-bold transition-colors cursor-pointer whitespace-nowrap" data-tab="dossier">DOSSIER</button>
       <button type="button" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border font-bold transition-colors cursor-pointer whitespace-nowrap" style="border-color: rgba(236,72,153,0.45); background: rgba(236,72,153,0.12); color: #EC4899;" data-tab="biomonitor">BIOMONITOR</button>
       <button type="button" id="shortcut-role-console-btn" class="hidden ingame-site-nav nav-tab-trigger px-2.5 py-1.5 rounded-sm border font-bold transition-colors cursor-pointer whitespace-nowrap" style="border-color: rgba(250,204,21,0.45); background: rgba(250,204,21,0.12); color: #FACC15;" data-tab="roleconsole">NODI RETE &amp; ICE</button>
