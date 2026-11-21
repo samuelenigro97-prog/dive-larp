@@ -279,25 +279,25 @@
         </div>
 
         <!-- Calendario Minimalista Compatto (prima degli eventi) -->
-        <div id="eventi-cyber-calendar" class="border border-white/15 p-4 space-y-3 font-sans" style="width: 340px; max-width: 100%; background: rgba(4, 6, 10, 0.65); backdrop-filter: blur(4px);">
-          <div class="flex items-center justify-between gap-2">
-            <h3 id="cal-month-label" class="font-light text-base text-white uppercase tracking-[0.2em]">NOVEMBRE 2026</h3>
-            <div class="flex items-center gap-1 font-mono">
-              <button type="button" id="cal-prev-btn" class="w-6 h-6 text-slate-400 hover:text-dive-cyan text-sm flex items-center justify-center cursor-pointer transition-colors" aria-label="Mese precedente">‹</button>
-              <button type="button" id="cal-next-btn" class="w-6 h-6 text-slate-400 hover:text-dive-cyan text-sm flex items-center justify-center cursor-pointer transition-colors" aria-label="Mese successivo">›</button>
+        <div id="eventi-cyber-calendar" style="width: 420px; max-width: 100%; background: #ffffff; color: #111827; padding: 18px; border-radius: 2px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); font-family: 'Space Grotesk', sans-serif;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px;">
+            <h3 id="cal-month-label" style="font-weight: 300; font-size: 19px; letter-spacing: 0.2em; color: #111827; text-transform: uppercase; margin: 0;">NOVEMBRE 2026</h3>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <button type="button" id="cal-prev-btn" style="width: 24px; height: 24px; color: #4b5563; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; border: none;" aria-label="Mese precedente">‹</button>
+              <button type="button" id="cal-next-btn" style="width: 24px; height: 24px; color: #4b5563; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; border: none;" aria-label="Mese successivo">›</button>
             </div>
           </div>
 
           <div>
-            <div class="grid grid-cols-7 text-center text-[9px] text-slate-400 uppercase font-bold tracking-widest pb-1.5">
+            <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: #111827; padding-bottom: 6px;">
               <span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span>
             </div>
-            <div id="cal-days-grid" class="grid grid-cols-7 text-[11px]" style="gap: 0; border-top: 1px solid rgba(255,255,255,0.14); border-left: 1px solid rgba(255,255,255,0.14);">
+            <div id="cal-days-grid" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid #d1d5db; border-left: 1px solid #d1d5db; font-size: 11px;">
               <!-- Popolato da JS -->
             </div>
           </div>
-          <div id="cal-selected-detail" class="px-2 py-1.5 border border-white/10 bg-black/50 text-[10px] font-mono flex items-center justify-between gap-2">
-            <span class="text-slate-400 truncate">Seleziona una data evidenziata.</span>
+          <div id="cal-selected-detail" style="margin-top: 10px; padding: 6px 10px; border: 1px solid #e5e7eb; background: #f9fafb; font-size: 10px; font-family: 'Share Tech Mono', monospace; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #4b5563;">
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Seleziona una data evidenziata.</span>
           </div>
         </div>
 
