@@ -37,13 +37,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.70.4">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.71.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.70.4">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.71.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -570,12 +570,18 @@
 
             <!-- Quick-Post Composer Inline -->
             <form id="quick-social-form" class="cyber-panel hud-bracket p-4 space-y-2.5">
-              <div class="flex items-center justify-between font-mono text-[10px] text-slate-400">
+              <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] text-slate-400">
                 <span class="text-dive-orange font-bold uppercase tracking-wider">TRASMISSIONE RAPIDA IN RETE</span>
-                <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-slate-300 hover:text-dive-purple">
-                  <input type="checkbox" id="quick-social-anon" class="accent-dive-purple">
-                  <span>GHOST LEAK (ANONIMO)</span>
-                </label>
+                <div class="flex items-center gap-3">
+                  <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-slate-300 hover:text-dive-purple" title="Impianto Untraceable: pubblica in modo anonimo non rintracciabile">
+                    <input type="checkbox" id="quick-social-anon" class="accent-dive-purple">
+                    <span>UNTRACEABLE (ANONIMO)</span>
+                  </label>
+                  <label id="quick-social-lockedon-wrap" class="hidden inline-flex items-center gap-1.5 cursor-pointer select-none text-slate-300 hover:text-dive-cyan" title="Impianto Lockedon: post non rimovibile per 5 minuti">
+                    <input type="checkbox" id="quick-social-lockedon" class="accent-dive-cyan">
+                    <span>LOCKEDON (5m)</span>
+                  </label>
+                </div>
               </div>
               <div class="flex flex-col sm:flex-row gap-2">
                 <input type="text" id="quick-social-input" placeholder="Scrivi un aggiornamento, voce di strada o leak..." class="flex-1 min-w-0 px-3.5 py-2 rounded-sm bg-[#04060A] border border-white/15 focus:border-dive-orange text-white text-xs outline-none" required>
@@ -1254,6 +1260,43 @@
                 </form>
               </div>
             </div>
+
+            <!-- Estensioni Business: Spettacolo (Slot Palco) & Arena (Sponsor Combattente) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-white/10">
+              <!-- Spettacolo: Prenota Slot Palco -->
+              <div class="p-3 rounded-sm bg-[#04060A] border border-dive-purple/30 space-y-2.5">
+                <div class="font-mono text-[10px] text-dive-purple uppercase tracking-wider font-bold">
+                  SPETTACOLO // PRENOTAZIONE SLOT PALCO
+                </div>
+                <form id="fixer-stage-form" class="flex flex-wrap gap-1.5 font-mono text-xs">
+                  <input type="text" id="fixer-stage-act" placeholder="Artista / Evento..." class="flex-1 min-w-[120px] px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple" required>
+                  <input type="time" id="fixer-stage-time" value="22:00" class="w-24 px-2 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-purple" required>
+                  <button type="submit" class="px-2.5 py-1.5 rounded-sm bg-dive-purple text-black font-bold text-[10px] uppercase hover:bg-white transition-colors">
+                    PRENOTA
+                  </button>
+                </form>
+                <div id="fixer-stage-list" class="space-y-1.5 max-h-36 overflow-y-auto font-mono text-[10px]">
+                  <!-- Popolato da JS -->
+                </div>
+              </div>
+
+              <!-- Arena: Sponsorizza Combattente -->
+              <div class="p-3 rounded-sm bg-[#04060A] border border-dive-red/30 space-y-2.5">
+                <div class="font-mono text-[10px] text-dive-red uppercase tracking-wider font-bold">
+                  ARENA // SPONSORIZZA COMBATTENTE
+                </div>
+                <form id="fixer-arena-form" class="flex flex-wrap gap-1.5 font-mono text-xs">
+                  <input type="text" id="fixer-arena-fighter" placeholder="Nome / @Callsign combattente..." class="flex-1 min-w-[120px] px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-red" required>
+                  <input type="number" id="fixer-arena-fee" value="250" min="50" step="50" class="w-20 px-2 py-1.5 rounded-sm bg-black border border-white/15 text-white text-[11px] outline-none focus:border-dive-red" required>
+                  <button type="submit" class="px-2.5 py-1.5 rounded-sm bg-dive-red text-white font-bold text-[10px] uppercase hover:bg-white hover:text-black transition-colors">
+                    SPONSORIZZA €$
+                  </button>
+                </form>
+                <div id="fixer-arena-list" class="space-y-1.5 max-h-36 overflow-y-auto font-mono text-[10px]">
+                  <!-- Popolato da JS -->
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- 3. CONSOLE NETRUNNER: NODI RETE, ICE & SNIFFER -->
@@ -1312,6 +1355,33 @@
               <div>&gt; Biolab inizializzato. Parametri vasche e monitor cavie attivi.</div>
             </div>
           </div>
+
+          <!-- 5. CONSOLE MEDIA: VERIFICA, MONETIZZAZIONE & IMPIANTI FEED -->
+          <div id="role-panel-media" class="hidden space-y-3 font-mono text-xs">
+            <div class="p-3 rounded-sm bg-[#04060A] border border-dive-cyan/35 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <div class="text-dive-cyan font-bold text-[11px] uppercase">BOLLINO VERIFICATO ATTIVO · COMPENSO +€$ 150 / POST</div>
+                <p class="font-sans text-[11px] text-slate-400 mt-0.5">Ogni contenuto pubblicato su Dive Social riceve automaticamente il bollino <strong class="text-dive-cyan">[VER]</strong> e genera un accredito EuroDollari.</p>
+              </div>
+              <button type="button" id="media-open-social-btn" class="px-3 py-1.5 rounded-sm bg-dive-cyan text-black font-bold text-[10px] uppercase hover:bg-white transition-colors whitespace-nowrap">
+                VAI A DIVE SOCIAL
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[10px]">
+              <div class="p-2.5 rounded-sm bg-black/70 border border-dive-purple/35">
+                <div class="text-dive-purple font-bold uppercase">UNTRACEABLE</div>
+                <p class="font-sans text-slate-400 mt-0.5">Pubblica post anonimi non rintracciabili nel feed.</p>
+              </div>
+              <div class="p-2.5 rounded-sm bg-black/70 border border-dive-cyan/35">
+                <div class="text-dive-cyan font-bold uppercase">LOCKEDON</div>
+                <p class="font-sans text-slate-400 mt-0.5">Blocca la rimozione del post per 5 minuti dalla pubblicazione.</p>
+              </div>
+              <div class="p-2.5 rounded-sm bg-black/70 border border-dive-red/35">
+                <div class="text-dive-red font-bold uppercase">CANCELCONTENT</div>
+                <p class="font-sans text-slate-400 mt-0.5">Rimuove un post dal feed social (salvo post Lockedon attivi).</p>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
 
@@ -1328,6 +1398,8 @@
           </div>
 
           <div data-collapse-body class="hidden flex-1 flex flex-col gap-4">
+            <!-- Azioni Impianti Sistema (Biotech / Overclock / Substance Storage / Instant Injection) -->
+            <div id="cyberware-system-actions" class="hidden p-2.5 rounded-sm bg-[#04060A] border border-dive-purple/35 space-y-2 font-mono text-[10px]"></div>
             <!-- Sistema Operativo -->
             <div class="space-y-1.5">
               <div class="flex items-center justify-between font-mono text-[10px]">
@@ -1498,6 +1570,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-dive-cyan font-bold">RAM CYBERDECK</span>
                 <span id="ram-status-text" class="text-[10px] text-slate-400">PRONTO</span>
+                <span id="quickhack-overclock-badge" class="hidden px-1.5 py-0.5 rounded-sm bg-dive-purple/20 border border-dive-purple/50 text-dive-purple text-[9px] font-bold">OVERCLOCK -1 RAM</span>
               </div>
               <span class="text-white font-bold"><span id="ram-current">5</span> / <span id="ram-max">5</span> UNITÀ</span>
             </div>
@@ -1506,30 +1579,30 @@
           </div>
 
           <div class="grid grid-cols-3 gap-1.5 sm:gap-2 font-mono">
-            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-red p-2 sm:p-2.5 text-center group min-w-0" data-hack="FERMO!" data-ram="3" data-desc="Blocco cibernetico delle articolazioni! Il bersaglio non può muoversi per 5 secondi!">
-              <span class="font-orbitron font-bold text-[10px] sm:text-xs leading-tight block text-white group-hover:text-dive-red">OVERRIDE FERMO!</span>
-              <span class="text-[9px] text-slate-400 mt-0.5 block">Blocco 5s</span>
-              <span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">3 RAM</span>
+            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-red p-2 sm:p-2.5 text-center group min-w-0" data-hack=".stop — FERMO!" data-ram="3" data-desc="Blocco cibernetico delle articolazioni! Il bersaglio non può muoversi per 5 secondi!">
+              <span class="font-orbitron font-bold text-[10px] sm:text-xs leading-tight block text-white group-hover:text-dive-red">.stop</span>
+              <span class="text-[9px] text-slate-400 mt-0.5 block">Fermo 5s</span>
+              <span class="quickhack-ram-badge inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">3 RAM</span>
             </button>
 
-            <button class="quickhack-trigger-btn cyberware-slot p-2 sm:p-2.5 text-center group min-w-0" data-hack="AL BUIO!" data-ram="2" data-desc="Sovraccarico ottico Kiroshi! Il bersaglio deve chiudere gli occhi o voltarsi per 5 secondi!">
-              <span class="font-orbitron font-bold text-[10px] sm:text-xs leading-tight block text-white group-hover:text-dive-cyan">OVERRIDE AL BUIO!</span>
-              <span class="text-[9px] text-slate-400 mt-0.5 block">Ottiche off 5s</span>
-              <span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">2 RAM</span>
+            <button class="quickhack-trigger-btn cyberware-slot p-2 sm:p-2.5 text-center group min-w-0" data-hack=".sightout — AL BUIO!" data-ram="2" data-desc="Sovraccarico ottico! Il bersaglio deve chiudere gli occhi o voltarsi per 5 secondi!">
+              <span class="font-orbitron font-bold text-[10px] sm:text-xs leading-tight block text-white group-hover:text-dive-cyan">.sightout</span>
+              <span class="text-[9px] text-slate-400 mt-0.5 block">Al buio 5s</span>
+              <span class="quickhack-ram-badge inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">2 RAM</span>
             </button>
 
-            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-orange p-2 sm:p-2.5 text-center group min-w-0" data-hack="BUTTALA!" data-ram="4" data-desc="Spasmo neurale all'arto armato! Il bersaglio deve rilasciare o deporre l'arma di scena immediatamente!">
-              <span class="font-orbitron font-bold text-[10px] sm:text-xs leading-tight block text-white group-hover:text-dive-orange">OVERRIDE BUTTALA!</span>
+            <button class="quickhack-trigger-btn cyberware-slot cyberware-slot-orange p-2 sm:p-2.5 text-center group min-w-0" data-hack=".dropweapon — BUTTALA!" data-ram="4" data-desc="Spasmo neurale all'arto armato! Il bersaglio deve rilasciare o deporre l'arma di scena immediatamente!">
+              <span class="font-orbitron font-bold text-[10px] sm:text-xs leading-tight block text-white group-hover:text-dive-orange">.dropweapon</span>
               <span class="text-[9px] text-slate-400 mt-0.5 block">Rilascio arma</span>
-              <span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">4 RAM</span>
+              <span class="quickhack-ram-badge inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-dive-cyan/10 text-dive-cyan border border-dive-cyan/30 rounded-sm">4 RAM</span>
             </button>
           </div>
 
           <!-- Off-Fight Sifone Crediti -->
           <div class="pt-2.5 border-t border-white/10 space-y-2 font-mono">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-slate-300 font-semibold">SIFONE CREDITI (OFF-FIGHT)</span>
-              <span class="text-[10px] text-dive-red">ICE BREAKER PROTOCOL</span>
+              <span class="text-slate-300 font-semibold">.stealmoney (OFF-FIGHT)</span>
+              <span class="text-[10px] text-dive-red">.ICEbreaker PROTOCOL</span>
             </div>
             <p class="text-[11px] text-slate-400 font-sans">
               Inserisci il codice segreto del bersaglio (ottenuto da spionaggio o comprato dal PNG Fixer) per avviare il drenaggio.
@@ -2042,7 +2115,7 @@
           <span id="login-sync-mode-label" class="font-mono text-[10px] text-dive-cyan">MODALITÀ: DEMO LOCALE</span>
         </div>
         <div class="flex items-center gap-2">
-          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.70.4</span>
+          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.71.0</span>
           <button id="close-login-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs hover:bg-white/20">X</button>
         </div>
       </div>
@@ -2205,12 +2278,12 @@
 
   <!-- Floating Version Badge (Bottom-Right, 3x click = Regia Master) -->
   <div id="app-version-badge" class="fixed bottom-[calc(3.25rem+0.75rem+env(safe-area-inset-bottom))] right-3 z-30 cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">
-    v0.70.4
+    v0.71.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.70.4"></script>
-  <script src="assets/js/main.js?v=0.70.4"></script>
+  <script src="assets/js/sync.js?v=0.71.0"></script>
+  <script src="assets/js/main.js?v=0.71.0"></script>
 </body>
 </html>
