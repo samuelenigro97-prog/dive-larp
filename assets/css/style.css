@@ -25,24 +25,8 @@ body {
   background-repeat: no-repeat;
 }
 
-@keyframes diveBgDrift {
-  0% {
-    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
-  }
-  50% {
-    transform: scale(1.12) translate3d(1.5%, 1%, 0);
-  }
-  100% {
-    transform: scale(1.08) translate3d(-0.8%, 1.5%, 0);
-  }
-}
-
-#city-bg {
-  animation: diveBgDrift 24s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
 #app-version-badge {
+  display: none;
   position: fixed;
   bottom: 56px;
   right: 14px;
@@ -71,6 +55,7 @@ body {
 }
 
 body.ingame-mode #app-version-badge {
+  display: block;
   bottom: 46px;
   right: 14px;
   transform: none;
@@ -384,6 +369,7 @@ body.ingame-mode[data-pg-theme="purple"] {
 
 body.ingame-mode #matrix-rain-canvas {
   display: block !important;
+  opacity: 0.42 !important;
 }
 
 /* Matrix Scanline Grid Overlay */
