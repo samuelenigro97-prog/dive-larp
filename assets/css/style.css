@@ -71,12 +71,12 @@ body {
 }
 
 body.ingame-mode #app-version-badge {
-  bottom: 45px;
-  right: 16px;
-  transform: translateY(50%);
+  bottom: 46px;
+  right: 14px;
+  transform: none;
   z-index: 45;
-  background: #04060A;
-  padding: 0 6px;
+  background: transparent;
+  padding: 0;
   line-height: 1;
 }
 
