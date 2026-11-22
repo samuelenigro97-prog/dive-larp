@@ -3489,41 +3489,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const loginModalVersionBadge = document.getElementById('login-modal-version-badge');
-  [appVersionBadge, loginModalVersionBadge].filter(Boolean).forEach(badgeEl => {
-    if (!adminPinModal) return;
-    let versionTapCount = 0;
-    let versionTapTimer = null;
-    badgeEl.addEventListener('click', () => {
-      versionTapCount += 1;
-      clearTimeout(versionTapTimer);
-      if (versionTapCount >= 3) {
-        versionTapCount = 0;
-        openAdminPinModal();
-      } else {
-        versionTapTimer = setTimeout(() => {
-          versionTapCount = 0;
-        }, 1200);
-      }
-    });
-  });
-
   const brandLogoLink = document.getElementById('brand-logo-link');
-  if (brandLogoLink && adminPinModal) {
-    let logoTapCount = 0;
-    let logoTapTimer = null;
-    brandLogoLink.addEventListener('click', () => {
-      logoTapCount += 1;
-      clearTimeout(logoTapTimer);
-      if (logoTapCount >= 5) {
-        logoTapCount = 0;
+  [appVersionBadge, loginModalVersionBadge, brandLogoLink].filter(Boolean).forEach(triggerEl => {
+    if (!adminPinModal) return;
+    let tapCount = 0;
+    let tapTimer = null;
+    triggerEl.addEventListener('click', () => {
+      tapCount += 1;
+      clearTimeout(tapTimer);
+      if (tapCount >= 5) {
+        tapCount = 0;
         openAdminPinModal();
       } else {
-        logoTapTimer = setTimeout(() => {
-          logoTapCount = 0;
+        tapTimer = setTimeout(() => {
+          tapCount = 0;
         }, 1500);
       }
     });
-  }
+  });
 
   if (closeAdminPinBtn && adminPinModal) {
     closeAdminPinBtn.addEventListener('click', () => {
