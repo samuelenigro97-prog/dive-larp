@@ -25,6 +25,21 @@ body {
   background-repeat: no-repeat;
 }
 
+#city-bg {
+  background-image: url('../images/city-bg.jpg');
+}
+
+@media (min-width: 768px) {
+  body {
+    background-image:
+      linear-gradient(180deg, rgba(4, 6, 10, 0.22) 0%, rgba(4, 6, 10, 0.38) 50%, rgba(4, 6, 10, 0.58) 100%),
+      url('../images/city-bg-hd.jpg');
+  }
+  #city-bg {
+    background-image: url('../images/city-bg-hd.jpg');
+  }
+}
+
 #app-version-badge {
   display: none;
   position: fixed;
