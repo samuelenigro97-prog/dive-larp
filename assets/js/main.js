@@ -5537,42 +5537,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  let homePopupDismissed = false;
-  let homePopupIdx = 0;
-  let currentHomePopupTargetTab = 'net';
-  function showHomeNewsPopup() {
-    if (homePopupDismissed) return;
-    const homeTab = document.getElementById('tab-home');
-    const popupEl = document.getElementById('home-news-popup');
-    if (!homeTab || homeTab.classList.contains('hidden') || !popupEl) return;
-    const item = HOME_DISPATCHES[homePopupIdx % HOME_DISPATCHES.length];
-    homePopupIdx += 1;
-    currentHomePopupTargetTab = item.targetTab || 'net';
-    const tagEl = document.getElementById('home-popup-tag');
-    const titleEl = document.getElementById('home-popup-title');
-    const descEl = document.getElementById('home-popup-desc');
-    const imgEl = document.getElementById('home-popup-img');
-    const ctaLabelEl = document.getElementById('home-popup-cta-label');
-    if (tagEl) tagEl.textContent = item.tag;
-    if (titleEl) titleEl.textContent = item.title;
-    if (descEl) descEl.textContent = item.desc;
-    if (imgEl && item.img) imgEl.src = item.img;
-    if (ctaLabelEl) ctaLabelEl.textContent = (item.ctaLabel || 'APRI RETE DIVE SOCIAL').replace(/\s*↗$/, '');
-    popupEl.classList.remove('hidden');
-  }
-
-  document.getElementById('home-popup-close-btn')?.addEventListener('click', () => {
-    homePopupDismissed = true;
-    document.getElementById('home-news-popup')?.classList.add('hidden');
-  });
-  document.getElementById('home-popup-cta-btn')?.addEventListener('click', () => {
-    document.getElementById('home-news-popup')?.classList.add('hidden');
-    switchTab(currentHomePopupTargetTab || 'net');
-  });
-
   renderHomeVerticalFeed();
-  setTimeout(showHomeNewsPopup, 2500);
-  setInterval(showHomeNewsPopup, 12000);
 
   // --------------------------------------------------------------------------
   // Calendario Eventi Cyberpunk (Eventi Passati sbiaditi vs Futuri Neon)
