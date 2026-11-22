@@ -25,6 +25,38 @@ body {
   background-repeat: no-repeat;
 }
 
+#app-version-badge {
+  position: fixed;
+  bottom: 56px;
+  right: 14px;
+  z-index: 5;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  user-select: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+#app-version-badge:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@media (min-width: 768px) {
+  #app-version-badge {
+    bottom: 12px;
+    right: 16px;
+  }
+}
+
+body.ingame-mode #app-version-badge {
+  bottom: 56px;
+}
+
 .neon-orange {
   text-shadow: 0 0 12px rgba(255, 107, 0, 0.55), 0 0 28px rgba(255, 107, 0, 0.25);
 }
