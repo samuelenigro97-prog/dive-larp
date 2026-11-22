@@ -56,13 +56,20 @@ body {
 
 body.ingame-mode #app-version-badge {
   display: block;
-  bottom: 46px;
+  top: 59px;
+  bottom: auto;
   right: 14px;
   transform: none;
-  z-index: 45;
+  z-index: 5;
   background: transparent;
   padding: 0;
   line-height: 1;
+}
+
+@media (min-width: 640px) {
+  body.ingame-mode #app-version-badge {
+    top: 67px;
+  }
 }
 
 .neon-orange {
