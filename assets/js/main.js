@@ -3480,6 +3480,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminAddMoney = document.getElementById('admin-add-money');
   const adminToggleIce = document.getElementById('admin-toggle-ice');
 
+  function openAdminPinModal() {
+    if (!adminPinModal) return;
+    if (typeof closeLoginModal === 'function') closeLoginModal();
+    adminPinModal.classList.remove('hidden', 'pointer-events-none');
+    setTimeout(() => adminPinModal.classList.add('opacity-100'), 10);
+    if (adminPinInput) adminPinInput.focus();
+  }
+
   const loginModalVersionBadge = document.getElementById('login-modal-version-badge');
   [appVersionBadge, loginModalVersionBadge].filter(Boolean).forEach(badgeEl => {
     if (!adminPinModal) return;
@@ -3490,10 +3498,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearTimeout(versionTapTimer);
       if (versionTapCount >= 3) {
         versionTapCount = 0;
-        if (typeof closeLoginModal === 'function') closeLoginModal();
-        adminPinModal.classList.remove('hidden', 'pointer-events-none');
-        setTimeout(() => adminPinModal.classList.add('opacity-100'), 10);
-        if (adminPinInput) adminPinInput.focus();
+        openAdminPinModal();
       } else {
         versionTapTimer = setTimeout(() => {
           versionTapCount = 0;
@@ -3501,6 +3506,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  const brandLogoLink = document.getElementById('brand-logo-link');
+  if (brandLogoLink && adminPinModal) {
+    let logoTapCount = 0;
+    let logoTapTimer = null;
+    brandLogoLink.addEventListener('click', () => {
+      logoTapCount += 1;
+      clearTimeout(logoTapTimer);
+      if (logoTapCount >= 5) {
+        logoTapCount = 0;
+        openAdminPinModal();
+      } else {
+        logoTapTimer = setTimeout(() => {
+          logoTapCount = 0;
+        }, 1500);
+      }
+    });
+  }
 
   if (closeAdminPinBtn && adminPinModal) {
     closeAdminPinBtn.addEventListener('click', () => {
