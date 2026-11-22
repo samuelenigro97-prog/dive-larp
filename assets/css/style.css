@@ -772,7 +772,7 @@ body.ingame-mode #sec-deck .hud-bracket::after {
   body.ingame-mode:not(.admin-wide-mode) > header > div,
   body.ingame-mode:not(.admin-wide-mode) > main,
   body.ingame-mode:not(.admin-wide-mode) > #global-broadcast-banner > div,
-  body.ingame-mode:not(.admin-wide-mode) > #mobile-game-dock {
+  body.ingame-mode:not(.admin-wide-mode) > #mobile-game-dock > div {
     max-width: 440px !important;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -808,8 +808,9 @@ body.ingame-mode #sec-deck .hud-bracket::after {
   }
 
   body.ingame-mode:not(.admin-wide-mode) > #mobile-game-dock {
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
   }
 
   body.ingame-mode:not(.admin-wide-mode) #app-version-badge {
