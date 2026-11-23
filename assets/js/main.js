@@ -4390,6 +4390,67 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let siteRainTimer = null;
+  function startSiteRain() {
+    const canvas = document.getElementById('site-rain-canvas');
+    if (!canvas || siteRainTimer) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let drops = [];
+    const initDrops = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const count = Math.min(75, Math.max(35, Math.floor(canvas.width / 22)));
+      drops = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        len: 12 + Math.random() * 18,
+        speed: 8 + Math.random() * 9,
+        alpha: 0.14 + Math.random() * 0.24,
+        cyan: Math.random() > 0.35
+      }));
+    };
+    initDrops();
+    window.addEventListener('resize', initDrops);
+    canvas._siteRainResize = initDrops;
+
+    siteRainTimer = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.lineWidth = 1;
+      for (let i = 0; i < drops.length; i++) {
+        const d = drops[i];
+        ctx.strokeStyle = d.cyan ? `rgba(0, 212, 255, ${d.alpha})` : `rgba(255, 255, 255, ${d.alpha * 0.85})`;
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x - d.len * 0.14, d.y + d.len);
+        ctx.stroke();
+        d.x -= d.speed * 0.14;
+        d.y += d.speed;
+        if (d.y > canvas.height + 20 || d.x < -20) {
+          d.y = -20;
+          d.x = Math.random() * (canvas.width + 60);
+        }
+      }
+    }, 33);
+  }
+
+  function stopSiteRain() {
+    if (siteRainTimer) {
+      clearInterval(siteRainTimer);
+      siteRainTimer = null;
+    }
+    const canvas = document.getElementById('site-rain-canvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (canvas._siteRainResize) {
+        window.removeEventListener('resize', canvas._siteRainResize);
+        delete canvas._siteRainResize;
+      }
+    }
+  }
+
   function applyInGameTheme(isAuthenticated, runner) {
     const matrixPalette = {
       orange: '#00E5FF',
@@ -4409,12 +4470,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ingameOsLabel.textContent = callsign ? `${callsign} • ${themeCfg.label}` : themeCfg.label;
       }
       if (themeColorMeta) themeColorMeta.setAttribute('content', themeCfg.metaBg);
+      stopSiteRain();
       startMatrixRain(matrixPalette[themeKey] || '#10B981');
     } else {
       document.body.classList.remove('ingame-mode');
       document.body.removeAttribute('data-pg-theme');
       if (themeColorMeta) themeColorMeta.setAttribute('content', '#04060A');
       stopMatrixRain();
+      startSiteRain();
     }
   }
 
@@ -4442,7 +4505,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loginMenuToggle.setAttribute('aria-label', isAuthenticated ? `${player.callsign} — Vai alla Scheda PG` : 'Accedi al terminale');
       loginMenuToggle.classList.toggle('w-8', isAuthenticated);
       loginMenuToggle.classList.toggle('h-8', isAuthenticated);
-      loginMenuToggle.classList.toggle('px-3.5', !isAuthenticated);
+      loginMenuToggle.classList.toggle('px-2.5', !isAuthenticated);
       loginMenuToggle.classList.toggle('py-1.5', !isAuthenticated);
     }
     if (loginMenuChevron) {

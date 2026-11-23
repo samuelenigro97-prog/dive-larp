@@ -396,6 +396,10 @@ body.ingame-mode[data-pg-theme="purple"] {
   color: #F2E3FF !important;
 }
 
+body.ingame-mode #site-rain-canvas {
+  display: none !important;
+}
+
 body.ingame-mode #matrix-rain-canvas {
   display: block !important;
   opacity: 0.42 !important;
