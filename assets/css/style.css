@@ -42,31 +42,23 @@ body {
 
 #app-version-badge {
   display: none;
-  position: fixed;
-  bottom: 56px;
-  right: 14px;
-  z-index: 5;
   background: transparent;
   border: none;
   box-shadow: none;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.22);
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.05em;
+  font-size: 9px;
+  letter-spacing: 0.04em;
   user-select: none;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 #app-version-badge:hover {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 @media (min-width: 768px) {
-  #app-version-badge {
-    bottom: 12px;
-    right: 16px;
-  }
   body:not(.ingame-mode) #desktop-game-nav {
     position: absolute;
     left: 50%;
@@ -77,21 +69,13 @@ body {
 }
 
 body.ingame-mode #app-version-badge {
-  display: block;
-  top: 59px;
-  bottom: auto;
-  right: 14px;
-  transform: none;
-  z-index: 5;
-  background: transparent;
-  padding: 0;
+  display: inline-block;
+  position: static;
+  align-self: flex-end;
+  padding-bottom: 4px;
+  margin-left: 2px;
   line-height: 1;
-}
-
-@media (min-width: 640px) {
-  body.ingame-mode #app-version-badge {
-    top: 67px;
-  }
+  flex-shrink: 0;
 }
 
 .neon-orange {
@@ -826,9 +810,5 @@ body.ingame-mode #sec-deck .hud-bracket::after {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-  }
-
-  body.ingame-mode:not(.admin-wide-mode) #app-version-badge {
-    right: calc(50% - 220px + 0.75rem) !important;
   }
 }
