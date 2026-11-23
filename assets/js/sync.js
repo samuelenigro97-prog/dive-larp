@@ -15,7 +15,12 @@
   function getConfig() {
     try {
       const raw = localStorage.getItem(SYNC_CONFIG_KEY);
-      return raw ? { ...DEFAULT_CONFIG, ...JSON.parse(raw) } : { ...DEFAULT_CONFIG };
+      if (!raw) return { ...DEFAULT_CONFIG };
+      const parsed = JSON.parse(raw);
+      if (!parsed || parsed.mode === 'local' || !parsed.endpoint) {
+        return { ...DEFAULT_CONFIG };
+      }
+      return { ...DEFAULT_CONFIG, ...parsed };
     } catch {
       return { ...DEFAULT_CONFIG };
     }
@@ -29,9 +34,8 @@
 
   function getStatusLabel() {
     const cfg = getConfig();
-    if (cfg.mode === 'cloudflare' && cfg.endpoint) return 'CLOUDFLARE SYNC';
     if (cfg.mode === 'supabase' && cfg.endpoint && cfg.apiKey) return 'SUPABASE SYNC';
-    return 'DEMO LOCALE';
+    return 'CLOUDFLARE SYNC';
   }
 
   function buildHeaders(cfg) {

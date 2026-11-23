@@ -3793,7 +3793,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logout-btn');
 
   function updateSyncStatusLabels() {
-    const label = window.DiveSync ? window.DiveSync.getStatusLabel() : 'DEMO LOCALE';
+    const label = window.DiveSync ? window.DiveSync.getStatusLabel() : 'CLOUDFLARE SYNC';
     if (loginSyncModeLabel) loginSyncModeLabel.textContent = `MODALITÀ: ${label}`;
     const adminBadge = document.getElementById('admin-sync-status-badge');
     if (adminBadge) adminBadge.textContent = label;
@@ -4167,8 +4167,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (window.DiveSync && adminSyncMode && adminSyncEndpoint && adminSyncKey) {
     const cfg = window.DiveSync.getConfig();
-    adminSyncMode.value = cfg.mode || 'local';
-    adminSyncEndpoint.value = cfg.endpoint || '';
+    adminSyncMode.value = cfg.mode || 'cloudflare';
+    adminSyncEndpoint.value = cfg.endpoint || 'https://dive-sync.dive-larp-sync-worker.workers.dev';
     adminSyncKey.value = cfg.apiKey || '';
     updateSyncStatusLabels();
   }
