@@ -7,8 +7,8 @@
   const SYNC_CONFIG_KEY = 'dive_sync_config_v1';
 
   const DEFAULT_CONFIG = {
-    mode: 'local', // 'local' | 'cloudflare' | 'supabase'
-    endpoint: '',
+    mode: 'cloudflare', // 'local' | 'cloudflare' | 'supabase'
+    endpoint: 'https://dive-sync.dive-larp-sync-worker.workers.dev',
     apiKey: ''
   };
 
