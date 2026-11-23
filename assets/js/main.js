@@ -2959,6 +2959,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       localStorage.setItem('dive_social_feed_posts_v3', JSON.stringify(posts));
       renderSocialFeed();
+      if (typeof renderHomeVerticalFeed === 'function') renderHomeVerticalFeed();
+      if (typeof renderAdminNewsManager === 'function') renderAdminNewsManager();
       scheduleCloudPush();
     } catch (e) {
       console.warn(e);
@@ -3719,7 +3721,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const isSelected = (r.secretId || '').toUpperCase() === selectedAdminTargetSid.toUpperCase();
       return `
       <tr class="hover:bg-white/5 transition-colors ${isSelected ? 'bg-dive-orange/10' : ''}">
-        <td class="py-2.5 font-bold text-white whitespace-nowrap">${r.callsign}</td>
+        <td class="py-2.5 font-bold text-white whitespace-nowrap">
+          <div>${r.callsign}</div>
+          ${r.email ? `<div class="text-[9px] text-slate-400 font-normal">${escapeChatText(r.email)}</div>` : ''}
+        </td>
         <td class="py-2.5 text-slate-400 text-[11px] whitespace-nowrap">${r.role}</td>
         <td class="py-2.5 text-dive-cyan font-bold whitespace-nowrap">${r.secretId}</td>
         <td class="py-2.5 whitespace-nowrap ${r.hp > 50 ? 'text-dive-green' : 'text-dive-red'}">${r.hp}%</td>
@@ -3972,9 +3977,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const rawCallsign = document.getElementById('admin-pg-callsign')?.value.trim() || '';
       if (!rawCallsign) return;
       const callsign = rawCallsign.startsWith('@') ? rawCallsign : `@${rawCallsign}`;
+      const associatedEmail = (document.getElementById('admin-pg-email')?.value || '').trim().toLowerCase();
       const accounts = getAccountsRegistry();
       if (accounts.some(a => (a.callsign || '').toUpperCase() === callsign.toUpperCase())) {
         alert('Callsign già esistente nel Roster.');
+        return;
+      }
+      if (associatedEmail && accounts.some(a => (a.email || '').toLowerCase() === associatedEmail)) {
+        alert('Email già associata ad un altro PG nel Roster.');
         return;
       }
 
@@ -4020,9 +4030,9 @@ document.addEventListener('DOMContentLoaded', () => {
         pin,
         playerName: '',
         playerSurname: '',
-        email: '',
+        email: associatedEmail,
         playerContact: '',
-        needsContactSetup: true,
+        needsContactSetup: !associatedEmail,
         avatar: avatars[accounts.length % avatars.length],
         themeColor,
         hp: 100,
@@ -4052,7 +4062,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const resBox = document.getElementById('admin-create-pg-result');
       if (resBox) {
-        resBox.innerHTML = `Scheda creata: <strong>${callsign}</strong> · ID: <strong>${secretId}</strong> · PIN: <strong>${pin}</strong>. Il giocatore compilerà Nome, Cognome, Email e Telefono al primo login.`;
+        const emailNote = associatedEmail ? ` · Email: <strong>${escapeChatText(associatedEmail)}</strong> (login abilitato)` : ' · Il giocatore compilerà Email e Contatti al primo login.';
+        resBox.innerHTML = `Scheda creata: <strong>${callsign}</strong> · ID: <strong>${secretId}</strong> · PIN: <strong>${pin}</strong>${emailNote}`;
         resBox.classList.remove('hidden');
       }
       adminCreatePgForm.reset();
@@ -5330,9 +5341,10 @@ document.addEventListener('DOMContentLoaded', () => {
   syncPlayerUI();
   renderChat();
   // --------------------------------------------------------------------------
-  // Home Vertical News Stream & Sicily/World Pop-up Ads (Public, No Login)
+  // Home Vertical News Stream & Master News Manager (Public, No Login)
   // --------------------------------------------------------------------------
-  const HOME_DISPATCHES = [
+  const SITE_NEWS_STORAGE_KEY = 'dive_site_home_dispatches_v1';
+  const DEFAULT_HOME_DISPATCHES = [
     {
       tag: 'PREMESSE // NUOVE REGOLE & LORE',
       tagColor: 'orange',
@@ -5455,6 +5467,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  function getSiteDispatches() {
+    try {
+      const stored = localStorage.getItem(SITE_NEWS_STORAGE_KEY);
+      return stored ? JSON.parse(stored) : DEFAULT_HOME_DISPATCHES;
+    } catch {
+      return DEFAULT_HOME_DISPATCHES;
+    }
+  }
+
+  function saveSiteDispatches(items) {
+    try {
+      localStorage.setItem(SITE_NEWS_STORAGE_KEY, JSON.stringify(items));
+    } catch (e) {
+      console.warn(e);
+    }
+    renderHomeVerticalFeed();
+    renderAdminNewsManager();
+    scheduleCloudPush();
+  }
+
   function renderHomeVerticalFeed() {
     const streamEl = document.getElementById('home-news-stream');
     if (!streamEl) return;
@@ -5485,7 +5517,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ctaLabel: 'APPROFONDISCI IN RETE ↗'
     }));
 
-    const combined = [...HOME_DISPATCHES, ...liveNews];
+    const combined = [...getSiteDispatches(), ...liveNews];
     streamEl.innerHTML = combined.map(item => {
       const color = item.tagColor || 'cyan';
       const neonCls = NEON_BTN_STYLES[color] || NEON_BTN_STYLES.cyan;
@@ -5521,6 +5553,118 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   renderHomeVerticalFeed();
+
+  function renderAdminNewsManager() {
+    const siteListEl = document.getElementById('admin-site-news-list');
+    const socialListEl = document.getElementById('admin-social-news-list');
+
+    if (siteListEl) {
+      const siteItems = getSiteDispatches();
+      siteListEl.innerHTML = siteItems.length ? siteItems.map((item, idx) => `
+        <div class="p-2.5 rounded-sm bg-black/70 border border-white/10 flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <span class="text-[9px] text-dive-${item.tagColor || 'cyan'} font-bold uppercase block truncate">${escapeChatText(item.tag)} · → ${escapeChatText(item.targetTab || 'net')}</span>
+            <span class="text-white text-[11px] font-bold block truncate">${escapeChatText(item.title)}</span>
+          </div>
+          <button type="button" data-del-site-news="${idx}" class="px-2 py-1 rounded-sm border border-dive-red/40 bg-dive-red/10 text-dive-red hover:bg-dive-red hover:text-black text-[9px] font-bold uppercase cursor-pointer flex-shrink-0">ELIMINA</button>
+        </div>
+      `).join('') : '<p class="text-slate-500 text-[10px]">Nessuna news del sito pubblicata.</p>';
+
+      siteListEl.querySelectorAll('[data-del-site-news]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-del-site-news'), 10);
+          const next = getSiteDispatches().filter((_, i) => i !== idx);
+          saveSiteDispatches(next);
+        });
+      });
+    }
+
+    if (socialListEl) {
+      const posts = getSocialPosts();
+      socialListEl.innerHTML = posts.length ? posts.map(post => `
+        <div class="p-2.5 rounded-sm bg-black/70 border border-white/10 flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <span class="text-[9px] text-dive-purple font-bold uppercase block truncate">${escapeChatText(post.author || 'Anonimo')} · ${escapeChatText(post.location || 'Sicilia')}</span>
+            <span class="text-white text-[11px] font-bold block truncate">${escapeChatText(post.title || post.content || 'Post Social')}</span>
+          </div>
+          <button type="button" data-del-social-news="${escapeChatText(post.id)}" class="px-2 py-1 rounded-sm border border-dive-red/40 bg-dive-red/10 text-dive-red hover:bg-dive-red hover:text-black text-[9px] font-bold uppercase cursor-pointer flex-shrink-0">ELIMINA</button>
+        </div>
+      `).join('') : '<p class="text-slate-500 text-[10px]">Nessun post social presente.</p>';
+
+      socialListEl.querySelectorAll('[data-del-social-news]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-del-social-news');
+          const next = getSocialPosts().filter(p => String(p.id) !== String(id));
+          saveSocialPosts(next);
+        });
+      });
+    }
+  }
+
+  document.getElementById('admin-site-news-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const tag = document.getElementById('admin-site-news-tag')?.value.trim();
+    const tagColor = document.getElementById('admin-site-news-color')?.value || 'orange';
+    const targetTab = document.getElementById('admin-site-news-tab')?.value || 'net';
+    const img = document.getElementById('admin-site-news-img')?.value || 'assets/images/city-bg.jpg';
+    const title = document.getElementById('admin-site-news-title')?.value.trim();
+    const desc = document.getElementById('admin-site-news-desc')?.value.trim();
+    const ctaLabel = document.getElementById('admin-site-news-cta')?.value.trim() || 'APPROFONDISCI IN RETE ↗';
+    if (!tag || !title || !desc) return;
+
+    const current = getSiteDispatches();
+    current.unshift({
+      tag,
+      tagColor,
+      title,
+      desc,
+      time: 'NUOVO · Adesso',
+      img,
+      targetTab,
+      ctaLabel
+    });
+    saveSiteDispatches(current);
+    e.target.reset();
+    if (typeof playCyberFx === 'function') playCyberFx('success');
+  });
+
+  document.getElementById('admin-reset-site-news-btn')?.addEventListener('click', () => {
+    localStorage.removeItem(SITE_NEWS_STORAGE_KEY);
+    renderHomeVerticalFeed();
+    renderAdminNewsManager();
+    scheduleCloudPush();
+  });
+
+  document.getElementById('admin-social-news-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const author = document.getElementById('admin-social-news-author')?.value.trim() || '@DIVE_TG';
+    const location = document.getElementById('admin-social-news-loc')?.value.trim() || 'PORTO FRANCO NAVARRO';
+    const title = document.getElementById('admin-social-news-title')?.value.trim();
+    const content = document.getElementById('admin-social-news-content')?.value.trim();
+    const isPinned = Boolean(document.getElementById('admin-social-news-pinned')?.checked);
+    if (!title || !content) return;
+
+    const posts = getSocialPosts();
+    posts.unshift({
+      id: `master-news-${Date.now()}`,
+      type: 'news',
+      author,
+      role: 'REGIA MASTER // MEDIA',
+      location,
+      timestamp: 'Adesso',
+      title,
+      content,
+      isAnonymous: false,
+      isPinned,
+      likes: 0,
+      comments: []
+    });
+    saveSocialPosts(posts);
+    e.target.reset();
+    if (typeof playCyberFx === 'function') playCyberFx('success');
+  });
+
+  renderAdminNewsManager();
 
   // --------------------------------------------------------------------------
   // Calendario Eventi Cyberpunk (Eventi Passati sbiaditi vs Futuri Neon)

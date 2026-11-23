@@ -37,13 +37,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Offline Tailwind CSS Bundle -->
-  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.83.1">
+  <link rel="stylesheet" href="assets/css/tailwind.css?v=0.84.0">
 
   <!-- Offline HTML5 QR Code Scanner -->
   <script src="assets/js/html5-qrcode.min.js" type="text/javascript"></script>
 
   <!-- Custom Hardware HUD Styling -->
-  <link rel="stylesheet" href="assets/css/style.css?v=0.83.1">
+  <link rel="stylesheet" href="assets/css/style.css?v=0.84.0">
 </head>
 <body class="bg-dive-black text-slate-100 font-sans antialiased selection:bg-dive-orange selection:text-black min-h-[100dvh] flex flex-col relative overflow-x-hidden pb-20 md:pb-0">
 
@@ -1732,7 +1732,11 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-slate-400 mb-1 text-[10px]">EMAIL GIOCATORE ASSOCIATA (OPZIONALE)</label>
+              <input type="email" id="admin-pg-email" placeholder="es. giocatore@email.it" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
+            </div>
             <div>
               <label class="block text-slate-400 mb-1 text-[10px]">MANTRA PG</label>
               <input type="text" id="admin-pg-mantra" placeholder="es. &quot;Nessun debito resta aperto.&quot;" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
@@ -1804,6 +1808,85 @@
               <!-- Injected via JS -->
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- GESTIONE NEWS SITO (HOME) & SOCIAL (THE NET) -->
+      <div class="cyber-panel p-5 space-y-5 font-mono text-xs border border-dive-orange/40">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
+          <div>
+            <span class="text-dive-orange font-bold uppercase block">GESTIONE NEWS SITO &amp; SOCIAL (REGIA MASTER)</span>
+            <span class="text-[10px] text-slate-400">Pubblica o rimuovi dispacci nella Home del sito e notizie/post nel feed Dive Social.</span>
+          </div>
+          <button id="admin-reset-site-news-btn" type="button" class="px-3 py-1.5 rounded-sm border border-white/20 bg-white/5 hover:border-dive-orange hover:text-dive-orange text-slate-300 text-[10px] font-bold uppercase cursor-pointer w-fit">
+            RIPRISTINA NEWS SITO DEFAULT
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Colonna 1: News del Sito (Home) -->
+          <div class="space-y-4 p-4 rounded-sm bg-black/50 border border-white/10">
+            <div class="text-dive-cyan font-bold uppercase text-[11px]">NEWS DEL SITO (HOME)</div>
+            <form id="admin-site-news-form" class="space-y-2.5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="text" id="admin-site-news-tag" placeholder="Tag (es. TG SICILIA // FLASH)" class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan" required>
+                <select id="admin-site-news-color" class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
+                  <option value="orange">Arancione</option>
+                  <option value="cyan">Ciano</option>
+                  <option value="purple">Viola</option>
+                  <option value="red">Rosso</option>
+                  <option value="green">Verde</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <select id="admin-site-news-tab" class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
+                  <option value="net">Apri: Dive Social (The Net)</option>
+                  <option value="eventi">Apri: Eventi</option>
+                  <option value="gallery">Apri: Gallery</option>
+                  <option value="premesse">Apri: Premesse</option>
+                </select>
+                <select id="admin-site-news-img" class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
+                  <option value="assets/images/city-bg.jpg">Immagine: Città Neon</option>
+                  <option value="assets/images/sicilia-cyberpunk-map.jpg">Immagine: Mappa Sicilia</option>
+                  <option value="assets/images/implants/cyberware-body.jpg">Immagine: Impianti Cyberware</option>
+                  <option value="assets/images/og-preview.jpg">Immagine: DIVE Preview</option>
+                  <option value="assets/images/hero-city-bg.jpg?v=0.27.1">Immagine: Settore 04</option>
+                </select>
+              </div>
+              <input type="text" id="admin-site-news-title" placeholder="Titolo notizia sito..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan" required>
+              <textarea id="admin-site-news-desc" rows="2" placeholder="Testo / sommario giornalistico..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan resize-none" required></textarea>
+              <input type="text" id="admin-site-news-cta" placeholder="Testo pulsante (es. APPROFONDISCI IN RETE ↗)" class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
+              <button type="submit" class="cyber-btn w-full py-2 bg-dive-cyan text-black font-bold uppercase hover:bg-white cursor-pointer">
+                PUBBLICA NEWS SUL SITO
+              </button>
+            </form>
+            <div id="admin-site-news-list" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+              <!-- Popolato da JS -->
+            </div>
+          </div>
+
+          <!-- Colonna 2: News & Post Social (The Net) -->
+          <div class="space-y-4 p-4 rounded-sm bg-black/50 border border-white/10">
+            <div class="text-dive-purple font-bold uppercase text-[11px]">NEWS &amp; POST SOCIAL (THE NET)</div>
+            <form id="admin-social-news-form" class="space-y-2.5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="text" id="admin-social-news-author" value="@DIVE_TG" placeholder="Autore / Testata (es. @Anna_Navarro)" class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-purple" required>
+                <input type="text" id="admin-social-news-loc" value="PORTO FRANCO NAVARRO" placeholder="Location" class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-purple">
+              </div>
+              <input type="text" id="admin-social-news-title" placeholder="Titolo dispaccio social..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-purple" required>
+              <textarea id="admin-social-news-content" rows="2" placeholder="Contenuto notizia o post su Dive Social..." class="w-full px-2.5 py-1.5 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-purple resize-none" required></textarea>
+              <label class="inline-flex items-center gap-2 text-[10px] text-slate-300 cursor-pointer">
+                <input type="checkbox" id="admin-social-news-pinned" checked class="accent-dive-purple">
+                <span>Fissa in alto (News in evidenza)</span>
+              </label>
+              <button type="submit" class="cyber-btn w-full py-2 bg-dive-purple text-black font-bold uppercase hover:bg-white cursor-pointer">
+                PUBBLICA SU DIVE SOCIAL
+              </button>
+            </form>
+            <div id="admin-social-news-list" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+              <!-- Popolato da JS -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2028,7 +2111,7 @@
           <span id="login-sync-mode-label" class="font-mono text-[10px] text-dive-cyan">MODALITÀ: DEMO LOCALE</span>
         </div>
         <div class="flex items-center gap-2">
-          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.83.1</span>
+          <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.84.0</span>
           <button id="close-login-modal-btn" class="w-7 h-7 rounded-sm bg-white/10 text-white flex items-center justify-center text-xs hover:bg-white/20">X</button>
         </div>
       </div>
@@ -2188,12 +2271,12 @@
 
   <!-- Floating Version Badge (stile Tavolo dei Dadi: in basso a destra senza casella, 3x click = Regia Master) -->
   <div id="app-version-badge">
-    v0.83.1
+    v0.84.0
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/qrcode.min.js"></script>
-  <script src="assets/js/sync.js?v=0.83.1"></script>
-  <script src="assets/js/main.js?v=0.83.1"></script>
+  <script src="assets/js/sync.js?v=0.84.0"></script>
+  <script src="assets/js/main.js?v=0.84.0"></script>
 </body>
 </html>
