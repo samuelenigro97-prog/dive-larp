@@ -1907,21 +1907,20 @@
             <span class="text-dive-purple font-bold uppercase block">CLOUD SYNC // BACKEND MULTI-UTENTE (40+ TELEFONI)</span>
             <span class="text-[10px] text-slate-400">Collega un endpoint Cloudflare Workers o Supabase per sincronizzare tutti i dispositivi in tempo reale.</span>
           </div>
-          <span id="admin-sync-status-badge" class="px-2 py-0.5 bg-dive-purple/10 border border-dive-purple/40 text-dive-purple text-[10px] font-bold w-fit">DEMO LOCALE</span>
+          <span id="admin-sync-status-badge" class="px-2 py-0.5 bg-dive-purple/10 border border-dive-purple/40 text-dive-purple text-[10px] font-bold w-fit">CLOUDFLARE SYNC</span>
         </div>
 
         <form id="admin-sync-form" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
           <div class="md:col-span-3">
             <label class="block text-slate-400 mb-1 text-[10px]">MODALITÀ</label>
             <select id="admin-sync-mode" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-purple">
-              <option value="local">Demo Locale (Solo questo browser)</option>
-              <option value="cloudflare">Cloudflare Worker (REST API)</option>
+              <option value="cloudflare" selected>Cloudflare Worker (REST API)</option>
               <option value="supabase">Supabase (REST / Postgres)</option>
             </select>
           </div>
           <div class="md:col-span-4">
             <label class="block text-slate-400 mb-1 text-[10px]">ENDPOINT URL</label>
-            <input type="url" id="admin-sync-endpoint" placeholder="https://dive-sync.tuo-account.workers.dev" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-purple">
+            <input type="url" id="admin-sync-endpoint" placeholder="https://dive-sync.dive-larp-sync-worker.workers.dev" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-purple">
           </div>
           <div class="md:col-span-3">
             <label class="block text-slate-400 mb-1 text-[10px]">API / ANON KEY (Opzionale per CF)</label>
@@ -2118,7 +2117,7 @@
       <div class="flex items-center justify-between pb-3 border-b border-white/10">
         <div>
           <span class="font-mono text-xs text-dive-purple font-bold uppercase block">DIVE // ACCESSO RUNNER</span>
-          <span id="login-sync-mode-label" class="font-mono text-[10px] text-dive-cyan">MODALITÀ: DEMO LOCALE</span>
+          <span id="login-sync-mode-label" class="font-mono text-[10px] text-dive-cyan">MODALITÀ: CLOUDFLARE SYNC</span>
         </div>
         <div class="flex items-center gap-2">
           <span id="login-modal-version-badge" class="cursor-pointer select-none font-mono text-[10px] tracking-wider text-dive-purple bg-[#04060A]/90 border border-dive-purple/40 px-2 py-0.5 rounded-sm">v0.88.0</span>
