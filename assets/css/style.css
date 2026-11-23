@@ -847,3 +847,20 @@ body.admin-wide-mode > #app-version-badge {
 body.admin-wide-mode {
   padding-bottom: 1.5rem !important;
 }
+
+@media (max-width: 639px) {
+  .hero-slogan-title {
+    font-size: clamp(1.25rem, 6.2vw, 2.35rem) !important;
+    white-space: nowrap;
+  }
+
+  .hero-slogan-word {
+    display: inline;
+  }
+}
+
+@media (min-width: 640px) {
+  .hero-slogan-word {
+    display: block;
+  }
+}
