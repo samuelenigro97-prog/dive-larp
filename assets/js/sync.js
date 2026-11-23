@@ -1,13 +1,12 @@
 // ==========================================================================
-// DIVE Cyberpunk LARP - Multi-Account & Cloud Sync Connector
-// Supports: Local Multi-Account (default), Cloudflare Workers REST, Supabase
+// DIVE Cyberpunk LARP - Cloud Sync Connector (Cloudflare Workers REST)
 // ==========================================================================
 
 (function (global) {
   const SYNC_CONFIG_KEY = 'dive_sync_config_v1';
 
   const DEFAULT_CONFIG = {
-    mode: 'cloudflare', // 'local' | 'cloudflare' | 'supabase'
+    mode: 'cloudflare',
     endpoint: 'https://dive-sync.dive-larp-sync-worker.workers.dev',
     apiKey: ''
   };
@@ -17,7 +16,7 @@
       const raw = localStorage.getItem(SYNC_CONFIG_KEY);
       if (!raw) return { ...DEFAULT_CONFIG };
       const parsed = JSON.parse(raw);
-      if (!parsed || parsed.mode === 'local' || !parsed.endpoint) {
+      if (!parsed || parsed.mode !== 'cloudflare' || !parsed.endpoint) {
         return { ...DEFAULT_CONFIG };
       }
       return { ...DEFAULT_CONFIG, ...parsed };
@@ -27,23 +26,18 @@
   }
 
   function setConfig(nextCfg) {
-    const merged = { ...DEFAULT_CONFIG, ...nextCfg };
+    const merged = { ...DEFAULT_CONFIG, ...nextCfg, mode: 'cloudflare' };
     localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(merged));
     return merged;
   }
 
   function getStatusLabel() {
-    const cfg = getConfig();
-    if (cfg.mode === 'supabase' && cfg.endpoint && cfg.apiKey) return 'SUPABASE SYNC';
     return 'CLOUDFLARE SYNC';
   }
 
   function buildHeaders(cfg) {
     const headers = { 'Content-Type': 'application/json' };
-    if (cfg.mode === 'supabase' && cfg.apiKey) {
-      headers['apikey'] = cfg.apiKey;
-      headers['Authorization'] = `Bearer ${cfg.apiKey}`;
-    } else if (cfg.apiKey) {
+    if (cfg.apiKey) {
       headers['Authorization'] = `Bearer ${cfg.apiKey}`;
     }
     return headers;
@@ -51,37 +45,19 @@
 
   async function pullSharedState() {
     const cfg = getConfig();
-    if (cfg.mode === 'local' || !cfg.endpoint) return null;
+    if (!cfg.endpoint) return null;
 
     const base = cfg.endpoint.replace(/\/+$/, '');
-    const url = cfg.mode === 'supabase'
-      ? `${base}/rest/v1/dive_state?id=eq.main&select=payload`
-      : `${base}/api/state`;
-
-    const res = await fetch(url, { headers: buildHeaders(cfg) });
+    const res = await fetch(`${base}/api/state`, { headers: buildHeaders(cfg) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (cfg.mode === 'supabase') {
-      return Array.isArray(data) && data[0] ? data[0].payload : null;
-    }
-    return data;
+    return await res.json();
   }
 
   async function pushSharedState(payload) {
     const cfg = getConfig();
-    if (cfg.mode === 'local' || !cfg.endpoint) return false;
+    if (!cfg.endpoint) return false;
 
     const base = cfg.endpoint.replace(/\/+$/, '');
-    if (cfg.mode === 'supabase') {
-      const res = await fetch(`${base}/rest/v1/dive_state?on_conflict=id`, {
-        method: 'POST',
-        headers: { ...buildHeaders(cfg), Prefer: 'resolution=merge-duplicates' },
-        body: JSON.stringify({ id: 'main', payload, updated_at: new Date().toISOString() })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return true;
-    }
-
     const res = await fetch(`${base}/api/state`, {
       method: 'POST',
       headers: buildHeaders(cfg),
@@ -129,9 +105,9 @@
       const params = new URLSearchParams(window.location.search);
       const syncMode = params.get('sync');
       const ep = params.get('ep');
-      if (syncMode && (syncMode === 'cloudflare' || syncMode === 'supabase') && ep) {
+      if (syncMode === 'cloudflare' && ep) {
         setConfig({
-          mode: syncMode,
+          mode: 'cloudflare',
           endpoint: ep.trim(),
           apiKey: (params.get('key') || '').trim()
         });
