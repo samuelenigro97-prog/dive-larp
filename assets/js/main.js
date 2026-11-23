@@ -4453,9 +4453,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyInGameTheme(isAuthenticated, runner) {
     const matrixPalette = {
-      orange: '#00E5FF',
+      orange: '#FF6B00',
       cyan: '#00E5FF',
-      green: '#10B981',
+      green: '#00FF88',
       red: '#FF2A6D',
       purple: '#A855F7'
     };

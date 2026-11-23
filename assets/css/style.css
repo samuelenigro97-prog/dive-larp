@@ -342,14 +342,14 @@ body.ingame-mode {
 }
 
 body.ingame-mode[data-pg-theme="orange"] {
-  --pg-accent: #00E5FF;
-  --pg-accent-rgb: 0, 229, 255;
-  --pg-accent-2: #A855F7;
-  --pg-accent-2-rgb: 168, 85, 247;
-  --pg-bg: #03060A;
-  --pg-panel: rgba(6, 22, 28, 0.9);
-  --pg-slot: rgba(8, 34, 42, 0.88);
-  color: #E6F9FF !important;
+  --pg-accent: #FF6B00;
+  --pg-accent-rgb: 255, 107, 0;
+  --pg-accent-2: #00E5FF;
+  --pg-accent-2-rgb: 0, 229, 255;
+  --pg-bg: #080503;
+  --pg-panel: rgba(24, 12, 5, 0.9);
+  --pg-slot: rgba(34, 17, 7, 0.88);
+  color: #FFF1E6 !important;
 }
 
 body.ingame-mode[data-pg-theme="cyan"] {
@@ -364,14 +364,14 @@ body.ingame-mode[data-pg-theme="cyan"] {
 }
 
 body.ingame-mode[data-pg-theme="green"] {
-  --pg-accent: #00E5FF;
-  --pg-accent-rgb: 0, 229, 255;
-  --pg-accent-2: #10B981;
-  --pg-accent-2-rgb: 16, 185, 129;
-  --pg-bg: #03080A;
-  --pg-panel: rgba(6, 24, 28, 0.9);
-  --pg-slot: rgba(8, 34, 38, 0.88);
-  color: #E6F9FF !important;
+  --pg-accent: #00FF88;
+  --pg-accent-rgb: 0, 255, 136;
+  --pg-accent-2: #00E5FF;
+  --pg-accent-2-rgb: 0, 229, 255;
+  --pg-bg: #030906;
+  --pg-panel: rgba(5, 22, 14, 0.9);
+  --pg-slot: rgba(7, 32, 20, 0.88);
+  color: #E6FFF2 !important;
 }
 
 body.ingame-mode[data-pg-theme="red"] {
