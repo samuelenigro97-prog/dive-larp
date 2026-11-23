@@ -4207,8 +4207,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminForcePullBtn = document.getElementById('admin-force-pull-btn');
   if (adminForcePullBtn) {
     adminForcePullBtn.addEventListener('click', async () => {
-      if (!window.DiveSync || window.DiveSync.getConfig().mode === 'local') {
-        alert('Configura prima una modalità Cloud (Cloudflare o Supabase).');
+      if (!window.DiveSync || !window.DiveSync.getConfig().endpoint) {
+        alert('Configura prima l\'Endpoint Cloudflare Worker.');
         return;
       }
       lastCloudSyncedAt = 0;
@@ -4223,7 +4223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     adminCopySyncLinkBtn.addEventListener('click', async () => {
       const shareUrl = window.DiveSync.buildShareableSyncUrl();
       if (!shareUrl) {
-        alert('Salva prima un Endpoint Cloud (Cloudflare o Supabase) con SALVA SYNC.');
+        alert('Salva prima l\'Endpoint Cloudflare Worker con SALVA SYNC.');
         return;
       }
       try {
