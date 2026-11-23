@@ -69,13 +69,24 @@ body {
 }
 
 body.ingame-mode #app-version-badge {
-  display: inline-block;
-  position: static;
-  align-self: flex-end;
-  padding-bottom: 4px;
-  margin-left: 2px;
+  display: block;
+  position: fixed;
+  top: 59px;
+  bottom: auto;
+  right: 14px;
+  transform: none;
+  z-index: 5;
+  background: transparent;
+  padding: 0;
   line-height: 1;
-  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 10px;
+}
+
+@media (min-width: 640px) {
+  body.ingame-mode #app-version-badge {
+    top: 67px;
+  }
 }
 
 .neon-orange {
@@ -810,5 +821,9 @@ body.ingame-mode #sec-deck .hud-bracket::after {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
+  }
+
+  body.ingame-mode:not(.admin-wide-mode) #app-version-badge {
+    right: calc(50% - 220px + 0.75rem) !important;
   }
 }
