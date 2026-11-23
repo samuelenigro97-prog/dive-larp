@@ -3970,6 +3970,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const ADMIN_IMPLANT_CATALOG = [
+    { id: 'gorilla_arms', slot: 'BRACCIA // COMBAT', name: 'Gorilla Arms', desc: 'Forza d\'impatto potenziata e sfondamento in mischia.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', combat: true },
+    { id: 'shield_protocol', slot: 'DIFESA // COMBAT', name: 'SHIELD protocol', desc: 'Scudo cinetico reattivo contro raffiche e colpi diretti.', img: 'assets/images/implants/implant-ghost.jpg', color: 'orange', combat: true },
+    { id: 'deadeye', slot: 'OTTICA // COMBAT', name: 'Deadeye', desc: 'Puntamento balistico assistito ad alta precisione.', img: 'assets/images/implants/implant-kiroshi.jpg', color: 'orange', combat: true },
+    { id: 'subdermal_armor', slot: 'PELLE // COMBAT', name: 'Subdermal Armor', desc: 'Corazzatura sottocutanea balistica integrata.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange', combat: true },
+    { id: 'cyberdeck', slot: 'DECK // INFORMATICO', name: 'Cyberdeck', desc: 'Comandi: .dropweapon · .stop · .sightout · .stealmoney · .ICEbreaker.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
+    { id: 'ice_firewall', slot: 'SICUREZZA // INFORMATICO', name: 'ICE Firewall', desc: 'Barriera crittografica contro intrusioni e .stealmoney nemici.', img: 'assets/images/implants/implant-ghost.jpg', color: 'cyan' },
+    { id: 'substance_storage', slot: 'SERBATOIO // BIOTECH', name: 'Substance Storage', desc: 'Contiene fino a 3 sostanze utilizzabili in scena.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'green' },
+    { id: 'instant_injection', slot: 'INIETTORE // BIOTECH', name: 'Instant Injection', desc: 'Guarigione di +1 istantanea anche lontano dal banco Ripperdoc.', img: 'assets/images/implants/implant-ghost.jpg', color: 'red' },
+    { id: 'overclock', slot: 'MODULO // BIOTECH', name: 'Overclock (Combat Only)', desc: 'Sblocca versioni Overclocked degli impianti Combat e abbassa il costo dei Quickhack.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' },
+    { id: 'black_market_access', slot: 'RETE // BUSINESS', name: 'Black Market Access', desc: 'Accesso diretto a forniture clandestine e sponsor Arena.', img: 'assets/images/implants/implant-subdermal.jpg', color: 'orange' },
+    { id: 'gig_database', slot: 'ARCHIVIO // BUSINESS', name: 'Gig Database', desc: 'Database unificato di Gig, slot palco Spettacolo e incontri Arena.', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'purple' },
+    { id: 'untraceable', slot: 'RETE // MEDIA', name: 'Untraceable', desc: 'Pubblica post anonimi non rintracciabili nel feed.', img: 'assets/images/implants/implant-ghost.jpg', color: 'purple' },
+    { id: 'lockedon', slot: 'ARCHIVIO // MEDIA', name: 'Lockedon', desc: 'Pubblica post non rimovibili a tempo (5 minuti).', img: 'assets/images/implants/implant-cyberdeck.jpg', color: 'cyan' },
+    { id: 'cancelcontent', slot: 'MOD // MEDIA', name: 'Cancelcontent', desc: 'Rimuove contenuti dal feed social (salvo Lockedon attivi).', img: 'assets/images/implants/implant-subdermal.jpg', color: 'red' }
+  ];
+
+  function renderAdminPgImplantPicker() {
+    const listEl = document.getElementById('admin-pg-implants-list');
+    if (!listEl) return;
+    listEl.innerHTML = ADMIN_IMPLANT_CATALOG.map(imp => `
+      <div class="p-2 rounded-sm bg-black/70 border border-white/10 flex items-center justify-between gap-2 text-[10px]">
+        <label class="inline-flex items-center gap-2 min-w-0 cursor-pointer">
+          <input type="checkbox" class="admin-pg-imp-include accent-dive-cyan" data-imp-id="${imp.id}">
+          <span class="min-w-0">
+            <span class="text-white font-bold block truncate">${escapeChatText(imp.name)}</span>
+            <span class="text-slate-400 text-[9px] block truncate">${escapeChatText(imp.slot)}</span>
+          </span>
+        </label>
+        <select class="admin-pg-imp-state px-1.5 py-1 rounded-sm bg-[#04060A] border border-white/15 text-[9px] font-bold uppercase text-dive-green outline-none" data-imp-state="${imp.id}">
+          <option value="active" selected>ATTIVO</option>
+          <option value="disabled">DISATTIVO</option>
+        </select>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.admin-pg-imp-state').forEach(sel => {
+      sel.addEventListener('change', () => {
+        const isActive = sel.value === 'active';
+        sel.classList.toggle('text-dive-green', isActive);
+        sel.classList.toggle('text-dive-red', !isActive);
+      });
+    });
+  }
+  renderAdminPgImplantPicker();
+
   const adminCreatePgForm = document.getElementById('admin-create-pg-form');
   if (adminCreatePgForm) {
     adminCreatePgForm.addEventListener('submit', (e) => {
@@ -4023,6 +4069,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const num = Math.floor(1000 + Math.random() * 9000);
       const secretId = `#${prefix}-${num}`;
 
+      const selectedImplants = [];
+      document.querySelectorAll('.admin-pg-imp-include:checked').forEach(cb => {
+        const impId = cb.getAttribute('data-imp-id');
+        const template = ADMIN_IMPLANT_CATALOG.find(item => item.id === impId);
+        if (!template) return;
+        const stateSel = document.querySelector(`.admin-pg-imp-state[data-imp-state="${impId}"]`);
+        const isImpActive = !stateSel || stateSel.value === 'active';
+        selectedImplants.push({
+          ...template,
+          active: isImpActive,
+          tag: isImpActive ? (impId === 'substance_storage' ? '3 / 3 DOSI' : 'ATTIVO') : 'DISATTIVATO'
+        });
+      });
+
+      const osTag = (role.split('//')[0] || 'RUNNER').trim();
       const newAccount = normalizeAccount({
         callsign,
         role,
@@ -4042,6 +4103,16 @@ document.addEventListener('DOMContentLoaded', () => {
         ram: ramMax,
         ramMax,
         iceActive,
+        cyberware: {
+          os: {
+            name: `SISTEMA ${osTag} // CUSTOM`,
+            tag: osTag,
+            desc: `Configurazione impianti assegnata dalla Regia Master per ${role}.`,
+            img: 'assets/images/implants/implant-cyberdeck.jpg',
+            color: themeColor
+          },
+          implants: selectedImplants
+        },
         psychProfile: {
           faction,
           immersion,
@@ -4067,6 +4138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resBox.classList.remove('hidden');
       }
       adminCreatePgForm.reset();
+      renderAdminPgImplantPicker();
       if (typeof playCyberFx === 'function') playCyberFx('success');
     });
   }

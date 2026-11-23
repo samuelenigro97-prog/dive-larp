@@ -1781,6 +1781,16 @@
             <input type="text" id="admin-pg-concepts" placeholder="Ex-militare, Sangue freddo, Lealtà selettiva, Debito d'onore, Cicatrici, Ricerca" class="w-full px-3 py-2 rounded-sm bg-black border border-white/15 text-white text-xs outline-none focus:border-dive-cyan">
           </div>
 
+          <div class="p-3.5 rounded-sm bg-black/50 border border-dive-cyan/30 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-dive-cyan font-bold uppercase text-[10px]">IMPIANTI CYBERWARE INIZIALI (INCLUDI + STATO ATTIVO / DISATTIVATO)</span>
+              <span class="text-[9px] text-slate-400">Ogni singolo impianto può essere attivato o disattivato singolarmente</span>
+            </div>
+            <div id="admin-pg-implants-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              <!-- Popolato da JS -->
+            </div>
+          </div>
+
           <div id="admin-create-pg-result" class="hidden p-3 rounded-sm bg-dive-green/10 border border-dive-green/40 text-dive-green text-xs"></div>
 
           <button type="submit" class="cyber-btn px-5 py-2.5 bg-dive-cyan text-black font-bold uppercase hover:bg-white cursor-pointer">
