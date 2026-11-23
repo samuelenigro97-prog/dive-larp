@@ -827,3 +827,14 @@ body.ingame-mode #sec-deck .hud-bracket::after {
     right: calc(50% - 220px + 0.75rem) !important;
   }
 }
+
+/* In Regia Master (#tab-admin), nasconde le bande superiore e inferiore: sezione sopra tutto */
+body.admin-wide-mode > header,
+body.admin-wide-mode > #mobile-game-dock,
+body.admin-wide-mode > #app-version-badge {
+  display: none !important;
+}
+
+body.admin-wide-mode {
+  padding-bottom: 1.5rem !important;
+}
